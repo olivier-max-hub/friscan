@@ -177,6 +177,7 @@ nav a:focus-visible{outline-color:#fff}
       <p class="note">Ce que tu as presque toujours chez toi. Ces ingrédients comptent comme disponibles pour les recettes.</p>
       <div class="pills" id="placard"></div>
     </div>
+    <p class="note" style="text-align:center;margin-top:16px" id="version"></p>
   </section>
 
   <!-- SCANNER -->
@@ -219,7 +220,7 @@ nav a:focus-visible{outline-color:#fff}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js"></script>
+<script src="data.js?v=4"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -232,7 +233,11 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
+const VERSION = '4';
 let fridge = store.get('fridge', []);
+/* nettoyage : produits reliés à un ingrédient qui n'existe plus */
+if (!Array.isArray(fridge)) fridge = [];
+fridge = fridge.filter(f => f && f.name).map(f => (f.ing && !ING[f.ing] ? { ...f, ing: null } : f));
 let placard = store.get('placard', PLACARD_DEFAUT);
 let filter = 'ok';
 const save = () => { store.set('fridge', fridge); store.set('placard', placard); };
@@ -260,7 +265,8 @@ function addItem(o) {
   save(); renderAll();
 }
 /* un ingrédient de recette peut être couvert par un équivalent (SUBST) */
-const alts = id => [id, ...(SUBST[id] || [])];
+const EQUIV = typeof SUBST !== 'undefined' ? SUBST : {};
+const alts = id => [id, ...(EQUIV[id] || [])];
 const inFridge = id => alts(id).some(x => fridge.some(f => f.ing === x));
 const have = id => alts(id).some(x => placard.includes(x)) || inFridge(id);
 
@@ -564,7 +570,13 @@ window.addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopCam(); });
 
 renderAll(); route();
-if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+$('#version').textContent = `Friscan · version ${VERSION}`;
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  /* quand une nouvelle version est installée, on recharge une fois pour l'utiliser tout de suite */
+  const hadSW = !!navigator.serviceWorker.controller; let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadSW && !reloaded) { reloaded = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => r.update()).catch(() => {});
+}
 </script>
 </body>
 </html>
