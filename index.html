@@ -73,10 +73,10 @@ h2:first-child{margin-top:4px}
 .item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 10px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .item .pic{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.6rem;background:var(--pale,#eef8fb);overflow:hidden}
 .item .pic img{width:100%;height:100%;object-fit:cover}
-.item .txt{flex:1;min-width:0}
+.item .txt{flex:1;min-width:0;overflow:hidden;cursor:pointer}
 .item b{display:block;font-size:1.08rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item small{color:var(--mute);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item select{margin-top:4px;max-width:100%;padding:4px 8px;border:1px solid var(--line);border-radius:10px;background:#fff7f2;color:var(--ko)}
+.item select{margin-top:4px;width:100%;min-width:0;padding:4px 8px;border:1px solid var(--line);border-radius:10px;background:#fff7f2;color:var(--ko)}
 .x{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:0;background:#f1f6f7;color:var(--mute);font-size:1.3rem;cursor:pointer;line-height:1}
 .x:hover{background:#ffe6dd;color:var(--ko)}
 .card{margin-top:18px;padding:18px;background:#fff;border:1px solid var(--line);border-radius:22px;display:grid;gap:10px}
@@ -242,8 +242,14 @@ function guessIng(name, tags) {
   const txt = norm(name);
   /* début de mot ; un mot-clé terminé par une espace doit être un mot entier */
   const hit = k => txt.includes(' ' + norm(k).trim() + (k.endsWith(' ') ? ' ' : ''));
+  let best = null, bi = 1e9, bl = 0;
   for (const [id, d] of Object.entries(ING))
-    if (d.k.some(hit)) return id;
+    for (const k of d.k) {
+      const pat = ' ' + norm(k).trim() + (k.endsWith(' ') ? ' ' : '');
+      const i = txt.indexOf(pat);
+      if (i >= 0 && (i < bi || (i === bi && pat.length > bl))) { best = id; bi = i; bl = pat.length; }
+    }
+  if (best) return best;
   const t = (tags || []).map(x => x.toLowerCase());
   for (const [id, d] of Object.entries(ING))
     if (d.t.some(x => t.includes(x))) return id;
@@ -253,7 +259,10 @@ function addItem(o) {
   fridge.unshift({ uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...o, added: Date.now() });
   save(); renderAll();
 }
-const have = id => placard.includes(id) || fridge.some(f => f.ing === id);
+/* un ingrédient de recette peut être couvert par un équivalent (SUBST) */
+const alts = id => [id, ...(SUBST[id] || [])];
+const inFridge = id => alts(id).some(x => fridge.some(f => f.ing === x));
+const have = id => alts(id).some(x => placard.includes(x)) || inFridge(id);
 
 /* ---------- toast avec annulation ---------- */
 let toastT, undoFn;
@@ -267,9 +276,11 @@ $('#toastUndo').onclick = () => { if (undoFn) undoFn(); undoFn = null; $('#toast
 
 /* ---------- FRIGO ---------- */
 function ingOptions(sel) {
-  return '<option value="">— Choisir l’ingrédient —</option>' + Object.entries(ING)
-    .sort((a, b) => a[1].n.localeCompare(b[1].n, 'fr'))
-    .map(([id, d]) => `<option value="${id}"${id === sel ? ' selected' : ''}>${d.e} ${esc(d.n)}</option>`).join('');
+  return '<option value="">— Choisir l’ingrédient —</option>' +
+    Object.keys(GROUPS).filter(g => g !== 'inconnu' && g !== 'autre').map(g => `<optgroup label="${GROUPS[g].n}">` +
+      Object.entries(ING).filter(([, d]) => d.g === g).sort((a, b) => a[1].n.localeCompare(b[1].n, 'fr'))
+        .map(([id, d]) => `<option value="${id}"${id === sel ? ' selected' : ''}>${d.e} ${esc(d.n)}</option>`).join('') + '</optgroup>').join('') +
+    `<option value="_autre"${sel === '_autre' ? ' selected' : ''}>🛒 Autre produit (le garder tel quel)</option>`;
 }
 function renderFridge() {
   const box = $('#fridgeList');
@@ -278,17 +289,17 @@ function renderFridge() {
     return;
   }
   const byG = {};
-  for (const f of fridge) { const g = f.ing ? ING[f.ing].g : 'inconnu'; (byG[g] ||= []).push(f); }
+  for (const f of fridge) { const g = f.ing ? ING[f.ing].g : f.other ? 'autre' : 'inconnu'; (byG[g] ||= []).push(f); }
   box.innerHTML = Object.keys(GROUPS).filter(g => byG[g]).map(g => `
     <h2 style="--cat:${GROUPS[g].c}">${GROUPS[g].n} · ${byG[g].length}</h2>
     <div class="items">${byG[g].map(f => {
       const d = f.ing && ING[f.ing];
-      const pic = f.img ? `<img src="${esc(f.img)}" alt="" loading="lazy">` : (d ? d.e : '❓');
+      const pic = f.img ? `<img src="${esc(f.img)}" alt="" loading="lazy">` : (d ? d.e : f.other ? '🛒' : '❓');
       const meta = [d && d.n !== f.name ? d.n : '', f.brand].filter(Boolean).join(' · ');
       return `<div class="item" style="--pale:${pale(g)}">
         <div class="pic">${pic}</div>
-        <div class="txt"><b>${esc(f.name)}</b>${meta ? `<small>${esc(meta)}</small>` : ''}
-          ${d ? '' : `<select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions('')}</select>`}</div>
+        <div class="txt" data-edit="${f.uid}" title="Toucher pour changer l’ingrédient"><b>${esc(f.name)}</b>${meta ? `<small>${esc(meta)}</small>` : ''}
+          ${(d || f.other) && editing !== f.uid ? '' : `<select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions(f.ing || (f.other ? '_autre' : ''))}</select>`}</div>
         <button class="x" data-del="${f.uid}" aria-label="Retirer ${esc(f.name)}">×</button></div>`;
     }).join('')}</div>`).join('');
 }
@@ -298,9 +309,16 @@ $('#fridgeList').addEventListener('click', e => {
   const [it] = fridge.splice(i, 1); save(); renderAll();
   toast(`${it.name} retiré`, () => { fridge.splice(i, 0, it); save(); renderAll(); });
 });
+let editing = null;
+$('#fridgeList').addEventListener('click', e => {
+  if (e.target.closest('select')) return;
+  const t = e.target.closest('[data-edit]'); if (!t) return;
+  editing = editing === t.dataset.edit ? null : t.dataset.edit; renderFridge();
+});
 $('#fridgeList').addEventListener('change', e => {
   const s = e.target.closest('[data-fix]'); if (!s || !s.value) return;
-  const f = fridge.find(x => x.uid === s.dataset.fix); if (f) { f.ing = s.value; save(); renderAll(); }
+  const f = fridge.find(x => x.uid === s.dataset.fix);
+  if (f) { if (s.value === '_autre') { f.ing = null; f.other = true; } else { f.ing = s.value; f.other = false; } editing = null; save(); renderAll(); }
 });
 function renderPills() {
   $('#rapides').innerHTML = RAPIDES.map(id => `<button class="pill add" data-quick="${id}">${ING[id].e} ${esc(ING[id].n)}</button>`).join('');
@@ -331,7 +349,7 @@ sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
   const name = b.dataset.s ? ING[id].n : addIn.value.trim();
-  addItem({ name, ing: id }); toast(`${name} ajouté au frigo`);
+  addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`);
   addIn.value = ''; sugg.hidden = true;
 });
 addIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const f = sugg.querySelector('button'); if (f) f.click(); } if (e.key === 'Escape') sugg.hidden = true; });
@@ -341,7 +359,7 @@ document.addEventListener('click', e => { if (!e.target.closest('#hdrFrigo')) su
 function analyse(r) {
   const req = r.ing.filter(x => !x[2]);
   const missing = req.filter(x => !have(x[0])).map(x => x[0]);
-  const used = r.ing.filter(x => fridge.some(f => f.ing === x[0])).length;
+  const used = r.ing.filter(x => inFridge(x[0])).length;
   return { missing, used, okCount: req.length - missing.length, total: req.length };
 }
 function recCard(r, a) {
@@ -376,7 +394,7 @@ function renderRecipe(id) {
   const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
   if (!r) { location.hash = '#recettes'; return; }
   const a = analyse(r); const [c1, c2] = CATS[r.cat];
-  const fromFridge = r.ing.filter(x => fridge.some(f => f.ing === x[0]));
+  const fromFridge = r.ing.filter(x => inFridge(x[0]));
   v.innerHTML = `
     <div class="backbar"><a class="btn alt" href="#recettes">← Recettes</a></div>
     <div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2})"><span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>
@@ -396,7 +414,7 @@ function renderRecipe(id) {
   if (b) b.onclick = () => {
     const before = fridge.slice(); const ids = new Set(fromFridge.map(x => x[0]));
     /* on retire un exemplaire de chaque ingrédient utilisé */
-    for (const i of ids) { const k = fridge.findIndex(f => f.ing === i); if (k >= 0) fridge.splice(k, 1); }
+    for (const i of ids) { const k = fridge.findIndex(f => alts(i).includes(f.ing)); if (k >= 0) fridge.splice(k, 1); }
     save(); renderAll(); location.hash = '#recettes';
     toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); });
   };
@@ -514,8 +532,8 @@ function bindResult() {
   const f = $('#rform');
   f.addEventListener('submit', e => {
     e.preventDefault();
-    const name = $('#rname').value.trim() || 'Produit'; const ing = $('#ring').value || guessIng(name, []);
-    addItem({ name, ing, code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null });
+    const name = $('#rname').value.trim() || 'Produit'; const v = $('#ring').value; const ing = v === '_autre' ? null : (v || guessIng(name, []));
+    addItem({ name, ing, other: v === '_autre', code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null });
     toast(`${name} ajouté au frigo`);
     $('#result').innerHTML = ''; startCam();
   });

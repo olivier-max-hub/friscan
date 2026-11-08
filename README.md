@@ -11,7 +11,7 @@ La caméra exige le HTTPS : GitHub Pages le fournit.
 
 ## Fichiers
 - `index.html` : l'appli (Frigo, Scanner, Recettes)
-- `data.js` : ingrédients reconnus + 38 recettes — c'est là qu'on ajoute des recettes
+- `data.js` : ~150 ingrédients reconnus + 67 recettes — c'est là qu'on ajoute des recettes
 - `sw.js`, `manifest.webmanifest`, icônes : installation et mode hors ligne
 
 ## Fonctionnement
