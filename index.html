@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Friscan</title>
+<meta name="description" content="Scanne ton frigo et prépare un bon repas">
+<meta name="theme-color" content="#0f6b78">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Friscan">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Economica:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deco:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='260'%20height='260'%20viewBox='0%200%20260%20260'%20fill='none'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'%20opacity='.6'%3E%3Cg%20transform='translate%2840%2050%29%20rotate%28-30%29'%20stroke='%237fc4cf'%3E%3Cellipse%20rx='11'%20ry='16'/%3E%3Cpath%20d='M0%2016V62'/%3E%3C/g%3E%3Cg%20transform='translate%28150%2040%29%20rotate%2825%29'%20stroke='%23f0b09c'%3E%3Cpath%20d='M-9-16v14q0%208%209%208t9-8v-14M0-16v22M0%206v46'/%3E%3C/g%3E%3Cg%20transform='translate%28222%20125%29%20rotate%28-15%29'%20stroke='%23efcf72'%3E%3Cpath%20d='M0%200C-18%2020-18%2048%200%2058C18%2048%2018%2020%200%200ZM0%200C-7%2020-7%2048%200%2058C7%2048%207%2020%200%200M0-28V0'/%3E%3C/g%3E%3Cg%20transform='translate%2878%20140%29'%20stroke='%239ccf92'%3E%3Cpath%20d='M-24%2022h48v14h-48zM-24%2022C-42%2018-40-8-18-6C-14-24%2014-24%2018-6C40-8%2042%2018%2024%2022'/%3E%3C/g%3E%3Cg%20transform='translate%28175%20215%29'%20stroke='%23b7a6e0'%3E%3Cpath%20d='M-24%200h48v26h-48zM-24%208h-10M24%208h10M-14-6h28'/%3E%3C/g%3E%3Cg%20transform='translate%2852%20222%29%20rotate%2820%29'%20stroke='%23f0a8c4'%3E%3Crect%20x='-22'%20y='-8'%20width='44'%20height='16'%20rx='6'/%3E%3Cpath%20d='M-34%200h12M22%200h12'/%3E%3C/g%3E%3Cg%20transform='translate%28120%20100%29%20rotate%2840%29'%20stroke='%238fd0b8'%3E%3Cpath%20d='M0-24v30M-6-24h12M0%206v22'/%3E%3Cpath%20d='M-5%206h10'/%3E%3C/g%3E%3C/svg%3E");
+  --bg:#eef8fb;--g1:#f1fafc;--g2:#e6f6f7;--g3:#eaf5fb;--card:#fff;--ink:#1f2a24;--mute:#5d6f73;
+  --line:#d3e6ea;--acc:#0f6b78;--deep:#0b4f59;--on:#fff;--ok:#2f8f4e;--ko:#c2553a;
+  --bar:60px;color-scheme:light only;
+}
+*,::before,::after{box-sizing:border-box}
+html{font-size:112.5%;height:100%;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100%;padding-bottom:calc(var(--bar) + env(safe-area-inset-bottom,0px));
+  background:var(--deco) 0 0/260px 260px fixed,linear-gradient(160deg,var(--g1),var(--g2) 55%,var(--g3)) fixed,var(--bg);
+  color:var(--ink);font:1rem/1.5 Economica,"Arial Narrow",Arial,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto}
+
+/* En-tête */
+header{position:sticky;top:0;z-index:11;background:var(--acc);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+h1{margin:0;font:700 1.9rem/1.1 Economica,"Arial Narrow",Arial,sans-serif;display:flex;align-items:center;gap:10px}
+h1 svg{width:30px;height:30px}
+.sub{color:rgba(255,255,255,.88);font-size:.85rem;margin:2px 0 10px}
+.field{position:relative}
+.field input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.field input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.18);overflow:hidden;z-index:20;color:var(--ink)}
+.sugg button{display:flex;gap:10px;align-items:center;width:100%;border:0;background:none;padding:10px 14px;text-align:left;cursor:pointer;font-size:1.05rem}
+.sugg button+button{border-top:1px solid var(--line)}
+.sugg button:hover,.sugg button:focus-visible{background:#eef8fb;outline:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;padding:6px 14px;border-radius:99px;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed=true]{background:#e3f6f8;color:var(--deep);border-color:#e3f6f8;font-weight:700}
+
+main{padding:16px}
+section[hidden]{display:none!important}
+h2{font:700 1.15rem Economica,"Arial Narrow",Arial,sans-serif;margin:22px 0 10px;display:inline-block;padding:4px 14px;border-left:6px solid var(--cat,var(--acc));border-radius:6px;background:var(--card)}
+h2:first-child{margin-top:4px}
+.btn{border:1px solid var(--acc);background:var(--acc);color:var(--on);padding:9px 22px;border-radius:99px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.btn.alt{background:#fff;color:var(--acc)}
+.btn:disabled{opacity:.55;cursor:default}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.note{margin:0;color:var(--mute);font-size:.9rem}
+
+/* Grandes cartes pastel (comme les catégories de « Mes recettes ») */
+.catb{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:96px;padding:14px 22px;border:0;border-radius:24px;text-decoration:none;color:var(--deep);box-shadow:0 3px 10px rgba(0,0,0,.12);text-align:left;cursor:pointer;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.catb b{display:block;font-size:1.6rem;line-height:1.1}
+.catb small{font-size:1rem;display:block;margin-top:2px}
+.catb .ill{font-size:3.2rem;line-height:1;flex:0 0 auto}
+.cats{display:grid;gap:12px}
+@media (prefers-reduced-motion:no-preference){.catb{transition:transform .15s}.catb:active{transform:scale(.98)}}
+.tag{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.75);font-size:.9rem;font-weight:700}
+.tag.ok{color:var(--ok)}
+.tag.ko{color:var(--ko)}
+
+/* Frigo */
+.items{display:grid;gap:8px}
+.item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 10px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.item .pic{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.6rem;background:var(--pale,#eef8fb);overflow:hidden}
+.item .pic img{width:100%;height:100%;object-fit:cover}
+.item .txt{flex:1;min-width:0}
+.item b{display:block;font-size:1.08rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item small{color:var(--mute);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item select{margin-top:4px;max-width:100%;padding:4px 8px;border:1px solid var(--line);border-radius:10px;background:#fff7f2;color:var(--ko)}
+.x{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:0;background:#f1f6f7;color:var(--mute);font-size:1.3rem;cursor:pointer;line-height:1}
+.x:hover{background:#ffe6dd;color:var(--ko)}
+.card{margin-top:18px;padding:18px;background:#fff;border:1px solid var(--line);border-radius:22px;display:grid;gap:10px}
+.card h3{margin:0;font:700 1.2rem Economica,"Arial Narrow",Arial,sans-serif}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1px solid var(--line);background:#fff;color:var(--deep);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:.95rem}
+.pill[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.pill.add::before{content:"+ ";font-weight:700}
+
+/* Scanner */
+.scan{display:grid;gap:14px}
+.cam[hidden]{display:none}
+.cam{position:relative;aspect-ratio:1/1;max-height:52vh;width:100%;border-radius:26px;overflow:hidden;background:#0b3940;box-shadow:0 3px 12px rgba(0,0,0,.2)}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam .frame{position:absolute;left:10%;right:10%;top:34%;height:30%;border:3px solid rgba(255,255,255,.9);border-radius:18px;box-shadow:0 0 0 999px rgba(0,0,0,.28)}
+.cam .laser{position:absolute;left:6%;right:6%;top:50%;height:2px;background:#ffb899;box-shadow:0 0 10px #ffb899}
+@media (prefers-reduced-motion:no-preference){.cam .laser{animation:laser 1.6s ease-in-out infinite alternate}@keyframes laser{from{top:12%}to{top:88%}}}
+.cam .idle{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#e3f6f8;padding:24px}
+.cam .idle .btn{background:#fff;color:var(--acc);border-color:#fff;font-size:1.15rem;padding:12px 26px}
+.cam .msg{position:absolute;left:12px;right:12px;bottom:12px;text-align:center;color:#fff;font-size:.95rem;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.manual{display:flex;gap:8px}
+.manual input{flex:1;min-width:0;padding:10px 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.result{display:grid;gap:12px;background:var(--pale,#eef8fb);border-radius:26px;padding:18px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.result .top{display:flex;gap:14px;align-items:center}
+.result .pic{flex:0 0 78px;height:78px;border-radius:18px;background:#fff;display:grid;place-items:center;font-size:2.4rem;overflow:hidden}
+.result .pic img{width:100%;height:100%;object-fit:contain}
+.result b{font-size:1.4rem;line-height:1.15;display:block;color:var(--deep)}
+.result label{font-weight:700;color:var(--deep)}
+.result select,.result input[type=text]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Recette */
+.backbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
+.rhero{display:grid;gap:6px;justify-items:center;background:var(--pale,#eef8fb);border-radius:26px;padding:18px;box-shadow:0 3px 10px rgba(0,0,0,.08);text-align:center}
+.rhero .ill{font-size:4rem;line-height:1}
+.rhero h2{display:block;background:none;border:0;padding:0;margin:0;font-size:2.2rem;line-height:1.1;color:var(--acc)}
+.rpills{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+.rpill{border-radius:20px;padding:10px 12px;text-align:center;color:var(--deep)}
+.rpill small{display:block;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+.rpill b{font-size:1.45rem;line-height:1.2}
+.rsec h3{color:var(--acc);font-size:1.6rem;margin:20px 0 8px}
+.rbox,.rsteps{background:#eef8fb;border-radius:22px;padding:14px 20px}
+.rbox ul{list-style:none;margin:0;padding:0}
+.rbox li{display:flex;gap:10px;align-items:baseline;padding:4px 0}
+.rbox li .m{flex:0 0 22px;font-weight:700;text-align:center}
+.rbox li.have .m{color:var(--ok)}
+.rbox li.miss{color:var(--ko)}
+.rbox li.opt{opacity:.8}
+.rbox li em{color:var(--mute);font-size:.9rem}
+.rstep{display:flex;gap:12px;margin:0 0 14px}
+.rstep:last-child{margin-bottom:0}
+.rnum{flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700}
+.rstep p{margin:3px 0 0}
+.empty{text-align:center;padding:10px 4px}
+
+/* Barre du bas */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:12;height:calc(var(--bar) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--acc);box-shadow:0 -2px 10px rgba(0,0,0,.15);display:flex;justify-content:space-around;align-items:center}
+nav a{color:#fff;font-weight:700;font-size:1.1rem;text-decoration:none;padding:6px 14px;display:flex;align-items:center;gap:6px;text-underline-offset:4px}
+nav a[aria-current=page]{text-decoration:underline}
+nav a.scanbtn{background:#fff;color:var(--acc);border:2px solid var(--acc);border-radius:99px;padding:6px 16px 6px 8px;transform:translateY(-14px);box-shadow:0 3px 8px rgba(0,0,0,.35);text-decoration:none}
+nav a.scanbtn svg{width:34px;height:34px}
+nav a:focus-visible{outline-color:#fff}
+#toast{position:fixed;left:50%;bottom:calc(var(--bar) + 22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:99px;font-size:.95rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30;display:flex;gap:12px;align-items:center;white-space:nowrap}
+#toast.on{opacity:1;pointer-events:auto}
+#toast button{border:0;background:none;color:#ffb899;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="4" width="36" height="56" rx="8" fill="#fff"/><path d="M14 24h36" stroke="#0f6b78" stroke-width="3"/><path d="M20 12v6M20 30v8" stroke="#0f6b78" stroke-width="3" stroke-linecap="round"/><path d="M27 40v12M31 40v12M34 40v12M38 40v12M42 40v12" stroke="#ffb899" stroke-width="2"/></svg><span id="title">Mon frigo</span></h1>
+    <p class="sub" id="sub">&nbsp;</p>
+    <div id="hdrFrigo" class="field">
+      <input id="add" type="search" placeholder="Ajouter un produit (ex. courgette, œufs…)" autocomplete="off" aria-label="Ajouter un produit à la main">
+      <div class="sugg" id="sugg" hidden></div>
+    </div>
+    <div id="hdrRec" hidden>
+      <div class="field"><input id="q" type="search" placeholder="Rechercher une recette" autocomplete="off" aria-label="Rechercher une recette"></div>
+      <div class="chips" id="filters">
+        <button class="chip" data-f="ok" aria-pressed="true">✓ Possibles</button>
+        <button class="chip" data-f="presque" aria-pressed="false">Presque (1–2 manquants)</button>
+        <button class="chip" data-f="tout" aria-pressed="false">Toutes</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- FRIGO -->
+  <section id="v-frigo">
+    <div id="fridgeList"></div>
+    <div class="card">
+      <h3>Ajout rapide (fruits & légumes sans code-barres)</h3>
+      <div class="pills" id="rapides"></div>
+    </div>
+    <div class="card">
+      <h3>Mon placard</h3>
+      <p class="note">Ce que tu as presque toujours chez toi. Ces ingrédients comptent comme disponibles pour les recettes.</p>
+      <div class="pills" id="placard"></div>
+    </div>
+  </section>
+
+  <!-- SCANNER -->
+  <section id="v-scan" hidden>
+    <div class="scan">
+      <div class="cam" id="cam">
+        <video id="video" playsinline muted></video>
+        <div class="frame" id="frame" hidden></div>
+        <div class="laser" id="laser" hidden></div>
+        <div class="idle" id="idle">
+          <div>
+            <p style="font-size:1.15rem;margin:0 0 14px">Vise le code-barres d’un produit<br>pour l’ajouter à ton frigo.</p>
+            <button class="btn" id="startCam">📷 Ouvrir la caméra</button>
+          </div>
+        </div>
+        <div class="msg" id="camMsg"></div>
+      </div>
+      <div id="result"></div>
+      <form class="manual" id="manual">
+        <input id="code" inputmode="numeric" pattern="[0-9]{8,14}" placeholder="Ou tape le code-barres" aria-label="Code-barres">
+        <button class="btn" type="submit">OK</button>
+      </form>
+      <p class="note">Les fiches produits viennent d’Open Food Facts, la base collaborative et libre.</p>
+    </div>
+  </section>
+
+  <!-- RECETTES -->
+  <section id="v-rec" hidden>
+    <div id="recList" class="cats"></div>
+  </section>
+
+  <!-- RECETTE -->
+  <section id="v-recette" hidden></section>
+</main>
+
+<nav aria-label="Navigation">
+  <a href="#frigo" data-v="frigo">🧊 Frigo</a>
+  <a href="#scan" data-v="scan" class="scanbtn"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#e3f6f8"/><path d="M11 13v14M14 13v14M16.5 13v14M20 13v14M23 13v14M25.5 13v14M29 13v14" stroke="#0f6b78" stroke-width="1.8"/><path d="M8 20h24" stroke="#ff8a65" stroke-width="2"/></svg>Scanner</a>
+  <a href="#recettes" data-v="rec">🍳 Recettes</a>
+</nav>
+<div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
+
+<script src="data.js"></script>
+<script>
+'use strict';
+/* ---------- utilitaires ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => ' ' + String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/œ/g, 'oe').replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('friscan.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('friscan.' + k, JSON.stringify(v)); } catch (e) {} }
+};
+const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
+
+let fridge = store.get('fridge', []);
+let placard = store.get('placard', PLACARD_DEFAUT);
+let filter = 'ok';
+const save = () => { store.set('fridge', fridge); store.set('placard', placard); };
+
+/* ---------- reconnaissance d'un produit -> ingrédient ---------- */
+function guessIng(name, tags) {
+  const txt = norm(name);
+  /* début de mot ; un mot-clé terminé par une espace doit être un mot entier */
+  const hit = k => txt.includes(' ' + norm(k).trim() + (k.endsWith(' ') ? ' ' : ''));
+  for (const [id, d] of Object.entries(ING))
+    if (d.k.some(hit)) return id;
+  const t = (tags || []).map(x => x.toLowerCase());
+  for (const [id, d] of Object.entries(ING))
+    if (d.t.some(x => t.includes(x))) return id;
+  return null;
+}
+function addItem(o) {
+  fridge.unshift({ uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...o, added: Date.now() });
+  save(); renderAll();
+}
+const have = id => placard.includes(id) || fridge.some(f => f.ing === id);
+
+/* ---------- toast avec annulation ---------- */
+let toastT, undoFn;
+function toast(msg, undo) {
+  $('#toastTxt').textContent = msg; undoFn = undo;
+  $('#toastUndo').hidden = !undo;
+  $('#toast').classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('on'), undo ? 5000 : 2200);
+}
+$('#toastUndo').onclick = () => { if (undoFn) undoFn(); undoFn = null; $('#toast').classList.remove('on'); };
+
+/* ---------- FRIGO ---------- */
+function ingOptions(sel) {
+  return '<option value="">— Choisir l’ingrédient —</option>' + Object.entries(ING)
+    .sort((a, b) => a[1].n.localeCompare(b[1].n, 'fr'))
+    .map(([id, d]) => `<option value="${id}"${id === sel ? ' selected' : ''}>${d.e} ${esc(d.n)}</option>`).join('');
+}
+function renderFridge() {
+  const box = $('#fridgeList');
+  if (!fridge.length) {
+    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Ton frigo est vide</b><small>Scanne ton premier produit ou ajoute-le à la main.</small></span><span class="ill">🧊</span></a></div>`;
+    return;
+  }
+  const byG = {};
+  for (const f of fridge) { const g = f.ing ? ING[f.ing].g : 'inconnu'; (byG[g] ||= []).push(f); }
+  box.innerHTML = Object.keys(GROUPS).filter(g => byG[g]).map(g => `
+    <h2 style="--cat:${GROUPS[g].c}">${GROUPS[g].n} · ${byG[g].length}</h2>
+    <div class="items">${byG[g].map(f => {
+      const d = f.ing && ING[f.ing];
+      const pic = f.img ? `<img src="${esc(f.img)}" alt="" loading="lazy">` : (d ? d.e : '❓');
+      const meta = [d && d.n !== f.name ? d.n : '', f.brand].filter(Boolean).join(' · ');
+      return `<div class="item" style="--pale:${pale(g)}">
+        <div class="pic">${pic}</div>
+        <div class="txt"><b>${esc(f.name)}</b>${meta ? `<small>${esc(meta)}</small>` : ''}
+          ${d ? '' : `<select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions('')}</select>`}</div>
+        <button class="x" data-del="${f.uid}" aria-label="Retirer ${esc(f.name)}">×</button></div>`;
+    }).join('')}</div>`).join('');
+}
+$('#fridgeList').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  const i = fridge.findIndex(f => f.uid === b.dataset.del); if (i < 0) return;
+  const [it] = fridge.splice(i, 1); save(); renderAll();
+  toast(`${it.name} retiré`, () => { fridge.splice(i, 0, it); save(); renderAll(); });
+});
+$('#fridgeList').addEventListener('change', e => {
+  const s = e.target.closest('[data-fix]'); if (!s || !s.value) return;
+  const f = fridge.find(x => x.uid === s.dataset.fix); if (f) { f.ing = s.value; save(); renderAll(); }
+});
+function renderPills() {
+  $('#rapides').innerHTML = RAPIDES.map(id => `<button class="pill add" data-quick="${id}">${ING[id].e} ${esc(ING[id].n)}</button>`).join('');
+  $('#placard').innerHTML = Object.entries(ING).filter(([, d]) => d.p)
+    .map(([id, d]) => `<button class="pill" data-pl="${id}" aria-pressed="${placard.includes(id)}">${d.e} ${esc(d.n)}</button>`).join('');
+}
+$('#rapides').addEventListener('click', e => {
+  const b = e.target.closest('[data-quick]'); if (!b) return;
+  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté au frigo`);
+});
+$('#placard').addEventListener('click', e => {
+  const b = e.target.closest('[data-pl]'); if (!b) return;
+  const id = b.dataset.pl; placard = placard.includes(id) ? placard.filter(x => x !== id) : [...placard, id];
+  save(); renderAll();
+});
+
+/* ajout manuel avec suggestions */
+const addIn = $('#add'), sugg = $('#sugg');
+addIn.addEventListener('input', () => {
+  const v = norm(addIn.value).trim();
+  if (!v) { sugg.hidden = true; return; }
+  const hits = Object.entries(ING).filter(([, d]) => norm(d.n).includes(v) || d.k.some(k => norm(k).trim().startsWith(v))).slice(0, 5);
+  sugg.innerHTML = hits.map(([id, d]) => `<button data-s="${id}">${d.e} ${esc(d.n)}</button>`).join('') +
+    `<button data-s="">➕ Ajouter « ${esc(addIn.value.trim())} »</button>`;
+  sugg.hidden = false;
+});
+sugg.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const id = b.dataset.s || guessIng(addIn.value, []);
+  const name = b.dataset.s ? ING[id].n : addIn.value.trim();
+  addItem({ name, ing: id }); toast(`${name} ajouté au frigo`);
+  addIn.value = ''; sugg.hidden = true;
+});
+addIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const f = sugg.querySelector('button'); if (f) f.click(); } if (e.key === 'Escape') sugg.hidden = true; });
+document.addEventListener('click', e => { if (!e.target.closest('#hdrFrigo')) sugg.hidden = true; });
+
+/* ---------- RECETTES ---------- */
+function analyse(r) {
+  const req = r.ing.filter(x => !x[2]);
+  const missing = req.filter(x => !have(x[0])).map(x => x[0]);
+  const used = r.ing.filter(x => fridge.some(f => f.ing === x[0])).length;
+  return { missing, used, okCount: req.length - missing.length, total: req.length };
+}
+function recCard(r, a) {
+  const [c1, c2] = CATS[r.cat];
+  const tag = a.missing.length === 0 ? '<span class="tag ok">✓ Tu as tout</span>'
+    : `<span class="tag ko">Il manque : ${esc(a.missing.map(m => ING[m].n.toLowerCase()).join(', '))}</span>`;
+  return `<a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tag}</span><span class="ill">${r.e}</span></a>`;
+}
+function renderRecipes() {
+  const q = norm($('#q').value).trim();
+  let list = RECETTES.map(r => ({ r, a: analyse(r) }));
+  if (q) list = list.filter(x => norm(x.r.n + ' ' + x.r.ing.map(i => ING[i[0]].n).join(' ')).includes(q));
+  if (filter === 'ok') list = list.filter(x => x.a.missing.length === 0 && x.a.used > 0);
+  if (filter === 'presque') list = list.filter(x => x.a.missing.length >= 1 && x.a.missing.length <= 2 && x.a.used > 0);
+  list.sort((x, y) => x.a.missing.length - y.a.missing.length || y.a.used - x.a.used || x.r.min - y.r.min);
+  const box = $('#recList');
+  if (!list.length) {
+    const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo pour voir les recettes possibles.', '#scan', '📷']
+      : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
+      : ['Aucune recette trouvée', 'Essaie un autre mot ou le filtre « Toutes ».', null, '🔍'];
+    box.innerHTML = `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span><span class="ill">${msg[3]}</span></${msg[2] ? 'a' : 'button'}>`;
+    return;
+  }
+  box.innerHTML = list.map(x => recCard(x.r, x.a)).join('');
+}
+$('#recList').addEventListener('click', e => { const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
+function setFilter(f) { filter = f; document.querySelectorAll('#filters .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === f)); renderRecipes(); }
+$('#filters').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) setFilter(c.dataset.f); });
+$('#q').addEventListener('input', renderRecipes);
+
+function renderRecipe(id) {
+  const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
+  if (!r) { location.hash = '#recettes'; return; }
+  const a = analyse(r); const [c1, c2] = CATS[r.cat];
+  const fromFridge = r.ing.filter(x => fridge.some(f => f.ing === x[0]));
+  v.innerHTML = `
+    <div class="backbar"><a class="btn alt" href="#recettes">← Recettes</a></div>
+    <div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2})"><span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>
+    <div class="rpills">
+      <div class="rpill" style="background:#bfe8ee"><small>Temps</small><b>${r.min} min</b></div>
+      <div class="rpill" style="background:#ffd9c7"><small>Pour</small><b>${r.pers} pers.</b></div>
+      <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
+      <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
+    </div>
+    <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt]) => {
+      const h = have(i); const cls = h ? 'have' : (opt ? 'opt' : 'miss');
+      return `<li class="${cls}"><span class="m">${h ? '✓' : opt ? '·' : '✗'}</span><span>${qty ? esc(qty) + ' – ' : ''}${esc(ING[i].n)}${opt ? ' <em>(facultatif)</em>' : ''}${!h && !opt ? ' <em>à acheter</em>' : ''}</span></li>`;
+    }).join('')}</ul></div></div>
+    <div class="rsec"><h3>Préparation</h3><div class="rsteps">${r.steps.map((s, n) => `<div class="rstep"><span class="rnum">${n + 1}</span><p>${esc(s)}</p></div>`).join('')}</div></div>
+    ${fromFridge.length ? `<div class="card"><h3>Bon appétit !</h3><p class="note">Une fois le plat préparé, retire du frigo les produits utilisés : ${esc(fromFridge.map(x => ING[x[0]].n.toLowerCase()).join(', '))}.</p><div><button class="btn" id="cooked">🍽️ J’ai cuisiné ça</button></div></div>` : ''}`;
+  const b = $('#cooked');
+  if (b) b.onclick = () => {
+    const before = fridge.slice(); const ids = new Set(fromFridge.map(x => x[0]));
+    /* on retire un exemplaire de chaque ingrédient utilisé */
+    for (const i of ids) { const k = fridge.findIndex(f => f.ing === i); if (k >= 0) fridge.splice(k, 1); }
+    save(); renderAll(); location.hash = '#recettes';
+    toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); });
+  };
+  window.scrollTo(0, 0);
+}
+
+/* ---------- SCANNER ---------- */
+let stream = null, scanning = false, detector = null, zx = null, zxHints = null, lastCode = '';
+const video = $('#video');
+function camUI(on, msg) {
+  $('#idle').hidden = on; $('#frame').hidden = !on; $('#laser').hidden = !on;
+  $('#camMsg').textContent = msg || '';
+}
+function loadZXing() {
+  return new Promise((ok, ko) => {
+    if (window.ZXing) return ok();
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js';
+    s.onload = ok; s.onerror = () => ko(new Error('zxing')); document.head.appendChild(s);
+  });
+}
+async function startCam() {
+  $('#cam').hidden = false;
+  if (!navigator.mediaDevices?.getUserMedia) { camUI(false); toast('Caméra indisponible : tape le code à la main'); return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+  } catch (e) { camUI(false); toast('Accès à la caméra refusé'); return; }
+  video.srcObject = stream; await video.play().catch(() => {});
+  camUI(true, 'Recherche d’un code-barres…');
+  try {
+    if ('BarcodeDetector' in window) {
+      const f = await BarcodeDetector.getSupportedFormats();
+      const want = ['ean_13', 'ean_8', 'upc_a', 'upc_e'].filter(x => f.includes(x));
+      if (want.length) detector = new BarcodeDetector({ formats: want });
+    }
+    if (!detector) {
+      await loadZXing();
+      const hints = zxHints = new Map();
+      hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.UPC_A, ZXing.BarcodeFormat.UPC_E]);
+      hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+      zx = new ZXing.MultiFormatReader(); zx.setHints(hints);
+    }
+  } catch (e) { camUI(true, 'Lecteur indisponible : tape le code ci-dessous'); return; }
+  scanning = true; loop();
+}
+function stopCam() {
+  scanning = false;
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null; video.srcObject = null; camUI(false);
+}
+function resetScan() { $('#result').innerHTML = ''; $('#cam').hidden = false; }
+const cv = document.createElement('canvas'); const cx = cv.getContext('2d', { willReadFrequently: true });
+async function loop() {
+  if (!scanning) return;
+  let code = null;
+  try {
+    if (video.readyState >= 2) {
+      if (detector) {
+        const r = await detector.detect(video); if (r.length) code = r[0].rawValue;
+      } else if (zx) {
+        /* on ne lit que la bande centrale : plus rapide et plus fiable */
+        const w = video.videoWidth, h = video.videoHeight, bh = Math.round(h * 0.4);
+        cv.width = w; cv.height = bh; cx.drawImage(video, 0, (h - bh) / 2, w, bh, 0, 0, w, bh);
+        try {
+          const lum = new ZXing.HTMLCanvasElementLuminanceSource(cv);
+          code = zx.decode(new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum)), zxHints).getText();
+        } catch (e) { /* rien trouvé dans cette image */ }
+      }
+    }
+  } catch (e) {}
+  if (code && /^\d{8,14}$/.test(code)) { navigator.vibrate?.(80); stopCam(); lookup(code); return; }
+  setTimeout(loop, detector ? 200 : 280);
+}
+$('#startCam').onclick = startCam;
+$('#manual').addEventListener('submit', e => {
+  e.preventDefault(); const c = $('#code').value.replace(/\D/g, '');
+  if (c.length < 8) { toast('Le code doit faire 8 à 14 chiffres'); return; }
+  stopCam(); lookup(c); $('#code').value = '';
+});
+
+async function lookup(code) {
+  lastCode = code; $('#cam').hidden = true;
+  const res = $('#result');
+  res.innerHTML = `<div class="result"><p style="margin:0">Recherche du produit ${esc(code)}…</p></div>`;
+  let p = null;
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,product_name_fr,generic_name_fr,brands,categories_tags,image_front_small_url,quantity`);
+    const j = await r.json(); if (j.status === 1 && j.product) p = j.product;
+  } catch (e) {
+    res.innerHTML = `<div class="result"><b>Pas de connexion</b><p class="note">Impossible d’interroger Open Food Facts. Ajoute le produit à la main.</p>${resultForm(code, '', '', null, null)}</div>`;
+    bindResult(); return;
+  }
+  if (!p) {
+    res.innerHTML = `<div class="result"><b>Produit inconnu</b><p class="note">Le code ${esc(code)} n’est pas encore dans Open Food Facts. Donne-lui un nom :</p>${resultForm(code, '', '', null, null)}</div>`;
+    bindResult(); return;
+  }
+  const name = (p.product_name_fr || p.product_name || p.generic_name_fr || 'Produit').trim();
+  const brand = (p.brands || '').split(',')[0].trim();
+  const ing = guessIng(name + ' ' + (p.generic_name_fr || ''), p.categories_tags);
+  const g = ing ? ING[ing].g : 'inconnu';
+  res.innerHTML = `<div class="result" style="--pale:${pale(g)}">
+    <div class="top"><div class="pic">${p.image_front_small_url ? `<img src="${esc(p.image_front_small_url)}" alt="">` : (ing ? ING[ing].e : '❓')}</div>
+    <div><b>${esc(name)}</b><span class="note">${esc([brand, p.quantity].filter(Boolean).join(' · '))}</span></div></div>
+    ${resultForm(code, name, brand, ing, p.image_front_small_url)}</div>`;
+  bindResult();
+}
+function resultForm(code, name, brand, ing, img) {
+  return `<form id="rform" data-code="${esc(code)}" data-brand="${esc(brand)}" data-img="${esc(img || '')}" style="display:grid;gap:10px">
+    ${name ? `<input type="hidden" id="rname" value="${esc(name)}">` : `<label for="rname">Nom du produit</label><input type="text" id="rname" required placeholder="ex. Crème fraîche">`}
+    <label for="ring">${ing ? 'Reconnu comme' : 'C’est quoi comme ingrédient ?'}</label>
+    <select id="ring">${ingOptions(ing)}</select>
+    <div class="row"><button class="btn" type="submit">＋ Ajouter au frigo</button><button class="btn alt" type="button" id="rescan">Scanner un autre</button></div></form>`;
+}
+function bindResult() {
+  const f = $('#rform');
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('#rname').value.trim() || 'Produit'; const ing = $('#ring').value || guessIng(name, []);
+    addItem({ name, ing, code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null });
+    toast(`${name} ajouté au frigo`);
+    $('#result').innerHTML = ''; startCam();
+  });
+  $('#rescan').onclick = () => { $('#result').innerHTML = ''; startCam(); };
+}
+
+/* ---------- navigation ---------- */
+function route() {
+  const h = location.hash || '#frigo';
+  const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : 'frigo';
+  ['frigo', 'scan', 'rec', 'recette'].forEach(x => $('#v-' + x).hidden = x !== v);
+  document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
+  document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
+  $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
+  $('#title').textContent = { frigo: 'Mon frigo', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
+  if (v !== 'scan') { stopCam(); resetScan(); }
+  if (v === 'recette') renderRecipe(h.slice(3));
+  if (v === 'rec') renderRecipes();
+  updateSub();
+}
+function updateSub() {
+  const n = fridge.length;
+  const ok = RECETTES.filter(r => { const a = analyse(r); return !a.missing.length && a.used; }).length;
+  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans ton frigo · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}`;
+}
+function renderAll() { renderFridge(); renderPills(); if (!$('#v-rec').hidden) renderRecipes(); updateSub(); }
+window.addEventListener('hashchange', route);
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopCam(); });
+
+renderAll(); route();
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
