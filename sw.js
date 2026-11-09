@@ -1,5 +1,5 @@
 /* Friscan — service worker : l'appli fonctionne hors ligne (sauf la recherche produit) */
-const V = 'friscan-v5';
+const V = 'friscan-v6';
 const SHELL = ['./', 'index.html', 'data.js?v=4', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
