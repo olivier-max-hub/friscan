@@ -1,6 +1,6 @@
 /* Friscan — service worker : l'appli fonctionne hors ligne (sauf la recherche produit) */
 const V = 'friscan-v6';
-const SHELL = ['./', 'index.html', 'data.js?v=4', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
+const SHELL = ['./', 'index.html', 'data.js?v=6', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))));
@@ -8,7 +8,7 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
-  if (e.request.method !== 'GET' || u.hostname.endsWith('openfoodfacts.org')) return; // toujours en ligne
+  if (e.request.method !== 'GET' || /openfoodfacts\.org|google\.com|googleusercontent\.com/.test(u.hostname)) return; // toujours en ligne
   if (u.origin === location.origin) {
     // réseau d'abord pour avoir les mises à jour, cache si hors ligne
     // cache: 'no-cache' = toujours vérifier auprès du serveur s'il y a une nouvelle version

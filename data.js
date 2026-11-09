@@ -23,32 +23,35 @@ const ING = {
   truite_fumee:  { n: 'Truite fumée',       e: '🐟', g: 'viande',   k: ['truite fumee'], t: ['en:smoked-trouts'] },
   saumon_fume:   { n: 'Saumon fumé',        e: '🐟', g: 'viande',   k: ['saumon fume'], t: ['en:smoked-salmons'] },
   saumon:        { n: 'Saumon',             e: '🐟', g: 'viande',   k: ['saumon', 'pave de saumon'], t: ['en:salmons'] },
-  crevettes:     { n: 'Crevettes',          e: '🦐', g: 'viande',   k: ['crevette', 'gambas', 'scampi'], t: ['en:shrimps', 'en:prawns'] },
-  moules:        { n: 'Moules',             e: '🦪', g: 'viande',   k: ['moule'], t: ['en:mussels'] },
+  saint_jacques: { n: 'Saint-Jacques',      e: '🐚', g: 'viande',   k: ['saint jacques', 'st jacques', 'coquilles saint jacques', 'petoncle', 'noix de saint jacques', 'noix de st jacques'], t: ['en:scallops'] },
+  huitres:       { n: 'Huîtres',            e: '🦪', g: 'viande',   k: ['huitre'], t: ['en:oysters'] },
+  crevettes:     { n: 'Crevettes',          e: '🦐', g: 'viande',   k: ['crevette', 'gambas', 'scampi', 'fruits de mer', 'langoustine'], t: ['en:shrimps', 'en:prawns'] },
+  moules:        { n: 'Moules',             e: '🦪', g: 'viande',   k: ['moules ', 'moules de bouchot', 'moules marinieres'], t: ['en:mussels'] },
   calamar:       { n: 'Calamars',           e: '🦑', g: 'viande',   k: ['calamar', 'encornet', 'seiche', 'poulpe'], t: ['en:squids'] },
   sardines:      { n: 'Sardines',           e: '🐟', g: 'viande',   k: ['sardine'], t: ['en:sardines'] },
   maquereau:     { n: 'Maquereau',          e: '🐟', g: 'viande',   k: ['maquereau', 'hareng', 'anchois'], t: ['en:mackerels', 'en:herrings', 'en:anchovies'] },
-  poisson_blanc: { n: 'Poisson blanc',      e: '🐟', g: 'viande',   k: ['cabillaud', 'colin', 'merlu', 'lieu', 'dos de', 'filet de poisson', 'poisson blanc', 'sole', 'dorade', 'bar ', 'merlan', 'tilapia', 'panga', 'truite', 'poisson pane'], t: ['en:cods', 'en:hakes', 'en:white-fish', 'en:fish-fillets'] },
+  poisson_blanc: { n: 'Poisson blanc',      e: '🐟', g: 'viande',   k: ['cabillaud', 'colin', 'merlu', 'lieu noir', 'filet de lieu', 'dos de', 'filet de poisson', 'poisson blanc', 'sole', 'dorade', 'bar ', 'merlan', 'tilapia', 'panga', 'truite', 'poisson pane', 'darne', 'quenelle'], t: ['en:cods', 'en:hakes', 'en:white-fish', 'en:fish-fillets'] },
   thon:          { n: 'Thon',               e: '🐟', g: 'viande',   k: ['thon'], t: ['en:tunas', 'en:canned-tunas'] },
   surimi:        { n: 'Surimi',             e: '🦀', g: 'viande',   k: ['surimi', 'batonnets'], t: ['en:surimi'] },
-  lardons:       { n: 'Lardons',            e: '🥓', g: 'viande',   k: ['lardon', 'bacon', 'poitrine'], t: ['en:lardons', 'en:bacon'] },
+  lardons:       { n: 'Lardons',            e: '🥓', g: 'viande',   k: ['lardon', 'bacon', 'poitrine fumee', 'poitrine de porc', 'lard'], t: ['en:lardons', 'en:bacon'] },
   jambon:        { n: 'Jambon',             e: '🍖', g: 'viande',   k: ['jambon'], t: ['en:hams'] },
   chorizo:       { n: 'Chorizo',            e: '🌶️', g: 'viande',   k: ['chorizo'], t: ['en:chorizo'] },
-  saucisse:      { n: 'Saucisses',          e: '🌭', g: 'viande',   k: ['saucisse', 'knack', 'chipolata', 'merguez'], t: ['en:sausages'] },
+  saucisse:      { n: 'Saucisses',          e: '🌭', g: 'viande',   k: ['saucisse', 'knack', 'chipolata', 'merguez', 'chair a saucisse', 'saucisse'], t: ['en:sausages'] },
   boudin:        { n: 'Boudin',             e: '🌭', g: 'viande',   k: ['boudin'], t: ['en:black-puddings'] },
   steak_hache:   { n: 'Viande hachée',      e: '🥩', g: 'viande',   k: ['hache', 'steak hache', 'boulette'], t: ['en:ground-beef', 'en:minced-meats'] },
   dinde:         { n: 'Dinde',              e: '🦃', g: 'viande',   k: ['dinde', 'escalope de dinde'], t: ['en:turkeys'] },
-  canard:        { n: 'Canard',             e: '🦆', g: 'viande',   k: ['canard', 'magret', 'confit'], t: ['en:ducks'] },
-  porc:          { n: 'Porc',               e: '🐖', g: 'viande',   k: ['porc', 'echine', 'filet mignon', 'cote de porc', 'roti de porc', 'travers'], t: ['en:pork'] },
+  canard:        { n: 'Canard',             e: '🦆', g: 'viande',   k: ['canard', 'magret', 'confit de canard', 'cuisse de canard'], t: ['en:ducks'] },
+  porc:          { n: 'Porc',               e: '🐖', g: 'viande',   k: ['porc', 'echine', 'filet mignon', 'cote de porc', 'roti de porc', 'travers', 'palette', 'cochon', 'tete de porc'], t: ['en:pork'] },
   veau:          { n: 'Veau',               e: '🐄', g: 'viande',   k: ['veau'], t: ['en:veal'] },
   agneau:        { n: 'Agneau',             e: '🐑', g: 'viande',   k: ['agneau', 'gigot'], t: ['en:lamb'] },
   boeuf:         { n: 'Bœuf (steak, rôti)', e: '🥩', g: 'viande',   k: ['boeuf', 'bavette', 'entrecote', 'faux filet', 'rumsteck', 'onglet', 'bourguignon'], t: ['en:beef'] },
+  lapin:         { n: 'Lapin',              e: '🐇', g: 'viande',   k: ['lapin'], t: ['en:rabbits'] },
   poulet:        { n: 'Poulet',             e: '🍗', g: 'viande',   k: ['poulet', 'volaille', 'nugget'], t: ['en:chickens', 'en:chicken-breasts', 'en:poultries'] },
 
   gnocchi:       { n: 'Gnocchis',           e: '🥟', g: 'feculent', k: ['gnocchi'], t: ['en:gnocchi'] },
   raviolis:      { n: 'Raviolis / pâtes farcies', e: '🥟', g: 'feculent', k: ['ravioli', 'tortellini', 'cappelletti', 'girasoli', 'ravioles'], t: ['en:stuffed-pastas', 'en:ravioli'] },
   pate_pizza:    { n: 'Pâte à pizza',       e: '🍕', g: 'frais',    k: ['pate a pizza'], t: ['en:pizza-doughs'] },
-  pate_brisee:   { n: 'Pâte brisée / sablée', e: '🥧', g: 'frais',  k: ['pate brisee', 'pate sablee', 'brisee'], t: ['en:shortcrust-pastries'] },
+  pate_brisee:   { n: 'Pâte brisée / sablée', e: '🥧', g: 'frais',  k: ['pate brisee', 'pate sablee', 'brisee', 'pates brisees'], t: ['en:shortcrust-pastries'] },
   pizza:         { n: 'Pizza',              e: '🍕', g: 'surgele',  k: ['pizza'], t: ['en:pizzas'] },
   frites:        { n: 'Frites / potatoes',  e: '🍟', g: 'surgele',  k: ['frite', 'potatoes', 'pommes noisettes', 'rosti'], t: ['en:french-fries'] },
   legumes_surgeles:{ n: 'Légumes surgelés', e: '🧊', g: 'surgele',  k: ['poelee', 'surgele', 'jardiniere', 'macedoine', 'wok de legumes'], t: ['en:frozen-vegetables'] },
@@ -56,7 +59,7 @@ const ING = {
   avoine:        { n: 'Flocons d’avoine',   e: '🥣', g: 'feculent', k: ['flocons d avoine', 'avoine', 'porridge'], t: ['en:oat-flakes', 'en:rolled-oats'] },
   cereales:      { n: 'Céréales / muesli',  e: '🥣', g: 'feculent', k: ['muesli', 'granola', 'cereales', 'corn flakes'], t: ['en:breakfast-cereals'] },
   polenta:       { n: 'Polenta',            e: '🌽', g: 'feculent', k: ['polenta'], t: ['en:polenta'] },
-  nouilles:      { n: 'Nouilles',           e: '🍜', g: 'feculent', k: ['nouille', 'noodle', 'udon', 'ramen'], t: ['en:noodles', 'en:asian-noodles'] },
+  nouilles:      { n: 'Nouilles',           e: '🍜', g: 'feculent', k: ['nouille', 'noodle', 'udon', 'ramen', 'vermicelle', 'galette de riz', 'galettes de riz', 'feuille de riz', 'feuilles de riz'], t: ['en:noodles', 'en:asian-noodles'] },
   pates:         { n: 'Pâtes',              e: '🍝', g: 'feculent', k: ['pates', 'spaghetti', 'penne', 'fusilli', 'coquillette', 'tagliatelle', 'farfalle', 'macaroni', 'linguine', 'torsade', 'rigatoni'], t: ['en:pastas', 'en:dry-pastas', 'en:fresh-pastas'] },
   riz:           { n: 'Riz',                e: '🍚', g: 'feculent', k: ['riz', 'basmati'], t: ['en:rices'] },
   semoule:       { n: 'Semoule',            e: '🍚', g: 'feculent', k: ['semoule', 'couscous', 'boulgour'], t: ['en:semolinas', 'en:couscous'] },
@@ -64,44 +67,44 @@ const ING = {
   pain_mie:      { n: 'Pain de mie',        e: '🍞', g: 'feculent', k: ['pain de mie', 'harrys', 'toast'], t: ['en:sandwich-breads', 'en:sliced-breads'] },
   pain:          { n: 'Pain',               e: '🥖', g: 'feculent', k: ['pain', 'baguette', 'brioche', 'ciabatta', 'focaccia', 'bun', 'pita', 'naan'], t: ['en:breads'] },
   patate_douce:  { n: 'Patate douce',       e: '🍠', g: 'legume',   k: ['patate douce'], t: ['en:sweet-potatoes'] },
-  biscottes:     { n: 'Biscottes / crackers', e: '🍘', g: 'feculent', k: ['biscotte', 'cracker', 'pain grille', 'galette de riz', 'wasa', 'pain suedois'], t: ['en:rusks', 'en:crackers'] },
+  biscottes:     { n: 'Biscottes / crackers', e: '🍘', g: 'feculent', k: ['biscotte', 'cracker', 'pain grille', 'galette de riz souffle', 'wasa', 'pain suedois', 'pain grille'], t: ['en:rusks', 'en:crackers'] },
   pdt:           { n: 'Pommes de terre',    e: '🥔', g: 'feculent', k: ['pomme de terre', 'pommes de terre', 'patate'], t: ['en:potatoes'] },
 
-  fromage_rape:  { n: 'Fromage râpé',       e: '🧀', g: 'frais',    k: ['rape', 'emmental rape', 'gruyere rape'], t: ['en:grated-cheese', 'en:emmental'] },
+  fromage_rape:  { n: 'Fromage râpé',       e: '🧀', g: 'frais',    k: ['rape', 'emmental rape', 'gruyere rape', 'fromage rape', 'comte rape', 'parmesan rape'], t: ['en:grated-cheese', 'en:emmental'] },
   mascarpone:    { n: 'Mascarpone',         e: '🥛', g: 'frais',    k: ['mascarpone'], t: ['en:mascarpone'] },
   ricotta:       { n: 'Ricotta',            e: '🧀', g: 'frais',    k: ['ricotta'], t: ['en:ricotta'] },
   raclette:      { n: 'Raclette / reblochon', e: '🧀', g: 'frais',  k: ['raclette', 'reblochon', 'tartiflette', 'morbier', 'mont d or'], t: ['en:raclette', 'en:reblochon'] },
-  bleu:          { n: 'Roquefort / bleu',   e: '🧀', g: 'frais',    k: ['roquefort', 'bleu', 'gorgonzola', 'fourme'], t: ['en:blue-cheeses'] },
+  bleu:          { n: 'Roquefort / bleu',   e: '🧀', g: 'frais',    k: ['roquefort', 'bleu', 'gorgonzola', 'fourme', 'agur'], t: ['en:blue-cheeses'] },
   mozzarella:    { n: 'Mozzarella',         e: '🧀', g: 'frais',    k: ['mozzarella', 'burrata'], t: ['en:mozzarella'] },
   feta:          { n: 'Feta',               e: '🧀', g: 'frais',    k: ['feta'], t: ['en:feta'] },
   chevre:        { n: 'Chèvre',             e: '🐐', g: 'frais',    k: ['chevre', 'buche'], t: ['en:goat-cheeses'] },
   parmesan:      { n: 'Parmesan',           e: '🧀', g: 'frais',    k: ['parmesan', 'parmigiano', 'grana padano'], t: ['en:parmigiano-reggiano', 'en:grana-padano'] },
-  fromage_frais: { n: 'Fromage frais',      e: '🧀', g: 'frais',    k: ['fromage frais', 'st moret', 'saint moret', 'kiri', 'philadelphia', 'boursin', 'carre frais', 'tartare'], t: ['en:cream-cheeses', 'en:fresh-cheeses'] },
-  fromage:       { n: 'Fromage (camembert, comté…)', e: '🧀', g: 'frais', k: ['fromage', 'camembert', 'brie', 'comte', 'emmental', 'gruyere', 'beaufort', 'cantal', 'tomme', 'gouda', 'edam', 'mimolette', 'cheddar', 'munster', 'saint nectaire', 'coulommiers', 'babybel', 'leerdammer', 'abondance', 'ossau', 'pecorino', 'halloumi', 'fondue'], t: ['en:cheeses'] },
+  fromage_frais: { n: 'Fromage frais',      e: '🧀', g: 'frais',    k: ['fromage frais', 'st moret', 'saint moret', 'kiri', 'philadelphia', 'boursin', 'carre frais', 'tartare ail', 'fromage a tartiner', 'fromage creme'], t: ['en:cream-cheeses', 'en:fresh-cheeses'] },
+  fromage:       { n: 'Fromage (camembert, comté…)', e: '🧀', g: 'frais', k: ['fromage', 'camembert', 'brie', 'comte', 'emmental', 'gruyere', 'beaufort', 'cantal', 'tomme', 'gouda', 'edam', 'mimolette', 'cheddar', 'munster', 'saint nectaire', 'coulommiers', 'babybel', 'leerdammer', 'abondance', 'ossau', 'pecorino', 'halloumi', 'fondue', 'chedar', 'fromage basque', 'ossau iraty', 'manchego'], t: ['en:cheeses'] },
   tofu:          { n: 'Tofu',               e: '🧈', g: 'frais',    k: ['tofu', 'tempeh', 'seitan'], t: ['en:tofu'] },
   lait_vegetal:  { n: 'Lait végétal',       e: '🥛', g: 'frais',    k: ['lait d amande', 'boisson amande', 'boisson soja', 'lait de soja', 'boisson avoine', 'lait d avoine', 'boisson vegetale', 'boisson riz'], t: ['en:plant-based-milks', 'en:plant-milks'] },
   dessert_lacte: { n: 'Crème dessert / compote', e: '🍮', g: 'sucre', k: ['creme dessert', 'danette', 'flan', 'mousse au chocolat', 'liegeois', 'compote', 'riz au lait', 'panna cotta'], t: ['en:dairy-desserts', 'en:compotes'] },
-  creme:         { n: 'Crème',              e: '🥛', g: 'frais',    k: ['creme fraiche', 'creme liquide', 'creme epaisse', 'creme entiere', 'creme legere', 'creme semi epaisse', 'creme cuisine'], t: ['en:creams', 'en:fresh-creams'] },
+  creme:         { n: 'Crème',              e: '🥛', g: 'frais',    k: ['creme fraiche', 'creme liquide', 'creme epaisse', 'creme entiere', 'creme legere', 'creme semi epaisse', 'creme cuisine', 'creme fleurette', 'creme', 'creme double'], t: ['en:creams', 'en:fresh-creams'] },
   yaourt:        { n: 'Yaourt',             e: '🥣', g: 'frais',    k: ['yaourt', 'yogourt', 'skyr', 'fromage blanc'], t: ['en:yogurts', 'en:fromage-blanc'] },
   pate_tartiner: { n: 'Pâte à tartiner',    e: '🍫', g: 'sucre',    k: ['pate a tartiner', 'nutella', 'creme de marrons'], t: ['en:sweet-spreads', 'en:hazelnut-spreads'] },
   confiture:     { n: 'Confiture',          e: '🍓', g: 'sucre',    k: ['confiture', 'gelee de', 'marmelade'], t: ['en:jams', 'en:marmalades'] },
-  biscuits:      { n: 'Biscuits',           e: '🍪', g: 'sucre',    k: ['biscuit', 'boudoir', 'speculoos', 'petit beurre', 'sable', 'cookie', 'madeleine', 'gaufrette', 'galette bretonne', 'palet', 'brownie', 'genoise'], t: ['en:biscuits', 'en:cookies', 'en:sponge-fingers'] },
+  biscuits:      { n: 'Biscuits',           e: '🍪', g: 'sucre',    k: ['biscuit', 'boudoir', 'speculoos', 'petit beurre', 'sable', 'cookie', 'madeleine', 'gaufrette', 'galette bretonne', 'palet', 'brownie', 'genoise', 'gateaux cuiller', 'gateaux a la cuiller', 'biscuit a la cuillere', 'biscuits a la cuillere', 'meringue', 'sables bretons'], t: ['en:biscuits', 'en:cookies', 'en:sponge-fingers'] },
   glace:         { n: 'Glace',              e: '🍨', g: 'surgele',  k: ['glace', 'sorbet', 'creme glacee', 'esquimau', 'magnum'], t: ['en:ice-creams', 'en:sorbets'] },
-  fruits_secs:   { n: 'Fruits secs & noix', e: '🥜', g: 'sucre',    k: ['noix', 'amande', 'noisette', 'cajou', 'pistache', 'cacahuete', 'raisins secs', 'abricots secs', 'pruneaux', 'dattes', 'figues sechees', 'graines', 'pignons'], t: ['en:nuts', 'en:dried-fruits', 'en:seeds'] },
+  fruits_secs:   { n: 'Fruits secs & noix', e: '🥜', g: 'sucre',    k: ['noix', 'amande', 'noisette', 'cajou', 'pistache', 'cacahuete', 'raisins secs', 'abricots secs', 'pruneaux', 'dattes', 'figues sechees', 'graines', 'pignons', 'coco rapee', 'noix de coco', 'poudre d amande', 'poudre de noisette', 'pralin'], t: ['en:nuts', 'en:dried-fruits', 'en:seeds'] },
   chocolat:      { n: 'Chocolat',           e: '🍫', g: 'sucre',    k: ['chocolat'], t: ['en:chocolates', 'en:dark-chocolates'] },
   lait_coco:     { n: 'Lait de coco',       e: '🥥', g: 'epicerie', k: ['lait de coco', 'creme de coco'], t: ['en:coconut-milks'] },
-  lait:          { n: 'Lait',               e: '🥛', g: 'frais',    k: ['lait '], t: ['en:milks'] },
-  beurre:        { n: 'Beurre',             e: '🧈', g: 'frais',    k: ['beurre'], t: ['en:butters'] },
+  lait:          { n: 'Lait',               e: '🥛', g: 'frais',    k: ['lait ', 'lait concentre', 'lait ecreme', 'lait entier'], t: ['en:milks'] },
+  beurre:        { n: 'Beurre',             e: '🧈', g: 'frais',    k: ['beurre', 'noix de beurre'], t: ['en:butters'] },
   oeuf:          { n: 'Œufs',               e: '🥚', g: 'frais',    k: ['oeuf'], t: ['en:eggs', 'en:chicken-eggs'] },
-  pate_feuilletee:{ n: 'Pâte feuilletée',   e: '🥐', g: 'frais',    k: ['pate feuilletee', 'feuilletee'], t: ['en:puff-pastries'] },
+  pate_feuilletee:{ n: 'Pâte feuilletée',   e: '🥐', g: 'frais',    k: ['pate feuilletee', 'feuilletee', 'pates feuilletees', 'brick', 'filo', 'phyllo'], t: ['en:puff-pastries'] },
   olives:        { n: 'Olives',             e: '🫒', g: 'epicerie', k: ['olive'], t: ['en:olives', 'en:green-olives', 'en:black-olives'] },
   cornichons:    { n: 'Cornichons / câpres', e: '🥒', g: 'epicerie', k: ['cornichon', 'capre', 'pickles'], t: ['en:gherkins', 'en:capers'] },
   mayonnaise:    { n: 'Mayonnaise',         e: '🥚', g: 'epicerie', k: ['mayonnaise', 'mayo', 'aioli', 'tartare sauce'], t: ['en:mayonnaises'] },
-  ketchup:       { n: 'Ketchup / sauces',   e: '🍅', g: 'epicerie', k: ['ketchup', 'sauce barbecue', 'sauce bbq', 'sauce burger', 'sauce samourai', 'sauce algerienne'], t: ['en:ketchup', 'en:barbecue-sauces'] },
+  ketchup:       { n: 'Ketchup / sauces',   e: '🍅', g: 'epicerie', k: ['ketchup', 'sauce barbecue', 'sauce bbq', 'sauce burger', 'sauce samourai', 'sauce algerienne', 'worcestershire', 'sauce nems', 'sauce chili'], t: ['en:ketchup', 'en:barbecue-sauces'] },
   tahini:        { n: 'Tahini (crème de sésame)', e: '🥜', g: 'epicerie', k: ['tahin', 'puree de sesame', 'creme de sesame'], t: ['en:tahini'] },
   beurre_cacahuete:{ n: 'Beurre de cacahuète', e: '🥜', g: 'epicerie', k: ['beurre de cacahuete', 'peanut butter', 'puree de cacahuete', 'puree d amande'], t: ['en:peanut-butters'] },
   pesto:         { n: 'Pesto',              e: '🌿', g: 'epicerie', k: ['pesto'], t: ['en:pestos'] },
-  sauce_tomate:  { n: 'Sauce tomate',       e: '🥫', g: 'epicerie', k: ['sauce tomate', 'coulis', 'passata', 'pulpe', 'tomates concassees', 'puree de tomate', 'tomates pelees', 'sugo'], t: ['en:tomato-sauces', 'en:tomato-pulps', 'en:crushed-tomatoes', 'en:canned-tomatoes'] },
+  sauce_tomate:  { n: 'Sauce tomate',       e: '🥫', g: 'epicerie', k: ['sauce tomate', 'coulis de tomate', 'coulis de tomates', 'passata', 'pulpe', 'tomates concassees', 'puree de tomate', 'tomates pelees', 'sugo', 'concentre de tomate', 'concentre de tomates'], t: ['en:tomato-sauces', 'en:tomato-pulps', 'en:crushed-tomatoes', 'en:canned-tomatoes'] },
   haricots_blancs:{ n: 'Haricots blancs / flageolets', e: '🫘', g: 'epicerie', k: ['haricots blancs', 'flageolet', 'lingot', 'cassoulet'], t: ['en:white-beans', 'en:flageolet-beans'] },
   haricots_rouges:{ n: 'Haricots rouges',   e: '🫘', g: 'epicerie', k: ['haricots rouges'], t: ['en:red-kidney-beans'] },
   pois_chiches:  { n: 'Pois chiches',       e: '🫘', g: 'epicerie', k: ['pois chiche'], t: ['en:chickpeas'] },
@@ -124,7 +127,7 @@ const ING = {
   artichaut:     { n: 'Artichaut',          e: '🌿', g: 'legume',   k: ['artichaut'], t: ['en:artichokes'] },
   endive:        { n: 'Endives',            e: '🥬', g: 'legume',   k: ['endive', 'chicon'], t: ['en:endives', 'en:chicories'] },
   navet:         { n: 'Navet / panais',     e: '🥕', g: 'legume',   k: ['navet', 'panais', 'topinambour', 'rutabaga'], t: ['en:turnips', 'en:parsnips'] },
-  herbes:        { n: 'Herbes fraîches',    e: '🌿', g: 'legume',   k: ['basilic', 'persil', 'coriandre', 'ciboulette', 'menthe', 'aneth', 'estragon', 'thym', 'romarin', 'sauge', 'cerfeuil'], t: ['en:herbs', 'en:fresh-herbs'] },
+  herbes:        { n: 'Herbes fraîches',    e: '🌿', g: 'legume',   k: ['basilic', 'persil', 'coriandre', 'ciboulette', 'menthe', 'aneth', 'estragon', 'thym', 'romarin', 'sauge', 'cerfeuil', 'cebette', 'cive', 'oignon vert', 'oignons verts', 'herbes aromatiques', 'fines herbes', 'herbes fraiches'], t: ['en:herbs', 'en:fresh-herbs'] },
   gingembre:     { n: 'Gingembre',          e: '🫚', g: 'legume',   k: ['gingembre'], t: ['en:gingers'] },
   piment:        { n: 'Piment frais',       e: '🌶️', g: 'legume',   k: ['piment'], t: ['en:chili-peppers'] },
   tomate:        { n: 'Tomates',            e: '🍅', g: 'legume',   k: ['tomate'], t: ['en:tomatoes', 'en:cherry-tomatoes'] },
@@ -139,13 +142,15 @@ const ING = {
   citron:        { n: 'Citron',             e: '🍋', g: 'legume',   k: ['citron'], t: ['en:lemons', 'en:limes'] },
   orange:        { n: 'Oranges / agrumes',  e: '🍊', g: 'legume',   k: ['orange', 'clementine', 'mandarine', 'pamplemousse'], t: ['en:oranges', 'en:clementines', 'en:grapefruits'] },
   poire:         { n: 'Poires',             e: '🍐', g: 'legume',   k: ['poire'], t: ['en:pears'] },
-  fruits_rouges: { n: 'Fruits rouges',      e: '🍓', g: 'legume',   k: ['fraise', 'framboise', 'myrtille', 'mure', 'groseille', 'cassis', 'fruits rouges', 'cerise'], t: ['en:strawberries', 'en:raspberries', 'en:blueberries', 'en:red-fruits', 'en:cherries'] },
+  fruits_rouges: { n: 'Fruits rouges',      e: '🍓', g: 'legume',   k: ['fraise', 'framboise', 'myrtille', 'mure', 'groseille', 'cassis', 'fruits rouges', 'cerise', 'airelle', 'canneberge', 'cranberr'], t: ['en:strawberries', 'en:raspberries', 'en:blueberries', 'en:red-fruits', 'en:cherries'] },
   raisin:        { n: 'Raisin',             e: '🍇', g: 'legume',   k: ['raisin'], t: ['en:grapes'] },
   kiwi:          { n: 'Kiwi',               e: '🥝', g: 'legume',   k: ['kiwi'], t: ['en:kiwis'] },
   ananas:        { n: 'Ananas',             e: '🍍', g: 'legume',   k: ['ananas'], t: ['en:pineapples'] },
   mangue:        { n: 'Mangue',             e: '🥭', g: 'legume',   k: ['mangue', 'papaye', 'fruit de la passion', 'litchi'], t: ['en:mangoes'] },
   peche:         { n: 'Pêches / abricots',  e: '🍑', g: 'legume',   k: ['peche', 'nectarine', 'abricot', 'brugnon', 'prune', 'mirabelle', 'reine claude'], t: ['en:peaches', 'en:apricots', 'en:plums'] },
   melon:         { n: 'Melon / pastèque',   e: '🍈', g: 'legume',   k: ['melon', 'pasteque'], t: ['en:melons', 'en:watermelons'] },
+  rhubarbe:      { n: 'Rhubarbe',           e: '🌿', g: 'legume',   k: ['rhubarbe'], t: ['en:rhubarbs'] },
+  germes_soja:   { n: 'Germes de soja',     e: '🌱', g: 'legume',   k: ['germes de soja', 'pousses de soja', 'germes'], t: ['en:bean-sprouts'] },
   figue:         { n: 'Figues',             e: '🫐', g: 'legume',   k: ['figue'], t: ['en:figs'] },
   pomme:         { n: 'Pommes',             e: '🍎', g: 'legume',   k: ['pomme'], t: ['en:apples'] },
   banane:        { n: 'Bananes',            e: '🍌', g: 'legume',   k: ['banane'], t: ['en:bananas'] },
@@ -156,74 +161,45 @@ const ING = {
   oignon:        { n: 'Oignon',             e: '🧅', g: 'legume',   k: ['oignon', 'echalote'], t: ['en:onions'], p: 1 },
   ail:           { n: 'Ail',                e: '🧄', g: 'legume',   k: ['ail '], t: ['en:garlic'], p: 1 },
   farine:        { n: 'Farine',             e: '🌾', g: 'epicerie', k: ['farine'], t: ['en:flours', 'en:wheat-flours'], p: 1 },
-  sucre:         { n: 'Sucre',              e: '🍬', g: 'epicerie', k: ['sucre'], t: ['en:sugars'], p: 1 },
-  epices:        { n: 'Épices',             e: '🌶️', g: 'epicerie', k: ['curry', 'paprika', 'cumin', 'cannelle', 'epice'], t: ['en:spices'], p: 1 },
+  sucre:         { n: 'Sucre',              e: '🍬', g: 'epicerie', k: ['sucre', 'cassonade', 'cassonnade', 'vergeoise', 'stevia', 'sucre glace', 'sucre roux', 'sucre de canne'], t: ['en:sugars'], p: 1 },
+  epices:        { n: 'Épices',             e: '🌶️', g: 'epicerie', k: ['curry', 'paprika', 'cumin', 'cannelle', 'epice', 'piment d espelette', 'espelette', 'curcuma', 'muscade', 'raz el hanout', 'ras el hanout', 'sumac', 'clou de girofle', 'clous de girofle', 'poudre de chili', 'cajun', 'gingembre en poudre', 'gingembre moulu', 'mélange 4 epices', 'quatre epices', 'safran', 'cardamome', 'badiane', 'anis', 'garam masala', 'pate de curry', 'noix de muscade'], t: ['en:spices'], p: 1 },
   moutarde:      { n: 'Moutarde',           e: '🟡', g: 'epicerie', k: ['moutarde'], t: ['en:mustards'], p: 1 },
   vinaigre:      { n: 'Vinaigre',           e: '🍶', g: 'epicerie', k: ['vinaigre'], t: ['en:vinegars'], p: 1 },
   bouillon:      { n: 'Bouillon',           e: '🍲', g: 'epicerie', k: ['bouillon'], t: ['en:broths', 'en:stock-cubes'], p: 1 },
-  sauce_soja:    { n: 'Sauce soja',         e: '🥢', g: 'epicerie', k: ['soja', 'soy'], t: ['en:soy-sauces'], p: 1 },
+  sauce_soja:    { n: 'Sauce soja',         e: '🥢', g: 'epicerie', k: ['soja', 'soy', 'nuoc mam', 'sauce poisson', 'sauce huitre', 'sauce teriyaki', 'sauce de poisson', 'sauce d huitre', 'sauce de soja'], t: ['en:soy-sauces'], p: 1 },
   levure:        { n: 'Levure chimique',    e: '🧁', g: 'epicerie', k: ['levure'], t: ['en:baking-powders'], p: 1 },
   chapelure:     { n: 'Chapelure',          e: '🍞', g: 'epicerie', k: ['chapelure', 'panure'], t: ['en:breadcrumbs'], p: 1 },
   cacao:         { n: 'Cacao en poudre',    e: '🍫', g: 'epicerie', k: ['cacao', 'chocolat en poudre', 'nesquik', 'poulain', 'banania'], t: ['en:cocoa-powders'], p: 1 },
-  cafe:          { n: 'Café',               e: '☕', g: 'epicerie', k: ['cafe', 'expresso', 'espresso', 'nescafe'], t: ['en:coffees'], p: 1 },
-  vin_blanc:     { n: 'Vin blanc (cuisine)', e: '🍷', g: 'epicerie', k: ['vin blanc', 'muscadet', 'chardonnay', 'riesling'], t: ['en:white-wines'], p: 1 },
-  herbes_seches: { n: 'Herbes de Provence', e: '🌿', g: 'epicerie', k: ['herbes de provence', 'origan', 'herbes sechees', 'laurier'], t: ['en:dried-herbs'], p: 1 },
+  cafe:          { n: 'Café',               e: '☕', g: 'epicerie', k: ['cafe', 'expresso', 'espresso', 'nescafe', 'chicoree'], t: ['en:coffees'], p: 1 },
+  vin_blanc:     { n: 'Vin blanc (cuisine)', e: '🍷', g: 'epicerie', k: ['vin blanc', 'muscadet', 'chardonnay', 'riesling', 'sylvaner', 'gewurztraminer', 'champagne', 'vin blanc sec'], t: ['en:white-wines'], p: 1 },
+  herbes_seches: { n: 'Herbes de Provence', e: '🌿', g: 'epicerie', k: ['herbes de provence', 'origan', 'herbes sechees', 'laurier', 'thym seche', 'romarin seche'], t: ['en:dried-herbs'], p: 1 },
+  vanille:       { n: 'Vanille',            e: '🌼', g: 'epicerie', k: ['vanille', 'sucre vanille', 'extrait de vanille'], t: ['en:vanilla'], p: 1 },
+  maizena:       { n: 'Maïzena / fécule',   e: '🌽', g: 'epicerie', k: ['maizena', 'fecule'], t: ['en:starches', 'en:corn-starches'], p: 1 },
+  gelatine:      { n: 'Gélatine / agar-agar', e: '🍮', g: 'epicerie', k: ['gelatine', 'agar'], t: ['en:gelatins'], p: 1 },
+  alcool:        { n: 'Alcool (rhum, cognac…)', e: '🥃', g: 'epicerie', k: ['rhum', 'cognac', 'porto', 'kirsch', 'amaretto', 'vermouth', 'calvados', 'armagnac', 'whisky', 'grand marnier', 'cointreau', 'biere', 'vin rouge', 'madere', 'marsala'], t: ['en:rums', 'en:cognacs'], p: 1 },
+  eau_fleur:     { n: 'Eau de fleur d’oranger', e: '🌸', g: 'epicerie', k: ['fleur d oranger', 'eau de rose'], t: [], p: 1 },
   miel:          { n: 'Miel',               e: '🍯', g: 'sucre',    k: ['miel'], t: ['en:honeys'], p: 1 }
 };
 
-/* ───────────────────────────────────────────────────────────────────────────
-   Ajout des ingrédients des recettes dans la base d'aliments de Friscan.
-   À coller dans data.js, juste après la ligne « }; » qui ferme « const ING = { … »
-   (avant le commentaire « Équivalences : si la recette demande X… »).
-   Les 246 ingrédients de la liste sont reconnus : 16 nouvelles familles + mots-clés
-   ajoutés à 14 familles existantes. Rien n'est supprimé ni modifié dans l'existant.
-   ─────────────────────────────────────────────────────────────────────────── */
-(function () {
-  /* Nouvelles familles (mêmes champs que les autres : n, e, g, k, t) */
-  Object.assign(ING, {
-    eau:           { n: 'Eau',                          e: '💧', g: 'epicerie', k: ['eau ', 'eau minerale', 'eau de source', 'eau plate', 'eau gazeuse', 'evian', 'volvic', 'badoit', 'cristaline', 'vittel', 'contrex', 'perrier'], t: ['en:waters', 'en:spring-waters'] },
-    fecule:        { n: 'Fécule / Maïzena',             e: '🌽', g: 'epicerie', k: ['fecule', 'maizena', 'amidon', 'tapioca'], t: ['en:starches', 'en:corn-starches'] },
-    patisserie:    { n: 'Aides pâtissières',            e: '🧁', g: 'epicerie', k: ['agar agar', 'gelatine', 'bicarbonate', 'colorant alimentaire', 'colorant'], t: ['en:gelatins', 'en:baking-sodas', 'en:food-colorings'] },
-    aromes:        { n: 'Arômes & extraits',            e: '🌸', g: 'epicerie', k: ['vanille ', 'extrait de vanille', 'gousse de vanille', 'vanille en poudre', 'vanille liquide', 'arome vanille', 'extrait d amande', 'arome d amande', 'eau de fleur d oranger', 'fleur d oranger', 'eau de rose', 'essence d anis', 'arome naturel'], t: ['en:flavourings', 'en:vanilla-extracts'] },
-    graines:       { n: 'Graines (sésame, lin, pavot…)', e: '🌱', g: 'epicerie', k: ['graine de sesame', 'graines de sesame', 'graine de lin', 'graines de lin', 'graine de pavot', 'graines de pavot', 'graine de tournesol', 'graines de tournesol', 'graine de courge', 'graines de courge', 'graine de coriandre', 'graine de fenouil', 'graine de moutarde', 'graines de chia', 'graine de chia'], t: ['en:seeds', 'en:sesame-seeds', 'en:flax-seeds'] },
-    alcool:        { n: 'Alcools de cuisine',           e: '🥃', g: 'epicerie', k: ['rhum', 'cognac', 'kirsch', 'amaretto', 'porto', 'vermouth', 'armagnac', 'calvados', 'whisky', 'eau de vie', 'grand marnier', 'cointreau', 'marsala'], t: ['en:spirits', 'en:liqueurs', 'en:ports'] },
-    sauces_asie:   { n: 'Sauces d’Asie & condiments',   e: '🥢', g: 'epicerie', k: ['sauce d huitre', 'sauce huitre', 'sauce de poisson', 'nuoc mam', 'nuoc-mam', 'nam pla', 'sauce nem', 'sauce nuoc', 'worcestershire', 'sauce teriyaki', 'sauce hoisin', 'tabasco', 'sriracha', 'sauce chili'], t: ['en:fish-sauces', 'en:oyster-sauces', 'en:worcestershire-sauces'] },
-    rhubarbe:      { n: 'Rhubarbe',                     e: '🌿', g: 'legume',   k: ['rhubarbe'], t: ['en:rhubarbs'] },
-    germes_soja:   { n: 'Germes de soja',               e: '🌱', g: 'legume',   k: ['germe de soja', 'germes de soja', 'pousse de soja', 'pousses de soja'], t: ['en:bean-sprouts'] },
-    brick:         { n: 'Feuilles de brick / filo',     e: '🥟', g: 'frais',    k: ['feuille de brick', 'feuilles de brick', 'brick', 'filo', 'pate a nem'], t: ['en:brik-pastries', 'en:phyllo-doughs'] },
-    abats:         { n: 'Foies & abats',                e: '🍖', g: 'viande',   k: ['foie de lapin', 'foie de volaille', 'foies de volaille', 'foie de veau', 'rognon', 'abats'], t: ['en:offal'] },
-    fruits_de_mer: { n: 'Fruits de mer & coquillages',  e: '🦪', g: 'viande',   k: ['fruits de mer', 'coquillage', 'noix de saint jacques', 'noix de saint-jacques', 'saint jacques', 'saint-jacques', 'huitre', 'bulot', 'bigorneau', 'palourde', 'crabe', 'homard', 'langoustine', 'tourteau', 'ecrevisse'], t: ['en:seafood', 'en:oysters', 'en:crabs'] },
-    quenelle:      { n: 'Quenelles',                    e: '🐟', g: 'frais',    k: ['quenelle'], t: ['en:quenelles'] },
-    palette:       { n: 'Palette fumée / demi-sel',     e: '🍖', g: 'viande',   k: ['palette fumee', 'palette demi sel', 'palette de porc'], t: ['en:smoked-pork-shoulders'] },
-    zeste_confit:  { n: 'Zestes & fruits confits',      e: '🍊', g: 'sucre',    k: ['zeste confit', 'zestes confits', 'fruits confits', 'orangeat', 'citronnat'], t: ['en:candied-fruits'] },
-    caramel:       { n: 'Caramel (sauce)',              e: '🍮', g: 'sucre',    k: ['caramel ', 'sauce caramel', 'caramel liquide', 'caramel au beurre sale'], t: ['en:caramels', 'en:caramel-sauces'] }
-  });
- 
-  /* Mots-clés supplémentaires pour des familles qui existent déjà */
-  const plus = {
-    fruits_secs:   ['abricot sec', 'raisin sec', 'pignon'],
-    epices:        ['cardamome', 'clou de girofle', 'girofle', 'anis etoile', 'badiane', 'muscade', 'noix de muscade', 'curcuma', 'ras el hanout', 'poudre de chili', 'piment en poudre', 'piment de cayenne', 'cayenne', 'safran', 'quatre epices'],
-    fruits_rouges: ['airelle', 'canneberge', 'cranberry'],
-    creme:         ['creme', 'chantilly'],
-    cafe:          ['chicoree'],
-    herbes:        ['herbes aromatiques', 'cive', 'cebette', 'ciboule'],
-    lardons:       ['lard', 'poitrine fumee'],
-    boeuf:         ['steak'],
-    bleu:          ['saint agur', 'st agur'],
-    biscuits:      ['speculoo'],
-    nouilles:      ['vermicelle'],
-    vin_blanc:     ['sylvaner'],
-    sauce_tomate:  ['concentre de tomate', 'double concentre'],
-    pois_chiches:  ['aquafaba']
-  };
-  for (const [id, mots] of Object.entries(plus)) {
-    if (ING[id]) ING[id].k.push(...mots);
-  }
-})();
+/* « Mes recettes » : d'où Friscan lit tes recettes (les mêmes adresses que dans ton site Mes recettes) */
+const MES_RECETTES = {
+  site: 'https://olivier-max-hub.github.io/recettes/',
+  csv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMnEn2pPvoE5A4ISSaLKhvtIB5kH5AnrJkHClyA79NkJQy2AUOuJSXCxmsK3lQ-DcfoITMzv_t22SV/pub?gid=943090944&single=true&output=csv',
+  fiches: 'https://script.google.com/macros/s/AKfycbwht5jYQBk8aX5eHREIhutLfSy5UwE3DSldTOZB9F7zEH-mqDCRFkUMiGYOXb1ftsZV/exec',
+  /* script qui reçoit les commentaires (le même que Mes recettes) ; vide = formulaire masqué */
+  comment: 'https://script.google.com/macros/s/AKfycbziHIdVkqXG_zVHB9_NZ1TnZlt2RoneqWL1JRqambljlUHGbO2pBuutN1DU5qUwGqh2/exec'
+};
+/* Couleurs des catégories de « Mes recettes » */
+const MINE_COLORS = {
+  'Apéritif': ['#bfe8ee', '#8fd3dd'], 'Entrée': ['#ffd9c7', '#ffb899'], 'Plat': ['#d9d0f5', '#b9a8ee'],
+  'Plat unique': ['#fff1b8', '#f8d96b'], 'Plat unique Végétarien': ['#cdeccb', '#9fd89a'], 'Accompagnement': ['#ffd0e0', '#f6a6c3'],
+  'Préparation salée': ['#c9e1fb', '#9cc6f2'], 'Dessert': ['#ffe0b3', '#fbc16b'], 'Préparation sucrée': ['#d6f0e6', '#8fd6bd'], 'Biscuits': ['#e9d6f2', '#d0a9e6']
+};
 
 /* Équivalences : si la recette demande X, ces produits font aussi l'affaire */
 const SUBST = {
   fromage_rape: ['fromage', 'parmesan', 'raclette'],
+  fromage: ['fromage_rape', 'raclette', 'parmesan', 'mozzarella', 'chevre', 'feta', 'bleu'],
   parmesan: ['fromage_rape'],
   pain: ['pain_mie'],
   pain_mie: ['pain'],
@@ -240,26 +216,6 @@ const SUBST = {
   pates: ['raviolis'],
   sauce_tomate: ['tomate']
 };
-
-/* ───────────────────────────────────────────────────────────────────────────
-   Correctif : « bacon » devient une famille à part dans Friscan.
-   Avant, « bacon » était un mot-clé de la famille « Lardons » : un bacon ajouté
-   au frigo s'affichait donc « Lardons ».
-   À coller dans data.js, juste après la ligne « }; » qui ferme « const SUBST = { … »
-   (avant la ligne « const RAPIDES = … »).
-   ─────────────────────────────────────────────────────────────────────────── */
-(function () {
-  /* Nouvelle famille Bacon */
-  ING.bacon = { n: 'Bacon', e: '🥓', g: 'viande', k: ['bacon'], t: ['en:bacon'] };
- 
-  /* On retire « bacon » de la famille Lardons (mot-clé et catégorie Open Food Facts) */
-  ING.lardons.k = ING.lardons.k.filter(k => k !== 'bacon');
-  ING.lardons.t = ING.lardons.t.filter(t => t !== 'en:bacon');
- 
-  /* Équivalence : une recette qui demande des lardons accepte du bacon, et inversement */
-  SUBST.lardons = [...(SUBST.lardons || []), 'bacon'];
-  SUBST.bacon   = [...(SUBST.bacon   || []), 'lardons'];
-})();
 
 /* Placard coché par défaut au premier lancement */
 const PLACARD_DEFAUT = ['sel_poivre', 'huile', 'oignon', 'ail', 'farine', 'sucre', 'epices'];

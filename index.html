@@ -74,7 +74,7 @@ h2:first-child{margin-top:4px}
 .item .pic{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.6rem;background:var(--pale,#eef8fb);overflow:hidden}
 .item .pic img{width:100%;height:100%;object-fit:cover}
 .item .txt{flex:1;min-width:0;overflow:hidden;cursor:pointer}
-.item b{display:block;font-size:1.08rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item b{font-size:1.08rem;line-height:1.2}
 .item small{color:var(--mute);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item select{margin-top:4px;width:100%;min-width:0;padding:4px 8px;border:1px solid var(--line);border-radius:10px;background:#fff7f2;color:var(--ko)}
 .x{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:0;background:#f1f6f7;color:var(--mute);font-size:1.3rem;cursor:pointer;line-height:1}
@@ -132,6 +132,26 @@ h2:first-child{margin-top:4px}
 .rstep p{margin:3px 0 0}
 .empty{text-align:center;padding:10px 4px}
 
+/* Dates de péremption */
+.dlc{display:inline-block;margin:0 0 0 6px;padding:0 8px;border-radius:99px;font-size:.8rem;font-weight:700;background:#eef3f4;color:var(--mute);vertical-align:2px;white-space:nowrap}
+.dlc.soon{background:#ffe0b3;color:#8a4f00}
+.dlc.today{background:#ffcdb8;color:#a3361b}
+.dlc.past{background:var(--ko);color:#fff}
+.item b{display:inline}
+.item .hint{color:#8aa0a4;font-size:.8rem}
+.item.open{align-items:flex-start;border-color:var(--acc);box-shadow:0 0 0 2px rgba(15,107,120,.15)}
+.edit{display:grid;gap:8px;margin-top:8px;cursor:default}
+.edit .row2{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.edit label{font-size:.9rem;color:var(--deep);font-weight:700}
+.edit input[type=date],.result input[type=date]{padding:5px 10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.mini{border:1px solid var(--line);background:#fff;color:var(--deep);padding:3px 11px;border-radius:99px;font-size:.88rem;cursor:pointer}
+.mini:hover{border-color:var(--acc)}
+.tag.warn{color:#8a4f00;background:#fff3dc}
+.catb .unk{font-size:.85rem;opacity:.8;margin-top:4px}
+.catb .thumb{flex:0 0 76px;height:76px;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.55);display:grid;place-items:center;font-size:2.2rem;position:relative}
+.catb .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.src{text-align:center;margin:-2px 0 4px}
+
 /* Barre du bas */
 nav{position:fixed;left:0;right:0;bottom:0;z-index:12;height:calc(var(--bar) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--acc);box-shadow:0 -2px 10px rgba(0,0,0,.15);display:flex;justify-content:space-around;align-items:center}
 nav a{color:#fff;font-weight:700;font-size:1.1rem;text-decoration:none;padding:6px 14px;display:flex;align-items:center;gap:6px;text-underline-offset:4px}
@@ -139,6 +159,30 @@ nav a[aria-current=page]{text-decoration:underline}
 nav a.scanbtn{background:#fff;color:var(--acc);border:2px solid var(--acc);border-radius:99px;padding:6px 16px 6px 8px;transform:translateY(-14px);box-shadow:0 3px 8px rgba(0,0,0,.35);text-decoration:none}
 nav a.scanbtn svg{width:34px;height:34px}
 nav a:focus-visible{outline-color:#fff}
+/* Commentaire (même construction que « Mes recettes ») */
+header .wrap{position:relative}
+.cm{margin-top:18px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:22px;display:grid;gap:10px}
+.cm h4{margin:0;font:600 1.1rem Economica,"Arial Narrow",Arial,sans-serif}
+.cm input,.cm textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:16px;font:inherit;background:#fff;color:var(--ink)}
+.cm .btn{justify-self:start}
+.cm .btn:disabled{opacity:.6;cursor:default}
+.cm .note{color:#1f2a24}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+footer{padding:8px 16px 28px;color:#1f2a24;font-size:.95rem}
+footer p{max-width:70ch;margin:0 auto;text-align:center;background:rgba(255,255,255,.75);padding:10px 14px;border-radius:10px}
+footer .cm{font-size:1rem;color:var(--ink);max-width:560px;margin:8px auto 16px;text-align:left}
+footer .cm p.note{background:none;padding:0;text-align:left;max-width:none;margin:0}
+.chef{display:none;align-items:center;gap:8px;position:absolute;right:0;top:-6px;padding:5px 16px 5px 8px;background:#fff;color:var(--acc);font-weight:700;font-size:1.1rem;line-height:1;text-decoration:none;border-radius:99px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.chef svg{width:44px;height:44px;flex:0 0 auto}
+.chef:focus-visible{outline-color:#fff}
+.chef[hidden]{display:none}
+.chef-f{display:flex;position:fixed;top:auto;right:12px;bottom:calc(var(--bar) + 26px + env(safe-area-inset-bottom,0px));z-index:15;font-size:1rem;touch-action:none;user-select:none;-webkit-user-drag:none;cursor:grab;border:2px solid var(--acc);box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.chef-f svg{width:38px;height:38px}
+.chef-f:focus-visible{outline-color:var(--acc)}
+@media (min-width:700px){.chef{display:flex}.chef-f{display:none}.chef[hidden]{display:none}}
+body.v-scan .chef-f{display:none}
+#commentaire{scroll-margin-top:100px}
+
 #toast{position:fixed;left:50%;bottom:calc(var(--bar) + 22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:99px;font-size:.95rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30;display:flex;gap:12px;align-items:center;white-space:nowrap}
 #toast.on{opacity:1;pointer-events:auto}
 #toast button{border:0;background:none;color:#ffb899;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
@@ -148,6 +192,7 @@ nav a:focus-visible{outline-color:#fff}
 <header>
   <div class="wrap">
     <h1><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="4" width="36" height="56" rx="8" fill="#fff"/><path d="M14 24h36" stroke="#0f6b78" stroke-width="3"/><path d="M20 12v6M20 30v8" stroke="#0f6b78" stroke-width="3" stroke-linecap="round"/><path d="M27 40v12M31 40v12M34 40v12M38 40v12M42 40v12" stroke="#ffb899" stroke-width="2"/></svg><span id="title">Mon frigo</span></h1>
+    <a class="chef" id="toqueH" href="#commentaire" hidden><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke="#0f6b78" stroke-width="3" stroke-linejoin="round"><circle cx="30" cy="27" r="16" fill="#fff"/><circle cx="50" cy="19" r="19" fill="#fff"/><circle cx="70" cy="27" r="16" fill="#fff"/><circle cx="50" cy="66" r="28" fill="#fbd9b5"/><rect x="25" y="36" width="50" height="14" rx="5" fill="#d9f0f3"/></g><circle cx="40" cy="65" r="3.2" fill="#1f2a24"/><circle cx="60" cy="65" r="3.2" fill="#1f2a24"/><circle cx="33" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><circle cx="67" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><path d="M38 75Q50 89 62 75" fill="none" stroke="#1f2a24" stroke-width="3" stroke-linecap="round"/></svg><span>Commentaire</span></a>
     <p class="sub" id="sub">&nbsp;</p>
     <div id="hdrFrigo" class="field">
       <input id="add" type="search" placeholder="Ajouter un produit (ex. courgette, œufs…)" autocomplete="off" aria-label="Ajouter un produit à la main">
@@ -159,6 +204,8 @@ nav a:focus-visible{outline-color:#fff}
         <button class="chip" data-f="ok" aria-pressed="true">✓ Possibles</button>
         <button class="chip" data-f="presque" aria-pressed="false">Presque (1–2 manquants)</button>
         <button class="chip" data-f="tout" aria-pressed="false">Toutes</button>
+        <button class="chip" data-f="gaspi" aria-pressed="false">⏰ Anti-gaspi</button>
+        <button class="chip" data-mine aria-pressed="false">📖 Seulement mes recettes</button>
       </div>
     </div>
   </div>
@@ -212,6 +259,20 @@ nav a:focus-visible{outline-color:#fff}
   <!-- RECETTE -->
   <section id="v-recette" hidden></section>
 </main>
+
+<footer id="legal" class="wrap">
+  <form class="cm" id="commentaire">
+    <h4>Laisser un commentaire</h4>
+    <input type="email" required maxlength="200" autocomplete="email" placeholder="Ton adresse e-mail" aria-label="Adresse e-mail">
+    <textarea required rows="4" maxlength="1000" placeholder="Ton commentaire" aria-label="Commentaire"></textarea>
+    <input type="text" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+    <p class="note">Ton commentaire et ton adresse restent privés : aucun autre visiteur ne les voit. Ton adresse est supprimée du tableau des commentaires après 24 heures. Tu recevras un e-mail de remerciement.</p>
+    <button class="btn" type="submit">Envoyer</button>
+    <p class="note" role="status"></p>
+  </form>
+  <p>Confidentialité : si tu laisses un commentaire, ton adresse e-mail sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée du tableau des commentaires après 24 heures. Ton message n’est ni affiché dans l’application ni partagé avec d’autres personnes, et tu peux demander sa suppression à tout moment en me contactant. Le contenu de ton frigo reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit.</p>
+</footer>
+<a class="chef chef-f" id="toqueF" href="#commentaire" draggable="false" hidden><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke="#0f6b78" stroke-width="3" stroke-linejoin="round"><circle cx="30" cy="27" r="16" fill="#fff"/><circle cx="50" cy="19" r="19" fill="#fff"/><circle cx="70" cy="27" r="16" fill="#fff"/><circle cx="50" cy="66" r="28" fill="#fbd9b5"/><rect x="25" y="36" width="50" height="14" rx="5" fill="#d9f0f3"/></g><circle cx="40" cy="65" r="3.2" fill="#1f2a24"/><circle cx="60" cy="65" r="3.2" fill="#1f2a24"/><circle cx="33" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><circle cx="67" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><path d="M38 75Q50 89 62 75" fill="none" stroke="#1f2a24" stroke-width="3" stroke-linecap="round"/></svg><span>Commentaire</span></a>
 
 <nav aria-label="Navigation">
   <a href="#frigo" data-v="frigo">🧊 Frigo</a>
@@ -288,43 +349,91 @@ function ingOptions(sel) {
         .map(([id, d]) => `<option value="${id}"${id === sel ? ' selected' : ''}>${d.e} ${esc(d.n)}</option>`).join('') + '</optgroup>').join('') +
     `<option value="_autre"${sel === '_autre' ? ' selected' : ''}>🛒 Autre produit (le garder tel quel)</option>`;
 }
+/* ---------- dates de péremption ---------- */
+const DAY = 864e5;
+const today0 = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const isoPlus = n => { const d = today0(); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+function daysLeft(f) {
+  if (!f.dlc) return null;
+  const [y, m, d] = f.dlc.split('-').map(Number);
+  return Math.round((new Date(y, m - 1, d) - today0()) / DAY);
+}
+const SOON = 3; /* « à consommer vite » : 3 jours ou moins */
+function dlcLabel(n, dlc) {
+  if (n === null) return '';
+  if (n < 0) return n === -1 ? 'périmé hier' : `périmé depuis ${-n} j`;
+  if (n === 0) return 'aujourd’hui';
+  if (n === 1) return 'demain';
+  if (n <= SOON) return `dans ${n} jours`;
+  const [y, m, d] = dlc.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+function dlcBadge(f) {
+  const n = daysLeft(f); if (n === null) return '';
+  const cls = n < 0 ? 'past' : n === 0 ? 'today' : n <= SOON ? 'soon' : '';
+  return `<span class="dlc ${cls}">⏰ ${dlcLabel(n, f.dlc)}</span>`;
+}
+const urgentItems = () => fridge.filter(f => { const n = daysLeft(f); return n !== null && n <= SOON; })
+  .sort((a, b) => daysLeft(a) - daysLeft(b));
+const dlcButtons = attr => `<button type="button" class="mini" ${attr}="2">+2 j</button><button type="button" class="mini" ${attr}="5">+5 j</button><button type="button" class="mini" ${attr}="7">+1 sem.</button><button type="button" class="mini" ${attr}="30">+1 mois</button>`;
+
 function renderFridge() {
   const box = $('#fridgeList');
   if (!fridge.length) {
     box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Ton frigo est vide</b><small>Scanne ton premier produit ou ajoute-le à la main.</small></span><span class="ill">🧊</span></a></div>`;
     return;
   }
+  const urg = urgentItems();
+  const banner = urg.length ? `<div class="cats" style="margin-bottom:6px"><a class="catb" href="#recettes" data-gaspi style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>À consommer vite</b>
+    <small>${urg.slice(0, 4).map(f => `${esc(f.name)} (${dlcLabel(daysLeft(f), f.dlc)})`).join(' · ')}${urg.length > 4 ? ` · +${urg.length - 4}` : ''}</small>
+    <span class="tag ko">Voir les recettes anti-gaspi →</span></span><span class="ill">⏰</span></a></div>` : '';
   const byG = {};
   for (const f of fridge) { const g = f.ing ? ING[f.ing].g : f.other ? 'autre' : 'inconnu'; (byG[g] ||= []).push(f); }
-  box.innerHTML = Object.keys(GROUPS).filter(g => byG[g]).map(g => `
+  /* dans chaque famille : les dates les plus proches d'abord */
+  const ord = f => { const n = daysLeft(f); return n === null ? 1e6 : n; };
+  box.innerHTML = banner + Object.keys(GROUPS).filter(g => byG[g]).map(g => `
     <h2 style="--cat:${GROUPS[g].c}">${GROUPS[g].n} · ${byG[g].length}</h2>
-    <div class="items">${byG[g].map(f => {
+    <div class="items">${byG[g].sort((a, b) => ord(a) - ord(b)).map(f => {
       const d = f.ing && ING[f.ing];
       const pic = f.img ? `<img src="${esc(f.img)}" alt="" loading="lazy">` : (d ? d.e : f.other ? '🛒' : '❓');
       const meta = [d && d.n !== f.name ? d.n : '', f.brand].filter(Boolean).join(' · ');
-      return `<div class="item" style="--pale:${pale(g)}">
+      const open = editing === f.uid, ask = !d && !f.other;
+      const panel = open || ask ? `<div class="edit">
+          <select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions(f.ing || (f.other ? '_autre' : ''))}</select>
+          ${open ? `<div class="row2"><label for="dlc-${f.uid}">À consommer avant</label>
+            <input type="date" id="dlc-${f.uid}" data-date="${f.uid}" value="${esc(f.dlc || '')}" min="${isoPlus(-30)}"></div>
+            <div class="row2">${dlcButtons('data-plus')}${f.dlc ? '<button type="button" class="mini" data-plus="x">Sans date</button>' : ''}</div>` : ''}
+        </div>` : '';
+      return `<div class="item${open ? ' open' : ''}" data-uid="${f.uid}" style="--pale:${pale(g)}">
         <div class="pic">${pic}</div>
-        <div class="txt" data-edit="${f.uid}" title="Toucher pour changer l’ingrédient"><b>${esc(f.name)}</b>${meta ? `<small>${esc(meta)}</small>` : ''}
-          ${(d || f.other) && editing !== f.uid ? '' : `<select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions(f.ing || (f.other ? '_autre' : ''))}</select>`}</div>
+        <div class="txt" data-edit="${f.uid}" title="Toucher pour modifier"><b>${esc(f.name)}</b>${dlcBadge(f)}${meta ? `<small>${esc(meta)}</small>` : ''}
+          ${!open && !ask && !f.dlc ? '<small class="hint">Toucher pour ajouter une date</small>' : ''}${panel}</div>
         <button class="x" data-del="${f.uid}" aria-label="Retirer ${esc(f.name)}">×</button></div>`;
     }).join('')}</div>`).join('');
 }
-$('#fridgeList').addEventListener('click', e => {
-  const b = e.target.closest('[data-del]'); if (!b) return;
-  const i = fridge.findIndex(f => f.uid === b.dataset.del); if (i < 0) return;
-  const [it] = fridge.splice(i, 1); save(); renderAll();
-  toast(`${it.name} retiré`, () => { fridge.splice(i, 0, it); save(); renderAll(); });
-});
+const itemOf = el => fridge.find(f => f.uid === el.closest('[data-uid]')?.dataset.uid);
 let editing = null;
 $('#fridgeList').addEventListener('click', e => {
-  if (e.target.closest('select')) return;
+  if (e.target.closest('[data-gaspi]')) { setFilter('gaspi', true); return; }
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    const i = fridge.findIndex(f => f.uid === del.dataset.del); if (i < 0) return;
+    const [it] = fridge.splice(i, 1); save(); renderAll();
+    toast(`${it.name} retiré`, () => { fridge.splice(i, 0, it); save(); renderAll(); });
+    return;
+  }
+  const plus = e.target.closest('[data-plus]');
+  if (plus) { const f = itemOf(plus); if (f) { f.dlc = plus.dataset.plus === 'x' ? null : isoPlus(+plus.dataset.plus); save(); renderAll(); } return; }
+  if (e.target.closest('.edit')) return;
   const t = e.target.closest('[data-edit]'); if (!t) return;
   editing = editing === t.dataset.edit ? null : t.dataset.edit; renderFridge();
 });
 $('#fridgeList').addEventListener('change', e => {
+  const dt = e.target.closest('[data-date]');
+  if (dt) { const f = itemOf(dt); if (f) { f.dlc = dt.value || null; save(); renderAll(); } return; }
   const s = e.target.closest('[data-fix]'); if (!s || !s.value) return;
   const f = fridge.find(x => x.uid === s.dataset.fix);
-  if (f) { if (s.value === '_autre') { f.ing = null; f.other = true; } else { f.ing = s.value; f.other = false; } editing = null; save(); renderAll(); }
+  if (f) { if (s.value === '_autre') { f.ing = null; f.other = true; } else { f.ing = s.value; f.other = false; } save(); renderAll(); }
 });
 function renderPills() {
   $('#rapides').innerHTML = RAPIDES.map(id => `<button class="pill add" data-quick="${id}">${ING[id].e} ${esc(ING[id].n)}</button>`).join('');
@@ -354,14 +463,7 @@ addIn.addEventListener('input', () => {
 sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
-  const typed = addIn.value.trim(), t = norm(typed).trim();
-  let name = typed;
-  if (b.dataset.s) {
-    const d = ING[id];
-    const kw = d.k.map(k => k.trim()).find(k => norm(k).trim().startsWith(t));
-    const base = !kw ? '' : (norm(kw).trim() === t ? typed : kw);
-    name = (!t || norm(d.n).includes(t) || !kw) ? d.n : base.charAt(0).toUpperCase() + base.slice(1);
-  }
+  const name = b.dataset.s ? ING[id].n : addIn.value.trim();
   addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`);
   addIn.value = ''; sugg.hidden = true;
 });
@@ -369,38 +471,142 @@ addIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefau
 document.addEventListener('click', e => { if (!e.target.closest('#hdrFrigo')) sugg.hidden = true; });
 
 /* ---------- RECETTES ---------- */
+/* produits du frigo à consommer vite, utilisés par une liste d'ingrédients */
+function urgentUsed(ids) {
+  const out = [];
+  for (const id of ids) {
+    const f = fridge.filter(x => alts(id).includes(x.ing) && daysLeft(x) !== null && daysLeft(x) <= SOON)
+      .sort((p, q) => daysLeft(p) - daysLeft(q))[0];
+    if (f && !out.includes(f)) out.push(f);
+  }
+  return out;
+}
 function analyse(r) {
   const req = r.ing.filter(x => !x[2]);
   const missing = req.filter(x => !have(x[0])).map(x => x[0]);
   const used = r.ing.filter(x => inFridge(x[0])).length;
-  return { missing, used, okCount: req.length - missing.length, total: req.length };
+  return { missing, used, unk: 0, urgent: urgentUsed(r.ing.map(x => x[0])), okCount: req.length - missing.length, total: req.length };
+}
+function analyseMine(m) {
+  const missing = m.ings.filter(i => !have(i));
+  return { missing, used: m.ings.filter(inFridge).length, unk: m.unk, urgent: urgentUsed(m.ings), okCount: m.ings.length - missing.length, total: m.ings.length };
+}
+function tags(a, mine) {
+  let t = a.missing.length === 0
+    ? `<span class="tag ok">✓ ${mine && a.unk ? 'Tu as tout ce que Friscan reconnaît' : 'Tu as tout'}</span>`
+    : `<span class="tag ko">Il manque : ${esc(a.missing.slice(0, 4).map(m => ING[m].n.toLowerCase()).join(', '))}${a.missing.length > 4 ? '…' : ''}</span>`;
+  if (a.urgent.length) t += ` <span class="tag warn">⏰ ${esc(a.urgent.map(f => f.name.toLowerCase()).join(', '))}</span>`;
+  return t;
 }
 function recCard(r, a) {
   const [c1, c2] = CATS[r.cat];
-  const tag = a.missing.length === 0 ? '<span class="tag ok">✓ Tu as tout</span>'
-    : `<span class="tag ko">Il manque : ${esc(a.missing.map(m => ING[m].n.toLowerCase()).join(', '))}</span>`;
-  return `<a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tag}</span><span class="ill">${r.e}</span></a>`;
+  return `<a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span><span class="ill">${r.e}</span></a>`;
 }
+function mineCard(m, a) {
+  const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
+  const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+  return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" style="--c1:${c1};--c2:${c2}">
+    <span><b>${esc(m.n)}</b><small>📖 Mes recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
+    ${a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''}</span>
+    <span class="thumb">${img}<span>📖</span></span></a>`;
+}
+let onlyMine = false;
 function renderRecipes() {
   const q = norm($('#q').value).trim();
-  let list = RECETTES.map(r => ({ r, a: analyse(r) }));
-  if (q) list = list.filter(x => norm(x.r.n + ' ' + x.r.ing.map(i => ING[i[0]].n).join(' ')).includes(q));
-  if (filter === 'ok') list = list.filter(x => x.a.missing.length === 0 && x.a.used > 0);
-  if (filter === 'presque') list = list.filter(x => x.a.missing.length >= 1 && x.a.missing.length <= 2 && x.a.used > 0);
-  list.sort((x, y) => x.a.missing.length - y.a.missing.length || y.a.used - x.a.used || x.r.min - y.r.min);
+  let list = [];
+  if (!onlyMine) list = RECETTES.map(r => ({ a: analyse(r), min: r.min, txt: r.n + ' ' + r.ing.map(i => ING[i[0]].n).join(' '), html: a => recCard(r, a) }));
+  list = list.concat(mine.list.map(m => ({ a: analyseMine(m), min: m.min || 45, txt: m.n + ' ' + m.cat + ' ' + m.ings.map(i => ING[i].n).join(' '), html: a => mineCard(m, a), mine: 1 })));
+  if (q) list = list.filter(x => norm(x.txt).includes(q));
+  const gap = x => x.a.missing.length + x.a.unk;
+  if (filter === 'ok') list = list.filter(x => gap(x) === 0 && x.a.used > 0);
+  if (filter === 'presque') list = list.filter(x => gap(x) >= 1 && gap(x) <= 2 && x.a.used > 0);
+  if (filter === 'gaspi') list = list.filter(x => x.a.urgent.length > 0);
+  const urg = x => x.a.urgent.length;
+  list.sort(filter === 'gaspi'
+    ? (x, y) => urg(y) - urg(x) || gap(x) - gap(y) || x.min - y.min
+    : (x, y) => gap(x) - gap(y) || urg(y) - urg(x) || y.a.used - x.a.used || x.min - y.min);
   const box = $('#recList');
+  const status = mine.state ? `<p class="note src">${mine.state}</p>` : '';
   if (!list.length) {
     const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo pour voir les recettes possibles.', '#scan', '📷']
+      : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
       : ['Aucune recette trouvée', 'Essaie un autre mot ou le filtre « Toutes ».', null, '🔍'];
-    box.innerHTML = `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span><span class="ill">${msg[3]}</span></${msg[2] ? 'a' : 'button'}>`;
+    box.innerHTML = status + `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span><span class="ill">${msg[3]}</span></${msg[2] ? 'a' : 'button'}>`;
     return;
   }
-  box.innerHTML = list.map(x => recCard(x.r, x.a)).join('');
+  box.innerHTML = status + list.slice(0, 80).map(x => x.html(x.a)).join('');
 }
 $('#recList').addEventListener('click', e => { const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
-function setFilter(f) { filter = f; document.querySelectorAll('#filters .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === f)); renderRecipes(); }
-$('#filters').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) setFilter(c.dataset.f); });
+function setFilter(f, go) {
+  filter = f; document.querySelectorAll('#filters .chip[data-f]').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === f));
+  if (go && location.hash !== '#recettes') location.hash = '#recettes'; else renderRecipes();
+}
+$('#filters').addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if (!c) return;
+  if (c.dataset.mine !== undefined) { onlyMine = !onlyMine; c.setAttribute('aria-pressed', onlyMine); renderRecipes(); }
+  else setFilter(c.dataset.f);
+});
+
+/* ---------- « Mes recettes » : liste Google Sheets + fiches ---------- */
+let mine = { list: store.get('mine', { list: [] }).list || [], state: '' };
+function csvRows(t) {
+  const rows = []; let r = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { r.push(f); f = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && t[i + 1] === '\n') i++; r.push(f); f = ''; rows.push(r); r = []; }
+    else f += c;
+  }
+  if (f !== '' || r.length) { r.push(f); rows.push(r); }
+  return rows;
+}
+const slugify = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+/* une ligne d'ingrédient -> identifiant Friscan (ou null) */
+const VERBES = /^(pelez|pelez|coupez|versez|ajoutez|faites|dans|baissez|epluchez|mettre|mettez|laver|lavez|couper|emincer|emincez|ajouter|verifier|portez|laissez|servez|bout|passer|remettre|blanchir|verser|melanger|melangez|prechauffer|prechauffez|faire|cuire|reserver)( |$)/;
+const EAU = /^(\d+|cl|ml|l|g|gr|litre|litres|de|d|du|eau|froide|chaude|tiede|bouillante|un|une|peu|verre|verres|bol)$/;
+function lineIng(t) {
+  const n = norm(t).trim();
+  if (!n || /inserez/.test(n)) return { skip: 1 };
+  const w = n.split(' ');
+  if (w.length > 16 || VERBES.test(n)) return { skip: 1 };          /* phrase d'explication */
+  if (/^moule (a|de|en) /.test(n) || /facultati|falcultati|optionnel|pour servir/.test(n) || /( |^)deco(ration)?( |$)/.test(n)) return { skip: 1 };
+  if (w.includes('eau') && w.every(x => EAU.test(x))) return { skip: 1 };
+  const id = guessIng(t, []);
+  return id ? { id } : { unk: 1 };
+}
+async function loadMine(force) {
+  const old = store.get('mine', null);
+  if (!force && old && Date.now() - old.t < 6 * 3600e3) return;
+  if (!MES_RECETTES.csv) return;
+  mine.state = mine.list.length ? '' : '📖 Chargement de « Mes recettes »…'; if (!$('#v-rec').hidden) renderRecipes();
+  try {
+    const [csvT, fj] = await Promise.all([
+      fetch(MES_RECETTES.csv + '&t=' + Date.now()).then(r => { if (!r.ok) throw 0; return r.text(); }),
+      fetch(MES_RECETTES.fiches + '?all=1').then(r => { if (!r.ok) throw 0; return r.json(); })
+    ]);
+    const fiches = (fj && fj.fiches) || {}; const out = []; let cur = '';
+    for (const row of csvRows(csvT).slice(5)) {
+      const name = (row[2] || '').trim(); if (!name) continue;
+      cur = (row[1] || '').trim() || cur;
+      const slug = slugify(name), fi = fiches[slug];
+      if (!fi || !fi.ing) continue;
+      const ings = new Set(); let unk = 0;
+      for (const l of fi.ing) { if (l.l) continue; const r = lineIng(l.t || ''); if (r.id) ings.add(r.id); else if (r.unk) unk++; }
+      if (!ings.size) continue;
+      const min = parseInt((fi.cuisson || '').replace(/h/, '*60+'), 10);
+      out.push({ n: name, cat: cur, slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, ings: [...ings], unk });
+    }
+    if (!out.length) throw 0;
+    mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now() });
+  } catch (e) {
+    mine.state = mine.list.length ? '📖 « Mes recettes » : hors connexion, dernière version enregistrée.' : '📖 « Mes recettes » n’a pas pu être chargé (connexion ?).';
+  }
+  if (!$('#v-rec').hidden) renderRecipes();
+  updateSub();
+}
 $('#q').addEventListener('input', renderRecipes);
 
 function renderRecipe(id) {
@@ -427,7 +633,11 @@ function renderRecipe(id) {
   if (b) b.onclick = () => {
     const before = fridge.slice(); const ids = new Set(fromFridge.map(x => x[0]));
     /* on retire un exemplaire de chaque ingrédient utilisé */
-    for (const i of ids) { const k = fridge.findIndex(f => alts(i).includes(f.ing)); if (k >= 0) fridge.splice(k, 1); }
+    for (const i of ids) {
+      const c = fridge.map((f, k) => [f, k]).filter(([f]) => alts(i).includes(f.ing))
+        .sort((p, q) => (daysLeft(p[0]) ?? 1e6) - (daysLeft(q[0]) ?? 1e6))[0];
+      if (c) fridge.splice(c[1], 1);
+    }
     save(); renderAll(); location.hash = '#recettes';
     toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); });
   };
@@ -539,6 +749,8 @@ function resultForm(code, name, brand, ing, img) {
     ${name ? `<input type="hidden" id="rname" value="${esc(name)}">` : `<label for="rname">Nom du produit</label><input type="text" id="rname" required placeholder="ex. Crème fraîche">`}
     <label for="ring">${ing ? 'Reconnu comme' : 'C’est quoi comme ingrédient ?'}</label>
     <select id="ring">${ingOptions(ing)}</select>
+    <label for="rdlc">À consommer avant <span class="note">(facultatif, regarde l’emballage)</span></label>
+    <div class="row" style="gap:6px;align-items:center"><input type="date" id="rdlc" min="${isoPlus(-30)}">${dlcButtons('data-rplus')}</div>
     <div class="row"><button class="btn" type="submit">＋ Ajouter au frigo</button><button class="btn alt" type="button" id="rescan">Scanner un autre</button></div></form>`;
 }
 function bindResult() {
@@ -546,37 +758,89 @@ function bindResult() {
   f.addEventListener('submit', e => {
     e.preventDefault();
     const name = $('#rname').value.trim() || 'Produit'; const v = $('#ring').value; const ing = v === '_autre' ? null : (v || guessIng(name, []));
-    addItem({ name, ing, other: v === '_autre', code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null });
+    addItem({ name, ing, other: v === '_autre', code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null, dlc: $('#rdlc').value || null });
     toast(`${name} ajouté au frigo`);
     $('#result').innerHTML = ''; startCam();
   });
   $('#rescan').onclick = () => { $('#result').innerHTML = ''; startCam(); };
+  f.addEventListener('click', e => { const b = e.target.closest('[data-rplus]'); if (b) $('#rdlc').value = isoPlus(+b.dataset.rplus); });
 }
 
 /* ---------- navigation ---------- */
 function route() {
+  if (location.hash === '#commentaire') return;
   const h = location.hash || '#frigo';
   const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : 'frigo';
   ['frigo', 'scan', 'rec', 'recette'].forEach(x => $('#v-' + x).hidden = x !== v);
+  document.body.classList.toggle('v-scan', v === 'scan'); currentView = v;
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
   $('#title').textContent = { frigo: 'Mon frigo', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
   if (v === 'recette') renderRecipe(h.slice(3));
-  if (v === 'rec') renderRecipes();
+  if (v === 'rec') { renderRecipes(); loadMine(); }
   updateSub();
 }
 function updateSub() {
   const n = fridge.length;
-  const ok = RECETTES.filter(r => { const a = analyse(r); return !a.missing.length && a.used; }).length;
-  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans ton frigo · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}`;
+  const ok = RECETTES.filter(r => { const a = analyse(r); return !a.missing.length && a.used; }).length
+    + mine.list.filter(m => { const a = analyseMine(m); return !a.missing.length && !a.unk && a.used; }).length;
+  const u = urgentItems().length;
+  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans ton frigo · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}` + (u ? ` · ⏰ ${u} à consommer vite` : '');
 }
 function renderAll() { renderFridge(); renderPills(); if (!$('#v-rec').hidden) renderRecipes(); updateSub(); }
 window.addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopCam(); });
 
-renderAll(); route();
+/* ---------- Commentaire (même fonctionnement que « Mes recettes ») ---------- */
+let currentView = 'frigo';
+function deviceType() { const u = navigator.userAgent; return /iPad|Tablet/i.test(u) ? 'tablette' : /Mobi|Android|iPhone/i.test(u) ? 'mobile' : 'ordinateur'; }
+function commentContext() {
+  if (currentView === 'recette') { const r = RECETTES.find(x => x.id === location.hash.slice(3)); if (r) return 'Friscan · ' + r.n; }
+  return 'Friscan · Commentaire général';
+}
+function goComment(ev) {
+  ev.preventDefault(); const f = $('#commentaire'); if (!f) return;
+  const calm = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+  f.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
+  if (window.matchMedia && matchMedia('(min-width:700px)').matches) setTimeout(() => { const i = f.querySelector('input'); if (i) i.focus({ preventScroll: true }); }, 500);
+}
+function setupFab(t) {
+  let pos = null, drag = false, id = null, sx = 0, sy = 0, ox = 0, oy = 0;
+  const navH = () => document.querySelector('nav').offsetHeight + 20;
+  function place(x, y) {
+    const w = t.offsetWidth, h = t.offsetHeight;
+    x = Math.min(Math.max(4, x), innerWidth - w - 4); y = Math.min(Math.max(4, y), innerHeight - h - 4 - navH());
+    t.style.left = x + 'px'; t.style.top = y + 'px'; t.style.right = 'auto'; t.style.bottom = 'auto';
+  }
+  pos = store.get('fab', null);
+  if (pos && pos.length === 2) place(pos[0], pos[1]);
+  t.addEventListener('pointerdown', e => { id = e.pointerId; try { t.setPointerCapture(id); } catch (x) {} const r = t.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top; drag = false; });
+  t.addEventListener('pointermove', e => { if (e.pointerId !== id) return; const dx = e.clientX - sx, dy = e.clientY - sy; if (!drag && Math.abs(dx) + Math.abs(dy) < 8) return; drag = true; place(ox + dx, oy + dy); });
+  const end = e => { if (e.pointerId !== id) return; id = null; if (drag) { const r = t.getBoundingClientRect(); store.set('fab', [r.left, r.top]); setTimeout(() => { drag = false; }, 0); } };
+  t.addEventListener('pointerup', end); t.addEventListener('pointercancel', end);
+  t.addEventListener('click', e => { if (drag) { e.preventDefault(); return; } goComment(e); });
+  addEventListener('resize', () => { if (t.style.left) place(parseFloat(t.style.left), parseFloat(t.style.top)); });
+}
+(function initComment() {
+  if (!MES_RECETTES.comment) { $('#commentaire').hidden = true; return; }
+  const w = $('#commentaire'), [e, t, hp] = w.querySelectorAll('input[type=email], textarea, input.hp');
+  const b = w.querySelector('button'), s = w.querySelector('[role=status]');
+  w.addEventListener('submit', ev => {
+    ev.preventDefault(); if (hp.value) return;
+    const last = +store.get('cm', 0) || 0;
+    if (Date.now() - last < 30000) { s.textContent = 'Patiente quelques secondes avant d’envoyer un autre message.'; return; }
+    b.disabled = true; s.textContent = 'Envoi…';
+    const body = new URLSearchParams({ recipe: commentContext(), email: e.value.trim(), comment: t.value.trim(), device: deviceType() });
+    fetch(MES_RECETTES.comment, { method: 'POST', mode: 'no-cors', body })
+      .then(() => { store.set('cm', Date.now()); t.value = ''; s.textContent = 'Merci, ton commentaire a été envoyé.'; b.disabled = false; })
+      .catch(() => { s.textContent = 'L’envoi a échoué. Réessaie dans un instant.'; b.disabled = false; });
+  });
+  const th = $('#toqueH'), tf = $('#toqueF');
+  th.hidden = false; tf.hidden = false; th.addEventListener('click', goComment); setupFab(tf);
+})();
+renderAll(); route(); loadMine();
 $('#version').textContent = `Friscan · version ${VERSION}`;
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* quand une nouvelle version est installée, on recharge une fois pour l'utiliser tout de suite */
