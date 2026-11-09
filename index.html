@@ -262,9 +262,9 @@ body.v-scan .chef-f{display:none}
 
 <footer id="legal" class="wrap">
   <form class="cm" id="commentaire">
-    <h4 id="cmTitle">Laisser un commentaire</h4>
+    <h4 id="cmTitle">Laisser un commentaire ou demander l’ajout d’un ingrédient</h4>
     <input type="email" required maxlength="200" autocomplete="email" placeholder="Ton adresse e-mail" aria-label="Adresse e-mail">
-    <textarea required rows="4" maxlength="1000" placeholder="Ton commentaire" aria-label="Commentaire"></textarea>
+    <textarea required rows="4" maxlength="1000" placeholder="Ton commentaire ou l’ingrédient à ajouter" aria-label="Commentaire"></textarea>
     <input type="text" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
     <p class="note">Ton commentaire et ton adresse restent privés : aucun autre visiteur ne les voit. Ton adresse est supprimée du tableau des commentaires après 24 heures. Tu recevras un e-mail de remerciement.</p>
     <button class="btn" type="submit">Envoyer</button>
@@ -281,7 +281,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=8"></script>
+<script src="data.js?v=9"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -294,7 +294,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '8';
+const VERSION = '9';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -777,10 +777,6 @@ function route() {
   const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : 'frigo';
   ['frigo', 'scan', 'rec', 'recette'].forEach(x => $('#v-' + x).hidden = x !== v);
   document.body.classList.toggle('v-scan', v === 'scan'); currentView = v;
-  /* sur « Mon frigo », le formulaire sert aussi à demander un ingrédient manquant */
-  const fr = v === 'frigo';
-  $('#cmTitle').textContent = fr ? 'Laisser un commentaire ou demander l’ajout d’un ingrédient' : 'Laisser un commentaire';
-  $('#commentaire textarea').placeholder = fr ? 'Ton commentaire ou l’ingrédient à ajouter' : 'Ton commentaire';
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
