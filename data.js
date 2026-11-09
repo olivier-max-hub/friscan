@@ -187,7 +187,9 @@ const MES_RECETTES = {
   csv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMnEn2pPvoE5A4ISSaLKhvtIB5kH5AnrJkHClyA79NkJQy2AUOuJSXCxmsK3lQ-DcfoITMzv_t22SV/pub?gid=943090944&single=true&output=csv',
   fiches: 'https://script.google.com/macros/s/AKfycbwht5jYQBk8aX5eHREIhutLfSy5UwE3DSldTOZB9F7zEH-mqDCRFkUMiGYOXb1ftsZV/exec',
   /* script qui reçoit les commentaires (le même que Mes recettes) ; vide = formulaire masqué */
-  comment: 'https://script.google.com/macros/s/AKfycbziHIdVkqXG_zVHB9_NZ1TnZlt2RoneqWL1JRqambljlUHGbO2pBuutN1DU5qUwGqh2/exec'
+  comment: 'https://script.google.com/macros/s/AKfycbziHIdVkqXG_zVHB9_NZ1TnZlt2RoneqWL1JRqambljlUHGbO2pBuutN1DU5qUwGqh2/exec',
+  /* script des statistiques (le même que Mes recettes) ; vide = aucun suivi */
+  stats: 'https://script.google.com/macros/s/AKfycbwbubCebmWiFyaQbT0CgBXd83glv9_hEHc5u9IYhfpECA1Swl5hDSUq8yxCs4Sr_hPjCw/exec'
 };
 /* Couleurs des catégories de « Mes recettes » */
 const MINE_COLORS = {

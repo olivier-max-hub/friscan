@@ -270,7 +270,7 @@ body.v-scan .chef-f{display:none}
     <button class="btn" type="submit">Envoyer</button>
     <p class="note" role="status"></p>
   </form>
-  <p>Confidentialité : si tu laisses un commentaire, ton adresse e-mail sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée du tableau des commentaires après 24 heures. Ton message n’est ni affiché dans l’application ni partagé avec d’autres personnes, et tu peux demander sa suppression à tout moment en me contactant. Le contenu de ton frigo reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit.</p>
+  <p>Confidentialité : si tu laisses un commentaire, ton adresse e-mail sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée du tableau des commentaires après 24 heures. Ton message n’est ni affiché dans l’application ni partagé avec d’autres personnes, et tu peux demander sa suppression à tout moment en me contactant. Le contenu de ton frigo reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit. L’application mesure aussi sa fréquentation de façon anonyme (pages consultées, type d’appareil), sans cookie ni donnée personnelle.</p>
 </footer>
 <a class="chef chef-f" id="toqueF" href="#commentaire" draggable="false" hidden><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke="#0f6b78" stroke-width="3" stroke-linejoin="round"><circle cx="30" cy="27" r="16" fill="#fff"/><circle cx="50" cy="19" r="19" fill="#fff"/><circle cx="70" cy="27" r="16" fill="#fff"/><circle cx="50" cy="66" r="28" fill="#fbd9b5"/><rect x="25" y="36" width="50" height="14" rx="5" fill="#d9f0f3"/></g><circle cx="40" cy="65" r="3.2" fill="#1f2a24"/><circle cx="60" cy="65" r="3.2" fill="#1f2a24"/><circle cx="33" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><circle cx="67" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><path d="M38 75Q50 89 62 75" fill="none" stroke="#1f2a24" stroke-width="3" stroke-linecap="round"/></svg><span>Commentaire</span></a>
 
@@ -281,7 +281,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=6"></script>
+<script src="data.js?v=7"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -294,7 +294,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '6';
+const VERSION = '7';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -442,7 +442,7 @@ function renderPills() {
 }
 $('#rapides').addEventListener('click', e => {
   const b = e.target.closest('[data-quick]'); if (!b) return;
-  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté au frigo`);
+  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté au frigo`); track('friscan-ajout', ING[id].n);
 });
 $('#placard').addEventListener('click', e => {
   const b = e.target.closest('[data-pl]'); if (!b) return;
@@ -464,7 +464,7 @@ sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
   const name = b.dataset.s ? ING[id].n : addIn.value.trim();
-  addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`);
+  addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`); track('friscan-ajout', id ? ING[id].n : 'autre produit');
   addIn.value = ''; sugg.hidden = true;
 });
 addIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const f = sugg.querySelector('button'); if (f) f.click(); } if (e.key === 'Escape') sugg.hidden = true; });
@@ -505,7 +505,7 @@ function recCard(r, a) {
 function mineCard(m, a) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
-  return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" style="--c1:${c1};--c2:${c2}">
+  return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}" style="--c1:${c1};--c2:${c2}">
     <span><b>${esc(m.n)}</b><small>📖 Mes recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
     ${a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''}</span>
     <span class="thumb">${img}<span>📖</span></span></a>`;
@@ -537,14 +537,16 @@ function renderRecipes() {
   }
   box.innerHTML = status + list.slice(0, 80).map(x => x.html(x.a)).join('');
 }
-$('#recList').addEventListener('click', e => { const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
+$('#recList').addEventListener('click', e => { const m = e.target.closest('[data-mine-name]'); if (m) track('friscan-mes-recettes', m.dataset.mineName);
+  const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
 function setFilter(f, go) {
+  if (f !== filter) track('friscan-filtre', { ok: 'possibles', presque: 'presque', tout: 'toutes', gaspi: 'anti-gaspi' }[f] || f);
   filter = f; document.querySelectorAll('#filters .chip[data-f]').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === f));
   if (go && location.hash !== '#recettes') location.hash = '#recettes'; else renderRecipes();
 }
 $('#filters').addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
-  if (c.dataset.mine !== undefined) { onlyMine = !onlyMine; c.setAttribute('aria-pressed', onlyMine); renderRecipes(); }
+  if (c.dataset.mine !== undefined) { onlyMine = !onlyMine; if (onlyMine) track('friscan-filtre', 'mes recettes'); c.setAttribute('aria-pressed', onlyMine); renderRecipes(); }
   else setFilter(c.dataset.f);
 });
 
@@ -609,7 +611,7 @@ async function loadMine(force) {
 }
 $('#q').addEventListener('input', renderRecipes);
 
-function renderRecipe(id) {
+function renderRecipe(id, silent) {
   const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
   if (!r) { location.hash = '#recettes'; return; }
   const a = analyse(r); const [c1, c2] = CATS[r.cat];
@@ -639,7 +641,7 @@ function renderRecipe(id) {
       if (c) fridge.splice(c[1], 1);
     }
     save(); renderAll(); location.hash = '#recettes';
-    toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); });
+    toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); }); track('friscan-cuisine', r.n);
   };
   window.scrollTo(0, 0);
 }
@@ -731,12 +733,14 @@ async function lookup(code) {
     bindResult(); return;
   }
   if (!p) {
+    track('friscan-scan', 'produit inconnu');
     res.innerHTML = `<div class="result"><b>Produit inconnu</b><p class="note">Le code ${esc(code)} n’est pas encore dans Open Food Facts. Donne-lui un nom :</p>${resultForm(code, '', '', null, null)}</div>`;
     bindResult(); return;
   }
   const name = (p.product_name_fr || p.product_name || p.generic_name_fr || 'Produit').trim();
   const brand = (p.brands || '').split(',')[0].trim();
   const ing = guessIng(name + ' ' + (p.generic_name_fr || ''), p.categories_tags);
+  track('friscan-scan', ing ? ING[ing].n : 'non reconnu');
   const g = ing ? ING[ing].g : 'inconnu';
   res.innerHTML = `<div class="result" style="--pale:${pale(g)}">
     <div class="top"><div class="pic">${p.image_front_small_url ? `<img src="${esc(p.image_front_small_url)}" alt="">` : (ing ? ING[ing].e : '❓')}</div>
@@ -778,7 +782,7 @@ function route() {
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
   $('#title').textContent = { frigo: 'Mon frigo', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
-  if (v === 'recette') renderRecipe(h.slice(3));
+  if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
   if (v === 'rec') { renderRecipes(); loadMine(); }
   updateSub();
 }
@@ -795,7 +799,27 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) stopC
 
 /* ---------- Commentaire (même fonctionnement que « Mes recettes ») ---------- */
 let currentView = 'frigo';
-function deviceType() { const u = navigator.userAgent; return /iPad|Tablet/i.test(u) ? 'tablette' : /Mobi|Android|iPhone/i.test(u) ? 'mobile' : 'ordinateur'; }
+/* mêmes réglages que « Mes recettes » : appareil Mobile / PC */
+function deviceType() { const ua = navigator.userAgent || ''; return (/Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) || matchMedia('(max-width:699px)').matches) ? 'Mobile' : 'PC'; }
+
+/* ---------- Statistiques anonymes (même fonctionnement que « Mes recettes ») ----------
+   Pas de cookie ni de donnée personnelle. Désactiver sur un appareil : ouvrir l'appli avec ?nostats (réactiver : ?stats).
+   Les événements sont préfixés « friscan- » pour les distinguer de ceux de Mes recettes. */
+function sid_() { const k = 'friscan-sid'; let v = null; try { v = sessionStorage.getItem(k); if (!v) { v = Math.random().toString(36).slice(2, 14); sessionStorage.setItem(k, v); } } catch (e) {} return v || 'x'; }
+function track(ev, d, o) {
+  if (!MES_RECETTES.stats) return;
+  try { if (navigator.doNotTrack === '1' || localStorage.getItem('friscan-nostats')) return; } catch (e) {}
+  const p = { e: ev, d: d || '', device: deviceType(), s: sid_(), l: (navigator.language || '').slice(0, 10), app: 'friscan' }; if (o) p.o = o;
+  try { fetch(MES_RECETTES.stats, { method: 'POST', mode: 'no-cors', keepalive: true, body: new URLSearchParams(p) }).catch(() => {}); } catch (e) {}
+}
+function initStats_() {
+  try { const q = new URLSearchParams(location.search); if (q.has('nostats')) localStorage.setItem('friscan-nostats', '1'); if (q.has('stats')) localStorage.removeItem('friscan-nostats'); } catch (e) {}
+  addEventListener('appinstalled', () => track('friscan-installation'));
+  try { if (sessionStorage.getItem('friscan-visit')) return; sessionStorage.setItem('friscan-visit', '1'); } catch (e) {}
+  let o = 'direct';
+  try { if (matchMedia('(display-mode: standalone)').matches) o = 'appli installée'; else if (document.referrer) { const h = new URL(document.referrer).hostname; if (h && h !== location.hostname) o = h; } } catch (e) {}
+  track('friscan-visite', '', o);
+}
 function commentContext() {
   if (currentView === 'recette') { const r = RECETTES.find(x => x.id === location.hash.slice(3)); if (r) return 'Friscan · ' + r.n; }
   return 'Friscan · Commentaire général';
@@ -834,13 +858,13 @@ function setupFab(t) {
     b.disabled = true; s.textContent = 'Envoi…';
     const body = new URLSearchParams({ recipe: commentContext(), email: e.value.trim(), comment: t.value.trim(), device: deviceType() });
     fetch(MES_RECETTES.comment, { method: 'POST', mode: 'no-cors', body })
-      .then(() => { store.set('cm', Date.now()); t.value = ''; s.textContent = 'Merci, ton commentaire a été envoyé.'; b.disabled = false; })
+      .then(() => { store.set('cm', Date.now()); t.value = ''; s.textContent = 'Merci, ton commentaire a été envoyé.'; b.disabled = false; track('friscan-commentaire', commentContext()); })
       .catch(() => { s.textContent = 'L’envoi a échoué. Réessaie dans un instant.'; b.disabled = false; });
   });
   const th = $('#toqueH'), tf = $('#toqueF');
   th.hidden = false; tf.hidden = false; th.addEventListener('click', goComment); setupFab(tf);
 })();
-renderAll(); route(); loadMine();
+renderAll(); route(); loadMine(); initStats_();
 $('#version').textContent = `Friscan · version ${VERSION}`;
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* quand une nouvelle version est installée, on recharge une fois pour l'utiliser tout de suite */
