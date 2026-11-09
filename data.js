@@ -241,6 +241,26 @@ const SUBST = {
   sauce_tomate: ['tomate']
 };
 
+/* ───────────────────────────────────────────────────────────────────────────
+   Correctif : « bacon » devient une famille à part dans Friscan.
+   Avant, « bacon » était un mot-clé de la famille « Lardons » : un bacon ajouté
+   au frigo s'affichait donc « Lardons ».
+   À coller dans data.js, juste après la ligne « }; » qui ferme « const SUBST = { … »
+   (avant la ligne « const RAPIDES = … »).
+   ─────────────────────────────────────────────────────────────────────────── */
+(function () {
+  /* Nouvelle famille Bacon */
+  ING.bacon = { n: 'Bacon', e: '🥓', g: 'viande', k: ['bacon'], t: ['en:bacon'] };
+ 
+  /* On retire « bacon » de la famille Lardons (mot-clé et catégorie Open Food Facts) */
+  ING.lardons.k = ING.lardons.k.filter(k => k !== 'bacon');
+  ING.lardons.t = ING.lardons.t.filter(t => t !== 'en:bacon');
+ 
+  /* Équivalence : une recette qui demande des lardons accepte du bacon, et inversement */
+  SUBST.lardons = [...(SUBST.lardons || []), 'bacon'];
+  SUBST.bacon   = [...(SUBST.bacon   || []), 'lardons'];
+})();
+
 /* Placard coché par défaut au premier lancement */
 const PLACARD_DEFAUT = ['sel_poivre', 'huile', 'oignon', 'ail', 'farine', 'sucre', 'epices'];
 
