@@ -171,6 +171,56 @@ const ING = {
   miel:          { n: 'Miel',               e: '🍯', g: 'sucre',    k: ['miel'], t: ['en:honeys'], p: 1 }
 };
 
+/* ───────────────────────────────────────────────────────────────────────────
+   Ajout des ingrédients des recettes dans la base d'aliments de Friscan.
+   À coller dans data.js, juste après la ligne « }; » qui ferme « const ING = { … »
+   (avant le commentaire « Équivalences : si la recette demande X… »).
+   Les 246 ingrédients de la liste sont reconnus : 16 nouvelles familles + mots-clés
+   ajoutés à 14 familles existantes. Rien n'est supprimé ni modifié dans l'existant.
+   ─────────────────────────────────────────────────────────────────────────── */
+(function () {
+  /* Nouvelles familles (mêmes champs que les autres : n, e, g, k, t) */
+  Object.assign(ING, {
+    eau:           { n: 'Eau',                          e: '💧', g: 'epicerie', k: ['eau ', 'eau minerale', 'eau de source', 'eau plate', 'eau gazeuse', 'evian', 'volvic', 'badoit', 'cristaline', 'vittel', 'contrex', 'perrier'], t: ['en:waters', 'en:spring-waters'] },
+    fecule:        { n: 'Fécule / Maïzena',             e: '🌽', g: 'epicerie', k: ['fecule', 'maizena', 'amidon', 'tapioca'], t: ['en:starches', 'en:corn-starches'] },
+    patisserie:    { n: 'Aides pâtissières',            e: '🧁', g: 'epicerie', k: ['agar agar', 'gelatine', 'bicarbonate', 'colorant alimentaire', 'colorant'], t: ['en:gelatins', 'en:baking-sodas', 'en:food-colorings'] },
+    aromes:        { n: 'Arômes & extraits',            e: '🌸', g: 'epicerie', k: ['vanille ', 'extrait de vanille', 'gousse de vanille', 'vanille en poudre', 'vanille liquide', 'arome vanille', 'extrait d amande', 'arome d amande', 'eau de fleur d oranger', 'fleur d oranger', 'eau de rose', 'essence d anis', 'arome naturel'], t: ['en:flavourings', 'en:vanilla-extracts'] },
+    graines:       { n: 'Graines (sésame, lin, pavot…)', e: '🌱', g: 'epicerie', k: ['graine de sesame', 'graines de sesame', 'graine de lin', 'graines de lin', 'graine de pavot', 'graines de pavot', 'graine de tournesol', 'graines de tournesol', 'graine de courge', 'graines de courge', 'graine de coriandre', 'graine de fenouil', 'graine de moutarde', 'graines de chia', 'graine de chia'], t: ['en:seeds', 'en:sesame-seeds', 'en:flax-seeds'] },
+    alcool:        { n: 'Alcools de cuisine',           e: '🥃', g: 'epicerie', k: ['rhum', 'cognac', 'kirsch', 'amaretto', 'porto', 'vermouth', 'armagnac', 'calvados', 'whisky', 'eau de vie', 'grand marnier', 'cointreau', 'marsala'], t: ['en:spirits', 'en:liqueurs', 'en:ports'] },
+    sauces_asie:   { n: 'Sauces d’Asie & condiments',   e: '🥢', g: 'epicerie', k: ['sauce d huitre', 'sauce huitre', 'sauce de poisson', 'nuoc mam', 'nuoc-mam', 'nam pla', 'sauce nem', 'sauce nuoc', 'worcestershire', 'sauce teriyaki', 'sauce hoisin', 'tabasco', 'sriracha', 'sauce chili'], t: ['en:fish-sauces', 'en:oyster-sauces', 'en:worcestershire-sauces'] },
+    rhubarbe:      { n: 'Rhubarbe',                     e: '🌿', g: 'legume',   k: ['rhubarbe'], t: ['en:rhubarbs'] },
+    germes_soja:   { n: 'Germes de soja',               e: '🌱', g: 'legume',   k: ['germe de soja', 'germes de soja', 'pousse de soja', 'pousses de soja'], t: ['en:bean-sprouts'] },
+    brick:         { n: 'Feuilles de brick / filo',     e: '🥟', g: 'frais',    k: ['feuille de brick', 'feuilles de brick', 'brick', 'filo', 'pate a nem'], t: ['en:brik-pastries', 'en:phyllo-doughs'] },
+    abats:         { n: 'Foies & abats',                e: '🍖', g: 'viande',   k: ['foie de lapin', 'foie de volaille', 'foies de volaille', 'foie de veau', 'rognon', 'abats'], t: ['en:offal'] },
+    fruits_de_mer: { n: 'Fruits de mer & coquillages',  e: '🦪', g: 'viande',   k: ['fruits de mer', 'coquillage', 'noix de saint jacques', 'noix de saint-jacques', 'saint jacques', 'saint-jacques', 'huitre', 'bulot', 'bigorneau', 'palourde', 'crabe', 'homard', 'langoustine', 'tourteau', 'ecrevisse'], t: ['en:seafood', 'en:oysters', 'en:crabs'] },
+    quenelle:      { n: 'Quenelles',                    e: '🐟', g: 'frais',    k: ['quenelle'], t: ['en:quenelles'] },
+    palette:       { n: 'Palette fumée / demi-sel',     e: '🍖', g: 'viande',   k: ['palette fumee', 'palette demi sel', 'palette de porc'], t: ['en:smoked-pork-shoulders'] },
+    zeste_confit:  { n: 'Zestes & fruits confits',      e: '🍊', g: 'sucre',    k: ['zeste confit', 'zestes confits', 'fruits confits', 'orangeat', 'citronnat'], t: ['en:candied-fruits'] },
+    caramel:       { n: 'Caramel (sauce)',              e: '🍮', g: 'sucre',    k: ['caramel ', 'sauce caramel', 'caramel liquide', 'caramel au beurre sale'], t: ['en:caramels', 'en:caramel-sauces'] }
+  });
+ 
+  /* Mots-clés supplémentaires pour des familles qui existent déjà */
+  const plus = {
+    fruits_secs:   ['abricot sec', 'raisin sec', 'pignon'],
+    epices:        ['cardamome', 'clou de girofle', 'girofle', 'anis etoile', 'badiane', 'muscade', 'noix de muscade', 'curcuma', 'ras el hanout', 'poudre de chili', 'piment en poudre', 'piment de cayenne', 'cayenne', 'safran', 'quatre epices'],
+    fruits_rouges: ['airelle', 'canneberge', 'cranberry'],
+    creme:         ['creme', 'chantilly'],
+    cafe:          ['chicoree'],
+    herbes:        ['herbes aromatiques', 'cive', 'cebette', 'ciboule'],
+    lardons:       ['lard', 'poitrine fumee'],
+    boeuf:         ['steak'],
+    bleu:          ['saint agur', 'st agur'],
+    biscuits:      ['speculoo'],
+    nouilles:      ['vermicelle'],
+    vin_blanc:     ['sylvaner'],
+    sauce_tomate:  ['concentre de tomate', 'double concentre'],
+    pois_chiches:  ['aquafaba']
+  };
+  for (const [id, mots] of Object.entries(plus)) {
+    if (ING[id]) ING[id].k.push(...mots);
+  }
+})();
+
 /* Équivalences : si la recette demande X, ces produits font aussi l'affaire */
 const SUBST = {
   fromage_rape: ['fromage', 'parmesan', 'raclette'],
