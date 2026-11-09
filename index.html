@@ -354,7 +354,14 @@ addIn.addEventListener('input', () => {
 sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
-  const name = b.dataset.s ? ING[id].n : addIn.value.trim();
+  const typed = addIn.value.trim(), t = norm(typed).trim();
+  let name = typed;
+  if (b.dataset.s) {
+    const d = ING[id];
+    const kw = d.k.map(k => k.trim()).find(k => norm(k).trim().startsWith(t));
+    const base = !kw ? '' : (norm(kw).trim() === t ? typed : kw);
+    name = (!t || norm(d.n).includes(t) || !kw) ? d.n : base.charAt(0).toUpperCase() + base.slice(1);
+  }
   addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`);
   addIn.value = ''; sugg.hidden = true;
 });
