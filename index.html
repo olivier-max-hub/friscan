@@ -41,6 +41,7 @@ h1 svg{width:30px;height:30px}
 .sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.18);overflow:hidden;z-index:20;color:var(--ink)}
 .sugg button{display:flex;gap:10px;align-items:center;width:100%;border:0;background:none;padding:10px 14px;text-align:left;cursor:pointer;font-size:1.05rem}
 .sugg button+button{border-top:1px solid var(--line)}
+.sugg small{margin-left:auto;color:var(--mute);font-size:.85rem;white-space:nowrap}
 .sugg button:hover,.sugg button:focus-visible{background:#eef8fb;outline:none}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
@@ -300,7 +301,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '10';
+const VERSION = '11';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -518,15 +519,24 @@ const addIn = $('#add'), sugg = $('#sugg');
 addIn.addEventListener('input', () => {
   const v = norm(addIn.value).trim();
   if (!v) { sugg.hidden = true; return; }
-  const hits = Object.entries(ING).filter(([, d]) => norm(d.n).includes(v) || d.k.some(k => norm(k).trim().startsWith(v))).slice(0, 5);
-  sugg.innerHTML = hits.map(([id, d]) => `<button data-s="${id}">${d.e} ${esc(d.n)}</button>`).join('') +
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  const typed = addIn.value.trim();
+  /* trouvé par son nom : on garde le nom de l'ingrédient ;
+     trouvé par un mot-clé (ex. « piment d'Espelette » -> Épices) : on garde le nom du produit, l'ingrédient s'affiche en petit */
+  const hits = Object.entries(ING).filter(([, d]) => norm(d.n).includes(v) || d.k.some(k => norm(k).trim().startsWith(v))).slice(0, 5)
+    .map(([id, d]) => {
+      if (norm(d.n).includes(v)) return { id, d, label: d.n, sub: '' };
+      const k = d.k.find(x => norm(x).trim().startsWith(v)), kn = norm(k).trim();
+      return { id, d, label: v === kn || v.startsWith(kn + ' ') ? cap(typed) : cap(k.trim()), sub: d.n };
+    });
+  sugg.innerHTML = hits.map(h => `<button data-s="${h.id}" data-n="${esc(h.label)}">${h.d.e} ${esc(h.label)}${h.sub ? `<small>${esc(h.sub)}</small>` : ''}</button>`).join('') +
     `<button data-s="">➕ Ajouter « ${esc(addIn.value.trim())} »</button>`;
   sugg.hidden = false;
 });
 sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
-  const name = b.dataset.s ? ING[id].n : addIn.value.trim();
+  const name = b.dataset.s ? (b.dataset.n || ING[id].n) : addIn.value.trim();
   addItem({ name, ing: id, other: !id }); toast(`${name} ajouté à tes réserves`); track('friscan-ajout', id ? ING[id].n : 'autre produit');
   addIn.value = ''; sugg.hidden = true;
 });
