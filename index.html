@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Friscan</title>
-<meta name="description" content="Scanne ton frigo et prépare un bon repas">
+<meta name="description" content="Scanne tes réserves, frigo et placard, et prépare un bon repas">
 <meta name="theme-color" content="#0f6b78">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -67,6 +67,12 @@ h2:first-child{margin-top:4px}
 .tag{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.75);font-size:.9rem;font-weight:700}
 .tag.ok{color:var(--ok)}
 .tag.ko{color:var(--ko)}
+.rwrap{display:grid;gap:0}
+.addmiss{justify-self:end;margin:-6px 14px 0 0;position:relative;border:0;border-radius:0 0 14px 14px;background:var(--acc);color:#fff;font:inherit;font-weight:700;font-size:.95rem;padding:6px 14px 7px;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.addmiss:disabled{background:#cdeccb;color:var(--deep);cursor:default}
+.addmiss:focus-visible{outline:3px solid var(--deep);outline-offset:2px}
+.remind{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+.remind .note{flex:1 1 200px;margin:0}
 
 /* Frigo */
 .items{display:grid;gap:8px}
@@ -191,7 +197,7 @@ body.v-scan .chef-f{display:none}
 <body>
 <header>
   <div class="wrap">
-    <h1><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="4" width="36" height="56" rx="8" fill="#fff"/><path d="M14 24h36" stroke="#0f6b78" stroke-width="3"/><path d="M20 12v6M20 30v8" stroke="#0f6b78" stroke-width="3" stroke-linecap="round"/><path d="M27 40v12M31 40v12M34 40v12M38 40v12M42 40v12" stroke="#ffb899" stroke-width="2"/></svg><span id="title">Mon frigo</span></h1>
+    <h1><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="4" width="36" height="56" rx="8" fill="#fff"/><path d="M14 24h36" stroke="#0f6b78" stroke-width="3"/><path d="M20 12v6M20 30v8" stroke="#0f6b78" stroke-width="3" stroke-linecap="round"/><path d="M27 40v12M31 40v12M34 40v12M38 40v12M42 40v12" stroke="#ffb899" stroke-width="2"/></svg><span id="title">Mes réserves</span></h1>
     <a class="chef" id="toqueH" href="#commentaire" hidden><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke="#0f6b78" stroke-width="3" stroke-linejoin="round"><circle cx="30" cy="27" r="16" fill="#fff"/><circle cx="50" cy="19" r="19" fill="#fff"/><circle cx="70" cy="27" r="16" fill="#fff"/><circle cx="50" cy="66" r="28" fill="#fbd9b5"/><rect x="25" y="36" width="50" height="14" rx="5" fill="#d9f0f3"/></g><circle cx="40" cy="65" r="3.2" fill="#1f2a24"/><circle cx="60" cy="65" r="3.2" fill="#1f2a24"/><circle cx="33" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><circle cx="67" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><path d="M38 75Q50 89 62 75" fill="none" stroke="#1f2a24" stroke-width="3" stroke-linecap="round"/></svg><span>Commentaire</span></a>
     <p class="sub" id="sub">&nbsp;</p>
     <div id="hdrFrigo" class="field">
@@ -236,7 +242,7 @@ body.v-scan .chef-f{display:none}
         <div class="laser" id="laser" hidden></div>
         <div class="idle" id="idle">
           <div>
-            <p style="font-size:1.15rem;margin:0 0 14px">Vise le code-barres d’un produit<br>pour l’ajouter à ton frigo.</p>
+            <p style="font-size:1.15rem;margin:0 0 14px">Vise le code-barres d’un produit<br>pour l’ajouter à tes réserves.</p>
             <button class="btn" id="startCam">📷 Ouvrir la caméra</button>
           </div>
         </div>
@@ -275,7 +281,7 @@ body.v-scan .chef-f{display:none}
 <a class="chef chef-f" id="toqueF" href="#commentaire" draggable="false" hidden><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g stroke="#0f6b78" stroke-width="3" stroke-linejoin="round"><circle cx="30" cy="27" r="16" fill="#fff"/><circle cx="50" cy="19" r="19" fill="#fff"/><circle cx="70" cy="27" r="16" fill="#fff"/><circle cx="50" cy="66" r="28" fill="#fbd9b5"/><rect x="25" y="36" width="50" height="14" rx="5" fill="#d9f0f3"/></g><circle cx="40" cy="65" r="3.2" fill="#1f2a24"/><circle cx="60" cy="65" r="3.2" fill="#1f2a24"/><circle cx="33" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><circle cx="67" cy="73" r="4" fill="#f6a6a0" opacity=".75"/><path d="M38 75Q50 89 62 75" fill="none" stroke="#1f2a24" stroke-width="3" stroke-linecap="round"/></svg><span>Commentaire</span></a>
 
 <nav aria-label="Navigation">
-  <a href="#frigo" data-v="frigo">🧊 Frigo</a>
+  <a href="#frigo" data-v="frigo">🧺 Réserves</a>
   <a href="#scan" data-v="scan" class="scanbtn"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#e3f6f8"/><path d="M11 13v14M14 13v14M16.5 13v14M20 13v14M23 13v14M25.5 13v14M29 13v14" stroke="#0f6b78" stroke-width="1.8"/><path d="M8 20h24" stroke="#ff8a65" stroke-width="2"/></svg>Scanner</a>
   <a href="#recettes" data-v="rec">🍳 Recettes</a>
 </nav>
@@ -294,14 +300,60 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '9';
+const VERSION = '10';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
 fridge = fridge.filter(f => f && f.name).map(f => (f.ing && !ING[f.ing] ? { ...f, ing: null } : f));
 let placard = store.get('placard', PLACARD_DEFAUT);
 let filter = 'ok';
-const save = () => { store.set('fridge', fridge); store.set('placard', placard); };
+const save = () => { store.set('fridge', fridge); store.set('placard', placard); syncDlc(); };
+/* ---------- rappels de péremption ---------- */
+/* le service worker ne lit pas localStorage : on lui laisse les dates dans le cache */
+function syncDlc() {
+  if (!('caches' in window)) return;
+  const list = fridge.filter(f => f.dlc).map(f => ({ n: f.name, d: f.dlc }));
+  caches.open('friscan-rappels').then(c => c.put('dlc.json', new Response(JSON.stringify(list), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
+}
+function dueSoon() { return fridge.filter(f => { const n = daysLeft(f); return n !== null && n >= 0 && n <= 1; }).sort((a, b) => daysLeft(a) - daysLeft(b)); }
+function notifyDue() {
+  if (!('Notification' in window) || Notification.permission !== 'granted' || !navigator.serviceWorker) return;
+  const due = dueSoon(); const day = isoPlus(0);
+  if (!due.length || store.get('notified', '') === day) return;
+  store.set('notified', day);
+  navigator.serviceWorker.ready.then(r => r.showNotification('⏰ À consommer vite', {
+    body: due.slice(0, 4).map(f => `${f.name} (${dlcLabel(daysLeft(f), f.dlc)})`).join(' · ') + (due.length > 4 ? ` · +${due.length - 4}` : ''),
+    icon: 'icon-192.png', badge: 'icon-192.png', tag: 'friscan-dlc', data: { url: './#recettes' }
+  })).catch(() => {});
+}
+async function enableNotif() {
+  try {
+    const p = await Notification.requestPermission();
+    if (p !== 'granted') { toast('Rappels refusés. Tu peux utiliser l’agenda à la place.'); renderFridge(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    /* Android (appli installée) : vérification chaque jour, même appli fermée */
+    if (reg.periodicSync) { try { await reg.periodicSync.register('friscan-dlc', { minInterval: 12 * 3600e3 }); } catch (e) {} }
+    toast('🔔 Rappels activés'); track('friscan-rappels', 'notifications'); syncDlc(); renderFridge(); notifyDue();
+  } catch (e) { toast('Rappels indisponibles sur cet appareil. Utilise l’agenda.'); }
+}
+/* fichier agenda (.ics) : rappel la veille à 9 h, valable sur iPhone, Android et ordinateur */
+function icsFor(list) {
+  if (!list.length) return;
+  const pad = n => String(n).padStart(2, '0'), stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const ev = list.map(f => {
+    const [y, m, d] = f.dlc.split('-').map(Number); const v = new Date(y, m - 1, d - 1, 9, 0);
+    const dt = `${v.getFullYear()}${pad(v.getMonth() + 1)}${pad(v.getDate())}T090000`;
+    const txt = `${f.name} à consommer avant le ${new Date(y, m - 1, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`.replace(/[,;\\]/g, ' ');
+    return ['BEGIN:VEVENT', `UID:${f.uid}-${f.dlc}@friscan`, `DTSTAMP:${stamp}`, `DTSTART:${dt}`, 'DURATION:PT15M', `SUMMARY:⏰ ${txt}`,
+      'DESCRIPTION:Rappel Friscan. Ouvre Friscan pour voir les recettes anti-gaspi.', 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${txt}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT'].join('\r\n');
+  });
+  const body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Friscan//FR', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar;charset=utf-8' }));
+  a.download = list.length > 1 ? 'rappels-friscan.ics' : `rappel-${slugify(list[0].name.replace(/œ/gi, 'oe')) || 'produit'}.ics`;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast(list.length > 1 ? `📅 ${list.length} rappels prêts pour ton agenda` : '📅 Rappel prêt pour ton agenda'); track('friscan-rappels', 'agenda');
+}
 
 /* ---------- reconnaissance d'un produit -> ingrédient ---------- */
 function guessIng(name, tags) {
@@ -380,7 +432,7 @@ const dlcButtons = attr => `<button type="button" class="mini" ${attr}="2">+2 j<
 function renderFridge() {
   const box = $('#fridgeList');
   if (!fridge.length) {
-    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Ton frigo est vide</b><small>Scanne ton premier produit ou ajoute-le à la main.</small></span><span class="ill">🧊</span></a></div>`;
+    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Tes réserves sont vides</b><small>Scanne ton premier produit ou ajoute-le à la main, frigo ou placard.</small></span><span class="ill">🧊</span></a></div>`;
     return;
   }
   const urg = urgentItems();
@@ -391,7 +443,13 @@ function renderFridge() {
   for (const f of fridge) { const g = f.ing ? ING[f.ing].g : f.other ? 'autre' : 'inconnu'; (byG[g] ||= []).push(f); }
   /* dans chaque famille : les dates les plus proches d'abord */
   const ord = f => { const n = daysLeft(f); return n === null ? 1e6 : n; };
-  box.innerHTML = banner + Object.keys(GROUPS).filter(g => byG[g]).map(g => `
+  const dated = fridge.some(f => f.dlc && daysLeft(f) >= 0);
+  const canNotif = 'Notification' in window && 'serviceWorker' in navigator;
+  const remind = dated ? `<div class="remind"><p class="note">🔔 Sois prévenu avant qu’un produit ne périme.</p>
+    ${canNotif && Notification.permission !== 'granted' && Notification.permission !== 'denied' ? '<button type="button" class="mini" data-remind="notif">Activer les rappels</button>' : ''}
+    ${canNotif && Notification.permission === 'granted' ? '<span class="tag ok">✓ Rappels activés</span>' : ''}
+    <button type="button" class="mini" data-remind="ics">📅 Tout ajouter à mon agenda</button></div>` : '';
+  box.innerHTML = banner + remind + Object.keys(GROUPS).filter(g => byG[g]).map(g => `
     <h2 style="--cat:${GROUPS[g].c}">${GROUPS[g].n} · ${byG[g].length}</h2>
     <div class="items">${byG[g].sort((a, b) => ord(a) - ord(b)).map(f => {
       const d = f.ing && ING[f.ing];
@@ -402,7 +460,8 @@ function renderFridge() {
           <select data-fix="${f.uid}" aria-label="Quel ingrédient est-ce ?">${ingOptions(f.ing || (f.other ? '_autre' : ''))}</select>
           ${open ? `<div class="row2"><label for="dlc-${f.uid}">À consommer avant</label>
             <input type="date" id="dlc-${f.uid}" data-date="${f.uid}" value="${esc(f.dlc || '')}" min="${isoPlus(-30)}"></div>
-            <div class="row2">${dlcButtons('data-plus')}${f.dlc ? '<button type="button" class="mini" data-plus="x">Sans date</button>' : ''}</div>` : ''}
+            <div class="row2">${dlcButtons('data-plus')}${f.dlc ? '<button type="button" class="mini" data-plus="x">Sans date</button>' : ''}</div>
+            ${f.dlc ? `<div class="row2"><button type="button" class="mini" data-ics="${f.uid}">📅 Rappel dans mon agenda</button></div>` : ''}` : ''}
         </div>` : '';
       return `<div class="item${open ? ' open' : ''}" data-uid="${f.uid}" style="--pale:${pale(g)}">
         <div class="pic">${pic}</div>
@@ -422,6 +481,10 @@ $('#fridgeList').addEventListener('click', e => {
     toast(`${it.name} retiré`, () => { fridge.splice(i, 0, it); save(); renderAll(); });
     return;
   }
+  const ics = e.target.closest('[data-ics]');
+  if (ics) { const f = fridge.find(x => x.uid === ics.dataset.ics); if (f) icsFor([f]); return; }
+  const rem = e.target.closest('[data-remind]');
+  if (rem) { if (rem.dataset.remind === 'notif') enableNotif(); else icsFor(fridge.filter(x => x.dlc && daysLeft(x) >= 0)); return; }
   const plus = e.target.closest('[data-plus]');
   if (plus) { const f = itemOf(plus); if (f) { f.dlc = plus.dataset.plus === 'x' ? null : isoPlus(+plus.dataset.plus); save(); renderAll(); } return; }
   if (e.target.closest('.edit')) return;
@@ -442,7 +505,7 @@ function renderPills() {
 }
 $('#rapides').addEventListener('click', e => {
   const b = e.target.closest('[data-quick]'); if (!b) return;
-  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté au frigo`); track('friscan-ajout', ING[id].n);
+  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté à tes réserves`); track('friscan-ajout', ING[id].n);
 });
 $('#placard').addEventListener('click', e => {
   const b = e.target.closest('[data-pl]'); if (!b) return;
@@ -464,7 +527,7 @@ sugg.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const id = b.dataset.s || guessIng(addIn.value, []);
   const name = b.dataset.s ? ING[id].n : addIn.value.trim();
-  addItem({ name, ing: id, other: !id }); toast(`${name} ajouté au frigo`); track('friscan-ajout', id ? ING[id].n : 'autre produit');
+  addItem({ name, ing: id, other: !id }); toast(`${name} ajouté à tes réserves`); track('friscan-ajout', id ? ING[id].n : 'autre produit');
   addIn.value = ''; sugg.hidden = true;
 });
 addIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const f = sugg.querySelector('button'); if (f) f.click(); } if (e.key === 'Escape') sugg.hidden = true; });
@@ -491,6 +554,23 @@ function analyseMine(m) {
   const missing = m.ings.filter(i => !have(i));
   return { missing, used: m.ings.filter(inFridge).length, unk: m.unk, urgent: urgentUsed(m.ings), okCount: m.ings.length - missing.length, total: m.ings.length };
 }
+/* ---------- liste de courses Cookapli (même site : olivier-max-hub.github.io) ---------- */
+const COURSES_URL = '../cookapli/courses.html';
+function addToCourses(items, src) {
+  let l; try { l = JSON.parse(localStorage.getItem('cookapli.courses') || '[]'); } catch (e) { l = []; }
+  if (!Array.isArray(l)) l = [];
+  const before = JSON.stringify(l);
+  for (const { id, qty } of items) {
+    const same = l.find(x => !x.done && x.ing === id);
+    if (same) { if (qty && !same.qty.includes(qty)) same.qty.push(qty); if (src && !same.src.includes(src)) same.src.push(src); }
+    else l.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: ING[id].n, raw: ING[id].n, ing: id, qty: qty ? [qty] : [], src: src ? [src] : [], done: false, added: Date.now() });
+  }
+  try { localStorage.setItem('cookapli.courses', JSON.stringify(l)); } catch (e) {}
+  const n = items.length;
+  toast(`🛒 ${n} ingrédient${n > 1 ? 's' : ''} ajouté${n > 1 ? 's' : ''} à ta liste de courses`, () => { try { localStorage.setItem('cookapli.courses', before); } catch (e) {} });
+  track('friscan-courses', src);
+}
+const missBtn = (a, key) => a.missing.length ? `<button type="button" class="addmiss" data-miss="${esc(key)}">🛒 Ajouter ${a.missing.length > 1 ? `les ${a.missing.length} manquants` : 'le manquant'} à ma liste</button>` : '';
 function tags(a, mine) {
   let t = a.missing.length === 0
     ? `<span class="tag ok">✓ ${mine && a.unk ? 'Tu as tout ce que Friscan reconnaît' : 'Tu as tout'}</span>`
@@ -500,7 +580,7 @@ function tags(a, mine) {
 }
 function recCard(r, a) {
   const [c1, c2] = CATS[r.cat];
-  return `<a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span><span class="ill">${r.e}</span></a>`;
+  return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span><span class="ill">${r.e}</span></a>${missBtn(a, 'r:' + r.id)}</div>`;
 }
 function mineCard(m, a) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
@@ -508,7 +588,7 @@ function mineCard(m, a) {
   return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}" style="--c1:${c1};--c2:${c2}">
     <span><b>${esc(m.n)}</b><small>📖 Mes recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
     ${a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''}</span>
-    <span class="thumb">${img}<span>📖</span></span></a>`;
+    <span class="thumb">${img}<span>📖</span></span></a>`.replace(/^/, '<div class="rwrap">') + missBtn(a, 'm:' + m.slug) + '</div>';
 }
 let onlyMine = false;
 function renderRecipes() {
@@ -528,7 +608,7 @@ function renderRecipes() {
   const box = $('#recList');
   const status = mine.state ? `<p class="note src">${mine.state}</p>` : '';
   if (!list.length) {
-    const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo pour voir les recettes possibles.', '#scan', '📷']
+    const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo et ton placard pour voir les recettes possibles.', '#scan', '📷']
       : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
       : ['Aucune recette trouvée', 'Essaie un autre mot ou le filtre « Toutes ».', null, '🔍'];
@@ -537,7 +617,16 @@ function renderRecipes() {
   }
   box.innerHTML = status + list.slice(0, 80).map(x => x.html(x.a)).join('');
 }
-$('#recList').addEventListener('click', e => { const m = e.target.closest('[data-mine-name]'); if (m) track('friscan-mes-recettes', m.dataset.mineName);
+function missingOf(key) {
+  if (key.startsWith('r:')) { const r = RECETTES.find(x => x.id === key.slice(2)); if (!r) return null; const a = analyse(r);
+    return { src: r.n, items: a.missing.map(id => { const x = r.ing.find(y => y[0] === id); return { id, qty: x && x[1] ? x[1] : '' }; }) }; }
+  const m = mine.list.find(x => x.slug === key.slice(2)); if (!m) return null;
+  return { src: m.n, items: analyseMine(m).missing.map(id => ({ id, qty: '' })) };
+}
+$('#recList').addEventListener('click', e => {
+  const mb = e.target.closest('[data-miss]');
+  if (mb) { const x = missingOf(mb.dataset.miss); if (x && x.items.length) { addToCourses(x.items, x.src); mb.disabled = true; mb.textContent = '✓ Ajouté à ta liste de courses'; } return; }
+  const m = e.target.closest('[data-mine-name]'); if (m) track('friscan-mes-recettes', m.dataset.mineName);
   const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
 function setFilter(f, go) {
   if (f !== filter) track('friscan-filtre', { ok: 'possibles', presque: 'presque', tout: 'toutes', gaspi: 'anti-gaspi' }[f] || f);
@@ -629,8 +718,11 @@ function renderRecipe(id, silent) {
       const h = have(i); const cls = h ? 'have' : (opt ? 'opt' : 'miss');
       return `<li class="${cls}"><span class="m">${h ? '✓' : opt ? '·' : '✗'}</span><span>${qty ? esc(qty) + ' – ' : ''}${esc(ING[i].n)}${opt ? ' <em>(facultatif)</em>' : ''}${!h && !opt ? ' <em>à acheter</em>' : ''}</span></li>`;
     }).join('')}</ul></div></div>
+    ${a.missing.length ? `<div class="row" style="margin:10px 0 0;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="toCourses">🛒 Ajouter ${a.missing.length > 1 ? `les ${a.missing.length} ingrédients manquants` : 'l’ingrédient manquant'} à ma liste de courses</button><a class="btn alt" href="${COURSES_URL}">Voir ma liste</a></div>` : ''}
     <div class="rsec"><h3>Préparation</h3><div class="rsteps">${r.steps.map((s, n) => `<div class="rstep"><span class="rnum">${n + 1}</span><p>${esc(s)}</p></div>`).join('')}</div></div>
-    ${fromFridge.length ? `<div class="card"><h3>Bon appétit !</h3><p class="note">Une fois le plat préparé, retire du frigo les produits utilisés : ${esc(fromFridge.map(x => ING[x[0]].n.toLowerCase()).join(', '))}.</p><div><button class="btn" id="cooked">🍽️ J’ai cuisiné ça</button></div></div>` : ''}`;
+    ${fromFridge.length ? `<div class="card"><h3>Bon appétit !</h3><p class="note">Une fois le plat préparé, retire de tes réserves les produits utilisés : ${esc(fromFridge.map(x => ING[x[0]].n.toLowerCase()).join(', '))}.</p><div><button class="btn" id="cooked">🍽️ J’ai cuisiné ça</button></div></div>` : ''}`;
+  const tc = $('#toCourses');
+  if (tc) tc.onclick = () => { const x = missingOf('r:' + r.id); addToCourses(x.items, x.src); tc.disabled = true; tc.textContent = '✓ Ajouté à ta liste de courses'; };
   const b = $('#cooked');
   if (b) b.onclick = () => {
     const before = fridge.slice(); const ids = new Set(fromFridge.map(x => x[0]));
@@ -641,7 +733,7 @@ function renderRecipe(id, silent) {
       if (c) fridge.splice(c[1], 1);
     }
     save(); renderAll(); location.hash = '#recettes';
-    toast('Frigo mis à jour', () => { fridge = before; save(); renderAll(); }); track('friscan-cuisine', r.n);
+    toast('Réserves mises à jour', () => { fridge = before; save(); renderAll(); }); track('friscan-cuisine', r.n);
   };
   window.scrollTo(0, 0);
 }
@@ -755,7 +847,7 @@ function resultForm(code, name, brand, ing, img) {
     <select id="ring">${ingOptions(ing)}</select>
     <label for="rdlc">À consommer avant <span class="note">(facultatif, regarde l’emballage)</span></label>
     <div class="row" style="gap:6px;align-items:center"><input type="date" id="rdlc" min="${isoPlus(-30)}">${dlcButtons('data-rplus')}</div>
-    <div class="row"><button class="btn" type="submit">＋ Ajouter au frigo</button><button class="btn alt" type="button" id="rescan">Scanner un autre</button></div></form>`;
+    <div class="row"><button class="btn" type="submit">＋ Ajouter aux réserves</button><button class="btn alt" type="button" id="rescan">Scanner un autre</button></div></form>`;
 }
 function bindResult() {
   const f = $('#rform');
@@ -763,7 +855,7 @@ function bindResult() {
     e.preventDefault();
     const name = $('#rname').value.trim() || 'Produit'; const v = $('#ring').value; const ing = v === '_autre' ? null : (v || guessIng(name, []));
     addItem({ name, ing, other: v === '_autre', code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null, dlc: $('#rdlc').value || null });
-    toast(`${name} ajouté au frigo`);
+    toast(`${name} ajouté à tes réserves`);
     $('#result').innerHTML = ''; startCam();
   });
   $('#rescan').onclick = () => { $('#result').innerHTML = ''; startCam(); };
@@ -780,7 +872,7 @@ function route() {
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
-  $('#title').textContent = { frigo: 'Mon frigo', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
+  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
   if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
   if (v === 'rec') { renderRecipes(); loadMine(); }
@@ -791,7 +883,7 @@ function updateSub() {
   const ok = RECETTES.filter(r => { const a = analyse(r); return !a.missing.length && a.used; }).length
     + mine.list.filter(m => { const a = analyseMine(m); return !a.missing.length && !a.unk && a.used; }).length;
   const u = urgentItems().length;
-  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans ton frigo · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}` + (u ? ` · ⏰ ${u} à consommer vite` : '');
+  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans tes réserves · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}` + (u ? ` · ⏰ ${u} à consommer vite` : '');
 }
 function renderAll() { renderFridge(); renderPills(); if (!$('#v-rec').hidden) renderRecipes(); updateSub(); }
 window.addEventListener('hashchange', route);
@@ -822,7 +914,7 @@ function initStats_() {
 }
 function commentContext() {
   if (currentView === 'recette') { const r = RECETTES.find(x => x.id === location.hash.slice(3)); if (r) return 'Friscan · ' + r.n; }
-  if (currentView === 'frigo') return 'Friscan · Mon frigo';
+  if (currentView === 'frigo') return 'Friscan · Mes réserves';
   return 'Friscan · Commentaire général';
 }
 function goComment(ev) {
@@ -865,7 +957,8 @@ function setupFab(t) {
   const th = $('#toqueH'), tf = $('#toqueF');
   th.hidden = false; tf.hidden = false; th.addEventListener('click', goComment); setupFab(tf);
 })();
-renderAll(); route(); loadMine(); initStats_();
+renderAll(); route(); loadMine(); initStats_(); syncDlc(); notifyDue();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) notifyDue(); });
 $('#version').textContent = `Friscan · version ${VERSION}`;
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* quand une nouvelle version est installée, on recharge une fois pour l'utiliser tout de suite */
