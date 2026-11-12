@@ -301,7 +301,7 @@ body.v-scan .chef-f{display:none}
       <input type="text" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
       <button class="btn" type="submit">Envoyer</button>
       <p class="note" role="status"></p>
-      <p class="cm-privacy">Confidentialité : ton commentaire et ton adresse e-mail restent privés, aucun autre visiteur ne les voit. Ton adresse sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée après 24 heures. Tu peux demander la suppression de ton message à tout moment en écrivant à <a href="mailto:contact@cookapli.com">contact@cookapli.com</a>. Le contenu de tes réserves reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit. L’application mesure aussi sa fréquentation de façon anonyme (pages consultées, type d’appareil), sans cookie ni donnée personnelle.</p>
+      <p class="cm-privacy">Confidentialité : ton commentaire et ton adresse e-mail restent privés, aucun autre visiteur ne les voit. Ton adresse sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée après 24 heures. Tu peux demander la suppression de ton message à tout moment. Le contenu de tes réserves reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit. L’application mesure aussi sa fréquentation de façon anonyme (pages consultées, type d’appareil), sans cookie ni donnée personnelle. Pour toute autre question, tu peux envoyer un message à <a href="mailto:contact@cookapli.com">contact@cookapli.com</a>.</p>
     </div>
   </form>
 </footer>
@@ -325,7 +325,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '19';
+const VERSION = '20';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
