@@ -185,6 +185,7 @@ header .wrap{position:relative}
 .cm-toggle .chev{display:inline-block;transition:transform .2s}.cm.open .cm-toggle .chev{transform:rotate(180deg)}
 .cm-body{display:grid;gap:10px}.cm-body[hidden]{display:none}
 .cm-body .note:empty{display:none}
+.cm-privacy a{color:var(--acc);font-weight:700}
 .cm-privacy{margin:4px 0 0;padding:10px 12px;background:#e3f6f8;border-left:4px solid var(--acc);border-radius:10px;color:#000;font-weight:700;font-size:.95rem;line-height:1.35;text-align:left}
 .cm h4{margin:0;font:600 1.1rem Economica,"Arial Narrow",Arial,sans-serif}
 .cm input,.cm textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:16px;font:inherit;background:#fff;color:var(--ink)}
@@ -300,7 +301,7 @@ body.v-scan .chef-f{display:none}
       <input type="text" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
       <button class="btn" type="submit">Envoyer</button>
       <p class="note" role="status"></p>
-      <p class="cm-privacy">Confidentialité : ton commentaire et ton adresse e-mail restent privés, aucun autre visiteur ne les voit. Ton adresse sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée après 24 heures. Tu peux demander la suppression de ton message à tout moment en me contactant. Le contenu de tes réserves reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit. L’application mesure aussi sa fréquentation de façon anonyme (pages consultées, type d’appareil), sans cookie ni donnée personnelle.</p>
+      <p class="cm-privacy">Confidentialité : ton commentaire et ton adresse e-mail restent privés, aucun autre visiteur ne les voit. Ton adresse sert uniquement à te répondre et à t’envoyer un e-mail de remerciement, puis elle est supprimée après 24 heures. Tu peux demander la suppression de ton message à tout moment en écrivant à <a href="mailto:contact@cookapli.com">contact@cookapli.com</a>. Le contenu de tes réserves reste sur ton téléphone ; seuls les codes-barres scannés sont envoyés à Open Food Facts pour trouver le produit. L’application mesure aussi sa fréquentation de façon anonyme (pages consultées, type d’appareil), sans cookie ni donnée personnelle.</p>
     </div>
   </form>
 </footer>
@@ -324,7 +325,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '18';
+const VERSION = '19';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
