@@ -47,7 +47,7 @@ small,.hint,.note,.sub,.meta{font-weight:700}
 .sugg button+button{border-top:1px solid var(--line)}
 .sugg small{margin-left:auto;color:var(--mute);font-size:.9rem;white-space:nowrap}
 .sugg button:hover,.sugg button:focus-visible{background:#eef8fb;outline:none}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0 2px}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;padding:6px 14px;border-radius:99px;font-size:.9rem;cursor:pointer}
 .chip[aria-pressed=true]{background:#e3f6f8;color:var(--deep);border-color:#e3f6f8;font-weight:700}
@@ -222,7 +222,7 @@ body.v-scan .chef-f{display:none}
         <button class="chip" data-f="presque" aria-pressed="false">Presque (1–2 manquants)</button>
         <button class="chip" data-f="tout" aria-pressed="false">Toutes</button>
         <button class="chip" data-f="gaspi" aria-pressed="false">⏰ Anti-gaspi</button>
-        <button class="chip" data-mine aria-pressed="false">📖 Seulement mes recettes</button>
+        <button class="chip" data-mine aria-pressed="false" title="N’affiche que les recettes de ta collection « Mes recettes », sans les recettes rapides de Friscan">📖 Mes recettes uniquement</button>
       </div>
     </div>
   </div>
@@ -311,7 +311,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '15';
+const VERSION = '16';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
