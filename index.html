@@ -49,6 +49,10 @@ small,.hint,.note,.sub,.meta{font-weight:700}
 .sugg button:hover,.sugg button:focus-visible{background:#eef8fb;outline:none}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0 2px}
 .chips::-webkit-scrollbar{display:none}
+#filters{gap:6px}
+#filters .chip{padding:6px 11px}
+@media (max-width:440px){#filters .chip{font-size:.85rem;padding:6px 9px}}
+@media (max-width:350px){#filters{gap:4px}#filters .chip{font-size:.78rem;padding:5px 7px}}
 .chip{flex:0 0 auto;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;padding:6px 14px;border-radius:99px;font-size:.9rem;cursor:pointer}
 .chip[aria-pressed=true]{background:#e3f6f8;color:var(--deep);border-color:#e3f6f8;font-weight:700}
 
@@ -235,10 +239,8 @@ body.v-scan .chef-f{display:none}
       <div class="field"><input id="q" type="search" placeholder="Rechercher une recette" autocomplete="off" aria-label="Rechercher une recette"></div>
       <div class="chips" id="filters">
         <button class="chip" data-f="ok" aria-pressed="true">✓ Possibles</button>
-        <button class="chip" data-f="presque" aria-pressed="false">Presque (1–2 manquants)</button>
-        <button class="chip" data-f="tout" aria-pressed="false">Toutes</button>
+        <button class="chip" data-f="presque" aria-pressed="false" title="Il manque 1 ou 2 ingrédients">Presque prêtes</button>
         <button class="chip" data-f="gaspi" aria-pressed="false">⏰ Anti-gaspi</button>
-        <button class="chip" data-mine aria-pressed="false" title="N’affiche que les recettes de ta collection « Mes recettes », sans les recettes rapides de Friscan">📖 Mes recettes uniquement</button>
       </div>
     </div>
   </div>
@@ -327,7 +329,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '21';
+const VERSION = '22';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -625,7 +627,7 @@ function mineCard(m, a) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
   return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}" style="--c1:${c1};--c2:${c2}">
-    <span><b>${esc(m.n)}</b><small>📖 Mes recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
+    <span><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
     ${a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''}</span>
     <span class="thumb">${img}<span>📖</span></span></a>`.replace(/^/, '<div class="rwrap">') + missBtn(a, 'm:' + m.slug) + '</div>';
 }
@@ -650,7 +652,7 @@ function renderRecipes() {
     const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo et ton placard pour voir les recettes possibles.', '#scan', '📷']
       : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
-      : ['Aucune recette trouvée', 'Essaie un autre mot ou le filtre « Toutes ».', null, '🔍'];
+      : ['Aucune recette trouvée', 'Essaie un autre mot ou un autre filtre.', null, '🔍'];
     box.innerHTML = status + `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span><span class="ill">${msg[3]}</span></${msg[2] ? 'a' : 'button'}>`;
     return;
   }
@@ -711,7 +713,7 @@ async function loadMine(force) {
   const old = store.get('mine', null);
   if (!force && old && Date.now() - old.t < 6 * 3600e3) return;
   if (!MES_RECETTES.csv) return;
-  mine.state = mine.list.length ? '' : '📖 Chargement de « Mes recettes »…'; if (!$('#v-rec').hidden) renderRecipes();
+  mine.state = mine.list.length ? '' : '📖 Chargement du « Livre de recettes »…'; if (!$('#v-rec').hidden) renderRecipes();
   try {
     const [csvT, fj] = await Promise.all([
       fetch(MES_RECETTES.csv + '&t=' + Date.now()).then(r => { if (!r.ok) throw 0; return r.text(); }),
@@ -732,7 +734,7 @@ async function loadMine(force) {
     if (!out.length) throw 0;
     mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now() });
   } catch (e) {
-    mine.state = mine.list.length ? '📖 « Mes recettes » : hors connexion, dernière version enregistrée.' : '📖 « Mes recettes » n’a pas pu être chargé (connexion ?).';
+    mine.state = mine.list.length ? '📖 « Livre de recettes » : hors connexion, dernière version enregistrée.' : '📖 « Mes recettes » n’a pas pu être chargé (connexion ?).';
   }
   if (!$('#v-rec').hidden) renderRecipes();
   updateSub();
