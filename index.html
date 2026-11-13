@@ -38,7 +38,7 @@ h1 svg{width:30px;height:30px}
 small,.hint,.note,.sub,.meta{font-weight:700}
 .home{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font-weight:700;font-size:.95rem;line-height:1.2;padding:4px 12px;margin:0 0 6px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4)}
 .home:focus-visible{outline:3px solid #fff;outline-offset:2px}
-.sub{color:rgba(255,255,255,.88);font-size:.85rem;margin:2px 0 10px}
+.sub{color:rgba(255,255,255,.88);font-size:.85rem;margin:2px 0 10px;white-space:pre-line}
 .field{position:relative}
 .field input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 .field input:focus-visible{outline:3px solid #fff;outline-offset:2px}
@@ -340,7 +340,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '25';
+const VERSION = '26';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -971,7 +971,7 @@ function updateSub() {
   const ok = RECETTES.filter(r => { const a = analyse(r); return !a.missing.length && a.used; }).length
     + mine.list.filter(m => { const a = analyseMine(m); return !a.missing.length && !a.unk && a.used; }).length;
   const u = urgentItems().length;
-  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans tes réserves · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}` + (u ? ` · ⏰ ${u} à consommer vite` : '');
+  $('#sub').textContent = `${n} produit${n > 1 ? 's' : ''} dans tes réserves · ${ok} recette${ok > 1 ? 's' : ''} possible${ok > 1 ? 's' : ''}` + (u ? `\n⏰ ${u} à consommer vite` : '');
 }
 function renderAll() { renderFridge(); renderPills(); if (!$('#v-rec').hidden) renderRecipes(); updateSub(); }
 window.addEventListener('hashchange', route);
