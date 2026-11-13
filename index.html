@@ -71,7 +71,7 @@ h2:first-child{margin-top:4px}
 .catb b{display:block;font-size:1.6rem;line-height:1.1}
 .catb small{font-size:1rem;display:block;margin-top:2px}
 .catb .ill{font-size:3.2rem;line-height:1;flex:0 0 auto}
-.mzill{flex:0 0 auto;height:96px;width:auto;margin:-6px 0 -10px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+.mzill{flex:0 0 auto;height:104px;width:auto;margin:-6px 0 -10px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
 .mzscan{display:block;height:130px;width:auto;margin:0 auto 10px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35))}
 .mzcard{position:relative;overflow:hidden}
 .mzcard h3,.mzcard .note{margin-right:104px}
@@ -340,7 +340,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '24';
+const VERSION = '25';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -473,7 +473,7 @@ const dlcButtons = attr => `<button type="button" class="mini" ${attr}="2">+2 j<
 function renderFridge() {
   const box = $('#fridgeList');
   if (!fridge.length) {
-    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Tes réserves sont vides</b><small>Scanne ton premier produit ou ajoute-le à la main, frigo ou placard.</small></span><img class="mzill" src="../cookapli/mascotte/frigo.webp" alt="" width="190" height="493"></a></div>`;
+    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Tes réserves sont vides</b><small>Scanne ton premier produit ou ajoute-le à la main, frigo ou placard.</small></span><img class="mzill" src="../cookapli/mascotte/frigo.webp" alt="" width="477" height="500"></a></div>`;
     return;
   }
   const urg = urgentItems();
@@ -665,7 +665,7 @@ function renderRecipes() {
       : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
       : ['Aucune recette trouvée', 'Essaie un autre mot ou un autre filtre.', null, '🔍'];
-    const ill = (!fridge.length || filter === 'ok') ? `<img class="mzill" src="${MZ}frigo.webp" alt="" width="190" height="493">` : `<span class="ill">${msg[3]}</span>`;
+    const ill = (!fridge.length || filter === 'ok') ? `<img class="mzill" src="${MZ}frigo.webp" alt="" width="477" height="500">` : `<span class="ill">${msg[3]}</span>`;
     box.innerHTML = status + `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span>${ill}</${msg[2] ? 'a' : 'button'}>`;
     return;
   }
