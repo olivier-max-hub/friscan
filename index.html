@@ -86,8 +86,10 @@ h2:first-child{margin-top:4px}
 .addmiss{justify-self:end;margin:-6px 14px 0 0;position:relative;border:0;border-radius:0 0 14px 14px;background:var(--acc);color:#fff;font:inherit;font-weight:700;font-size:.95rem;padding:6px 14px 7px;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.12)}
 .addmiss:disabled{background:#cdeccb;color:var(--deep);cursor:default}
 .addmiss:focus-visible{outline:3px solid var(--deep);outline-offset:2px}
-.remind{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
-.remind .note{flex:1 1 200px;margin:0}
+.remind{display:grid;gap:8px;justify-items:center;margin:0 0 10px;text-align:center}
+.remind .note{margin:0}
+.remind .rbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.remind .rbtns .mini,.remind .rbtns .tag{white-space:nowrap}
 
 /* Frigo */
 .items{display:grid;gap:8px}
@@ -374,7 +376,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '31';
+const VERSION = '32';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -520,10 +522,11 @@ function renderFridge() {
   const ord = f => { const n = daysLeft(f); return n === null ? 1e6 : n; };
   const dated = fridge.some(f => f.dlc && daysLeft(f) >= 0);
   const canNotif = 'Notification' in window && 'serviceWorker' in navigator;
-  const remind = dated ? `<div class="remind"><p class="note">🔔 Sois prévenu avant qu’un produit ne périme.</p>
+  const remind = dated ? `<div class="remind"><p class="note">🔔 Sois prévenu avant qu’un produit ne périme.</p><div class="rbtns">
+    <button type="button" class="mini" data-remind="ics">📅 Tout ajouter à mon agenda</button>
     ${canNotif && Notification.permission !== 'granted' && Notification.permission !== 'denied' ? '<button type="button" class="mini" data-remind="notif">Activer les rappels</button>' : ''}
     ${canNotif && Notification.permission === 'granted' ? '<span class="tag ok">✓ Rappels activés</span>' : ''}
-    <button type="button" class="mini" data-remind="ics">📅 Tout ajouter à mon agenda</button></div>` : '';
+    </div></div>` : '';
   box.innerHTML = banner + remind + Object.keys(GROUPS).filter(g => byG[g]).map(g => `
     <h2 style="--cat:${GROUPS[g].c}">${GROUPS[g].n} · ${byG[g].length}</h2>
     <div class="items">${byG[g].sort((a, b) => ord(a) - ord(b)).map(f => {
