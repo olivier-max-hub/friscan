@@ -355,7 +355,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=10"></script>
+<script src="data.js?v=11"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -368,7 +368,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '29';
+const VERSION = '30';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];

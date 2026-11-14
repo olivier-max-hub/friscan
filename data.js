@@ -236,7 +236,7 @@ const CATS = {
 
 /* ing : [ingrédient, quantité, optionnel?, libellé affiché (facultatif)] */
 const RECETTES = [
-  /* 1 à 10 : recettes validées par Olivier (fiches Google Docs du 13/11/2026). ok = validée, img = photo, ia = photo créée par IA */
+  /* 1 à 14 : recettes validées par Olivier (fiches Google Docs du 13 et 14/11/2026). ok = validée, img = photo, ia = photo créée par IA */
   { id: 'omelette-fromage', n: 'Omelette au fromage', e: '🍳', cat: 'Plat végétarien', min: 10, pers: 1, ok: 1,
     ing: [['oeuf', '2 à 3'], ['fromage_rape', '50 g'], ['huile', '1 peu'], ['sel_poivre', '']],
     steps: ['Battre les œufs avec le sel et le poivre pour obtenir un mélange mousseux.', 'Faire chauffer l’huile dans une poêle à feu moyen et y verser les œufs. La poêle doit être bien chaude.', 'Quand le dessous commence à cuire, parsemer de fromage, plier en deux et servir. On peut faire plus ou moins cuire selon les goûts.'] },
@@ -267,18 +267,18 @@ const RECETTES = [
   { id: 'pates-pesto', n: 'Pâtes au pesto', e: '🌿', cat: 'Plat végétarien', min: 12, pers: 2, ok: 1, img: 'photos/pates-pesto.webp', ia: 1,
     ing: [['pates', '200 g'], ['pesto', '3 c. à s.'], ['parmesan', '1 poignée', 1], ['tomate', '1', 1], ['herbes', '', 1, 'Basilic frais']],
     steps: ['Cuire les pâtes et garder un peu d’eau de cuisson.', 'Mélanger le pesto avec 2 c. à s. d’eau de cuisson et verser sur les pâtes.', 'Couper la tomate en petits dés et saupoudrer de parmesan.', 'Décorer avec deux feuilles de basilic.'] },
-  { id: 'pates-tomate', n: 'Pâtes sauce tomate à l’ail', e: '🍅', cat: 'Plat végétarien', min: 15, pers: 2,
-    ing: [['pates', '200 g'], ['sauce_tomate', '400 g'], ['ail', '2 gousses'], ['huile', '2 c. à s.'], ['epices', '1 pincée de piment', 1], ['fromage_rape', '', 1], ['sel_poivre', '']],
+  { id: 'pates-tomate', n: 'Pâtes sauce tomate à l’ail', e: '🍅', cat: 'Plat végétarien', min: 15, pers: 2, ok: 1, img: 'photos/pates-tomate.webp', ia: 1,
+    ing: [['pates', '200 g'], ['sauce_tomate', '400 g'], ['ail', '2 gousses'], ['huile', '2 c. à s.'], ['epices', '1 pincée', 1, 'Piment'], ['fromage_rape', '', 1, 'Parmesan ou fromage râpé'], ['sel_poivre', '']],
     steps: ['Cuire les pâtes.', 'Faire dorer l’ail émincé dans l’huile, ajouter la sauce tomate et le piment, laisser mijoter 8 min.', 'Mélanger aux pâtes, servir avec du fromage.'] },
-  { id: 'oeufs-brouilles-champignons', n: 'Œufs brouillés aux champignons', e: '🍄', cat: 'Plat végétarien', min: 10, pers: 1,
-    ing: [['oeuf', '3'], ['champignon', '100 g'], ['beurre', '1 noix'], ['creme', '1 c. à s.', 1], ['sel_poivre', '']],
-    steps: ['Faire sauter les champignons émincés dans le beurre 4 min.', 'Ajouter les œufs battus, remuer sans cesse à feu doux.', 'Retirer encore crémeux, ajouter la crème, saler, poivrer.'] },
-  { id: 'shakshuka', n: 'Shakshuka', e: '🍳', cat: 'Plat végétarien', min: 20, pers: 2,
-    ing: [['oeuf', '4'], ['sauce_tomate', '400 g'], ['poivron', '1', 1], ['oignon', '1'], ['epices', 'cumin, paprika'], ['huile', '1 c. à s.'], ['sel_poivre', '']],
-    steps: ['Faire revenir oignon et poivron émincés dans l’huile 5 min.', 'Ajouter la sauce tomate et les épices, mijoter 5 min.', 'Creuser 4 puits, y casser les œufs, couvrir et cuire 6 à 8 min.'] },
-  { id: 'courgettes-feta', n: 'Poêlée de courgettes à la feta', e: '🥒', cat: 'Plat végétarien', min: 15, pers: 2,
-    ing: [['courgette', '2'], ['feta', '100 g'], ['ail', '1 gousse'], ['huile', '2 c. à s.'], ['citron', '½', 1], ['sel_poivre', '']],
-    steps: ['Couper les courgettes en demi-rondelles.', 'Les faire dorer 8 min dans l’huile avec l’ail.', 'Hors du feu, émietter la feta, ajouter un trait de citron, poivrer.'] },
+  { id: 'oeufs-brouilles-champignons', n: 'Œufs brouillés aux champignons', e: '🍄', cat: 'Plat végétarien', min: 10, pers: 1, ok: 1, img: 'photos/oeufs-brouilles-champignons.webp', ia: 1,
+    ing: [['oeuf', '3'], ['champignon', '100 g'], ['huile', '1 c. à s.', 0, 'Huile neutre'], ['creme', '1 c. à s.', 1], ['sel_poivre', '']],
+    steps: ['Faire sauter les champignons émincés dans l’huile 4 min.', 'Ajouter les œufs battus, remuer sans cesse à feu doux.', 'Retirer encore crémeux, ajouter la crème, saler, poivrer.'] },
+  { id: 'shakshuka', n: 'Shakshuka', e: '🍳', cat: 'Plat végétarien', min: 20, pers: 2, ok: 1, img: 'photos/shakshuka.webp', ia: 1,
+    ing: [['oeuf', '4'], ['sauce_tomate', '400 g'], ['poivron', '1', 1, 'Poivron vert'], ['oignon', '1'], ['epices', '', 0, 'Cumin, paprika'], ['huile', '1 c. à s.', 0, 'Huile neutre'], ['sel_poivre', '']],
+    steps: ['Faire revenir l’oignon et le poivron émincés dans l’huile 5 min.', 'Ajouter la sauce tomate et les épices, mijoter 5 min.', 'Creuser 4 puits, y casser les œufs, couvrir et cuire 6 à 8 min.'] },
+  { id: 'courgettes-feta', n: 'Poêlée de courgettes à la feta', e: '🥒', cat: 'Plat végétarien', min: 15, pers: 2, ok: 1, img: 'photos/courgettes-feta.webp', ia: 1,
+    ing: [['courgette', '2', 0, 'Petites courgettes'], ['feta', '100 g'], ['ail', '1 gousse'], ['huile', '2 c. à s.', 0, 'Huile d’olive'], ['citron', '½', 1], ['sel_poivre', '']],
+    steps: ['Couper les courgettes en rondelles.', 'Les faire dorer 8 min dans l’huile d’olive avec l’ail.', 'Hors du feu, émietter la feta, ajouter un trait de citron, poivrer.'] },
   { id: 'salade-grecque', n: 'Salade grecque', e: '🥗', cat: 'Entrée', min: 10, pers: 2,
     ing: [['tomate', '3'], ['concombre', '1'], ['feta', '100 g'], ['oignon', '½'], ['huile', '3 c. à s.'], ['sel_poivre', '']],
     steps: ['Couper tomates et concombre en morceaux, l’oignon en fines lamelles.', 'Ajouter la feta en cubes.', 'Assaisonner d’huile, sel et poivre.'] },
