@@ -90,6 +90,7 @@ h2:first-child{margin-top:4px}
 .remind .note{margin:0}
 .remind .rbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .remind .rbtns .mini,.remind .rbtns .tag{white-space:nowrap}
+.remind .rbtns .mini{color:#000}
 
 /* Frigo */
 .items{display:grid;gap:8px}
@@ -376,7 +377,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '32';
+const VERSION = '33';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
