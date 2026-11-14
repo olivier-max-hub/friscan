@@ -237,7 +237,7 @@ const CATS = {
 /* ing : [ingrédient, quantité, optionnel?, libellé affiché (facultatif)] */
 const RECETTES = [
   /* 1 à 14 : recettes validées par Olivier (fiches Google Docs du 13 et 14/11/2026). ok = validée, img = photo, ia = photo créée par IA */
-  { id: 'omelette-fromage', n: 'Omelette au fromage', e: '🍳', cat: 'Plat végétarien', min: 10, pers: 1, ok: 1,
+  { id: 'omelette-fromage', n: 'Omelette au fromage', e: '🍳', cat: 'Plat végétarien', min: 10, pers: 1, ok: 1, img: 'photos/omelette-fromage.webp', ia: 1,
     ing: [['oeuf', '2 à 3'], ['fromage_rape', '50 g'], ['huile', '1 peu'], ['sel_poivre', '']],
     steps: ['Battre les œufs avec le sel et le poivre pour obtenir un mélange mousseux.', 'Faire chauffer l’huile dans une poêle à feu moyen et y verser les œufs. La poêle doit être bien chaude.', 'Quand le dessous commence à cuire, parsemer de fromage, plier en deux et servir. On peut faire plus ou moins cuire selon les goûts.'] },
   { id: 'carbonara', n: 'Pâtes carbonara', e: '🍝', cat: 'Plat', min: 20, pers: 2, ok: 1, img: 'photos/carbonara.webp', ia: 1,
