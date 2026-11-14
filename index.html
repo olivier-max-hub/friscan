@@ -136,6 +136,26 @@ h2:first-child{margin-top:4px}
 .rhero{display:grid;gap:6px;justify-items:center;background:var(--pale,#eef8fb);border-radius:26px;padding:18px;box-shadow:0 3px 10px rgba(0,0,0,.08);text-align:center}
 .rhero .ill{font-size:4rem;line-height:1}
 .rhero h2{display:block;background:none;border:0;padding:0;margin:0;font-size:2.2rem;line-height:1.1;color:var(--acc)}
+/* photo de la recette + pastille « IA? » (photo créée par IA) */
+.rhero.photo{padding:0 0 14px;overflow:hidden;position:relative;background:#fff}
+.rhero.photo .rphoto{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center 72%;display:block}
+.rhero.photo h2{padding:0 14px}
+.iaq{position:absolute;top:10px;right:10px;border:0;border-radius:99px;background:rgba(0,0,0,.62);color:#fff;font:inherit;font-weight:700;font-size:1rem;padding:4px 12px;cursor:pointer;line-height:1.2}
+.iabulle{position:absolute;top:46px;right:10px;width:min(320px,calc(100% - 20px));background:#fff;color:#000;font-weight:700;border-radius:14px;padding:10px 12px;box-shadow:0 6px 18px rgba(0,0,0,.3);font-size:1rem;line-height:1.3;text-align:left;z-index:2}
+.iamini{position:absolute;right:4px;bottom:4px;font-style:normal;font-weight:700;font-size:.7rem;line-height:1;background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:2px 6px}
+/* 30 minutes chrono */
+.chrono-intro{color:#000;font-weight:700;margin:0 0 12px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.ccard{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;text-decoration:none;color:var(--deep);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.ccard .cimg{position:relative;aspect-ratio:1;display:grid;place-items:center;font-size:3.4rem;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.ccard .cimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ccard .cmin{position:absolute;left:6px;top:6px;background:#fff;color:#000;font-weight:700;font-size:.85rem;border-radius:99px;padding:2px 8px;line-height:1.3}
+.ccard .iamini{font-size:.75rem;right:6px;bottom:6px}
+.ccard .ctxt{padding:8px 10px 10px;display:grid;gap:4px}
+.ccard b{font-size:1.15rem;line-height:1.1}
+.ccard small{color:#000;font-weight:700;font-size:.85rem}
+.ccard .tag{justify-self:start;font-size:.8rem}
+@media (prefers-reduced-motion:no-preference){.ccard{transition:transform .15s}.ccard:active{transform:scale(.98)}}
 .rpills{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
 .rpill{border-radius:20px;padding:10px 12px;text-align:center;color:var(--deep)}
 .rpill small{display:block;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
@@ -305,6 +325,12 @@ body.v-scan .chef-f{display:none}
     <div id="recList" class="cats"></div>
   </section>
 
+  <!-- 30 MINUTES CHRONO -->
+  <section id="v-chrono" hidden>
+    <p class="note chrono-intro">Des recettes rapides vérifiées une à une, prêtes en 30 minutes ou moins. D’autres arrivent bientôt.</p>
+    <div id="chronoList" class="cgrid"></div>
+  </section>
+
   <!-- RECETTE -->
   <section id="v-recette" hidden></section>
 </main>
@@ -329,7 +355,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=9"></script>
+<script src="data.js?v=10"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -342,7 +368,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '28';
+const VERSION = '29';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -635,8 +661,21 @@ function tags(a, mine) {
 }
 function recCard(r, a) {
   const [c1, c2] = CATS[r.cat];
-  return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span><span class="ill">${r.e}</span></a>${missBtn(a, 'r:' + r.id)}</div>`;
+  const ill = r.img ? `<span class="thumb"><img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}</span>` : `<span class="ill">${r.e}</span>`;
+  return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span><b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span>${ill}</a>${missBtn(a, 'r:' + r.id)}</div>`;
 }
+/* ---------- 30 minutes chrono : les recettes rapides validées ---------- */
+const IA_TXT = 'Photo d’illustration créée par IA, en attendant une vraie photo du plat. La recette, elle, est bien réelle.';
+function renderChrono() {
+  const list = RECETTES.filter(r => r.ok && r.min <= 30).sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
+  $('#chronoList').innerHTML = list.map(r => {
+    const a = analyse(r), [c1, c2] = CATS[r.cat];
+    const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
+    return `<a class="ccard" href="#r-${r.id}"><span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}<span class="cmin">⏱️ ${r.min} min</span></span>
+      <span class="ctxt"><b>${esc(r.n)}</b><small>${r.pers} pers. · ${esc(r.cat)}</small>${tag}</span></a>`;
+  }).join('');
+}
+let fromChrono = false;
 function mineCard(m, a) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
@@ -795,21 +834,24 @@ function renderRecipe(id, silent, keepScroll) {
   const n = persSel[r.id] || r.pers, k = n / r.pers;
   const fromFridge = r.ing.filter(x => inFridge(x[0]));
   v.innerHTML = `
-    <div class="backbar"><a class="btn alt" href="#recettes">← Recettes</a></div>
-    <div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2})"><span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>
+    <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← 30 minutes chrono</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
+    ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
+      : `<div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2})"><span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>`}
     <div class="rpills">
       <div class="rpill" style="background:#bfe8ee"><small>Temps</small><b>${r.min} min</b></div>
       <div class="rpill" style="background:#ffd9c7"><small>Personnes</small><div class="pers"><button type="button" class="persbtn" data-pers="-1" aria-label="Une personne de moins"${n <= 1 ? ' disabled' : ''}>−</button><b aria-live="polite">${n}</b><button type="button" class="persbtn" data-pers="1" aria-label="Une personne de plus"${n >= 30 ? ' disabled' : ''}>+</button></div></div>
       <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
       <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
     </div>
-    <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt]) => {
+    <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt, lbl]) => {
       const h = have(i); const cls = h ? 'have' : (opt ? 'opt' : 'miss');
-      return `<li class="${cls}"><span class="m">${h ? '✓' : opt ? '·' : '✗'}</span><span>${qty ? esc(qtyScale(qty, k)) + ' – ' : ''}${esc(ING[i].n)}${opt ? ' <em>(facultatif)</em>' : ''}${!h && !opt ? ' <em>à acheter</em>' : ''}</span></li>`;
+      return `<li class="${cls}"><span class="m">${h ? '✓' : opt ? '·' : '✗'}</span><span>${qty ? esc(qtyScale(qty, k)) + ' – ' : ''}${esc(lbl || ING[i].n)}${opt ? ' <em>(facultatif)</em>' : ''}${!h && !opt ? ' <em>à acheter</em>' : ''}</span></li>`;
     }).join('')}</ul>${k !== 1 ? `<p class="persnote">Quantités calculées pour ${n} personne${n > 1 ? 's' : ''}. Les quantités écrites dans les étapes restent celles de la recette d’origine (${r.pers} personne${r.pers > 1 ? 's' : ''}).</p>` : ''}</div></div>
     ${a.missing.length ? `<div class="row" style="margin:10px 0 0;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="toCourses">🛒 Ajouter ${a.missing.length > 1 ? `les ${a.missing.length} ingrédients manquants` : 'l’ingrédient manquant'} à ma liste de courses</button><a class="btn alt" href="${COURSES_URL}">Voir ma liste</a></div>` : ''}
     <div class="rsec"><h3>Préparation</h3><div class="rsteps">${r.steps.map((s, n) => `<div class="rstep"><span class="rnum">${n + 1}</span><p>${esc(s)}</p></div>`).join('')}</div></div>
     ${fromFridge.length ? `<div class="card mzcard"><img class="mzgoute" src="${MZ}goute.webp" alt="" width="264" height="502"><h3>Bon appétit !</h3><p class="note">Une fois le plat préparé, retire de tes réserves les produits utilisés : ${esc(fromFridge.map(x => ING[x[0]].n.toLowerCase()).join(', '))}.</p><div><button class="btn" id="cooked">🍽️ J’ai cuisiné ça</button></div></div>` : ''}`;
+  const iq = $('#iaq');
+  if (iq) iq.onclick = e => { e.stopPropagation(); const b = $('#iab'); b.hidden = !b.hidden; iq.setAttribute('aria-expanded', !b.hidden); };
   v.querySelectorAll('[data-pers]').forEach(bt => bt.onclick = () => { persSel[r.id] = Math.min(30, Math.max(1, n + +bt.dataset.pers)); renderRecipe(id, true, true); });
   const tc = $('#toCourses');
   if (tc) tc.onclick = () => { const x = missingOf('r:' + r.id); addToCourses(x.items, x.src); tc.disabled = true; tc.textContent = '✓ Ajouté à ta liste de courses'; };
@@ -974,17 +1016,19 @@ function cocherCourses(name, ing) {
 function route() {
   if (location.hash === '#commentaire') return;
   const h = location.hash || '#frigo';
-  const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : 'frigo';
-  ['frigo', 'scan', 'rec', 'recette'].forEach(x => $('#v-' + x).hidden = x !== v);
+  const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : h === '#chrono' ? 'chrono' : 'frigo';
+  if (v === 'chrono') fromChrono = true; else if (v === 'rec' || v === 'frigo') fromChrono = false;
+  ['frigo', 'scan', 'rec', 'recette', 'chrono'].forEach(x => $('#v-' + x).hidden = x !== v);
   document.body.classList.toggle('v-scan', v === 'scan'); document.body.classList.toggle('nonav', v !== 'frigo'); currentView = v;
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
-  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
+  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette', chrono: '30 minutes chrono' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
   else if (autoCam) { autoCam = false; startCam(); }
   if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
   if (v === 'rec') { renderRecipes(); loadMine(); }
+  if (v === 'chrono') { renderChrono(); window.scrollTo(0, 0); track('friscan-chrono'); }
   updateSub();
 }
 function updateSub() {
@@ -1023,6 +1067,7 @@ function initStats_() {
 function commentContext() {
   if (currentView === 'recette') { const r = RECETTES.find(x => x.id === location.hash.slice(3)); if (r) return 'Friscan · ' + r.n; }
   if (currentView === 'frigo') return 'Friscan · Mes réserves';
+  if (currentView === 'chrono') return 'Friscan · 30 minutes chrono';
   return 'Friscan · Commentaire général';
 }
 function cmOpen(o) { const f = $('#commentaire'); if (!f) return; $('#cmBody').hidden = !o; f.classList.toggle('open', o); $('#cmTitle').setAttribute('aria-expanded', String(o)); }
