@@ -275,7 +275,8 @@ body.v-scan .chef-f{display:none}
 
   <!-- SCANNER -->
   <section id="v-scan" hidden>
-    <div class="backbar"><a class="btn alt" href="#frigo">← Mes réserves</a></div>
+    <div class="backbar"><a class="btn alt" href="#frigo" id="scanBack">← Mes réserves</a></div>
+    <p class="note" id="scanFrom" hidden style="color:#000;font-weight:700;margin:-6px 0 12px">Mode courses : chaque produit scanné va dans tes réserves et se coche dans ta liste de courses.</p>
     <div class="scan">
       <div class="cam" id="cam">
         <video id="video" playsinline muted></video>
@@ -341,7 +342,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '27';
+const VERSION = '28';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -944,11 +945,29 @@ function bindResult() {
     e.preventDefault();
     const name = $('#rname').value.trim() || 'Produit'; const v = $('#ring').value; const ing = v === '_autre' ? null : (v || guessIng(name, []));
     addItem({ name, ing, other: v === '_autre', code: f.dataset.code, brand: f.dataset.brand, img: f.dataset.img || null, dlc: $('#rdlc').value || null });
-    toast(`${name} ajouté à tes réserves`);
+    const coche = FROM_COURSES ? cocherCourses(name, ing) : null;
+    toast(coche ? `${name} ajouté à tes réserves, « ${coche} » coché dans ta liste` : `${name} ajouté à tes réserves`);
     $('#result').innerHTML = ''; startCam();
   });
   $('#rescan').onclick = () => { $('#result').innerHTML = ''; startCam(); };
   f.addEventListener('click', e => { const b = e.target.closest('[data-rplus]'); if (b) $('#rdlc').value = isoPlus(+b.dataset.rplus); });
+}
+
+/* ---------- venu de la liste de courses Cookapli ---------- */
+const FROM_COURSES = new URLSearchParams(location.search).get('depuis') === 'courses';
+let autoCam = FROM_COURSES;
+if (FROM_COURSES) { const a = $('#scanBack'); a.href = '../cookapli/courses.html#liste'; a.textContent = '← Retour à ma liste de courses'; $('#scanFrom').hidden = false; }
+/* coche dans la liste de courses l'article qui correspond au produit scanné ; il est noté « déjà rangé »
+   pour que « Ranger les articles pris » ne l'ajoute pas une deuxième fois aux réserves */
+function cocherCourses(name, ing) {
+  try {
+    const l = JSON.parse(localStorage.getItem('cookapli.courses') || '[]'); if (!Array.isArray(l)) return null;
+    const ok = x => !x.done && ((ing && (x.ing === ing || alts(ing).includes(x.ing))) || norm(x.name) === norm(name));
+    const it = l.find(ok); if (!it) return null;
+    it.done = true; it.stocked = true; localStorage.setItem('cookapli.courses', JSON.stringify(l));
+    const n = (+sessionStorage.getItem('cookapli-scan-coches') || 0) + 1; sessionStorage.setItem('cookapli-scan-coches', n);
+    return it.name;
+  } catch (e) { return null; }
 }
 
 /* ---------- navigation ---------- */
@@ -963,6 +982,7 @@ function route() {
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec';
   $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
+  else if (autoCam) { autoCam = false; startCam(); }
   if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
   if (v === 'rec') { renderRecipes(); loadMine(); }
   updateSub();
