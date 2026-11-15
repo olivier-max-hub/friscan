@@ -168,7 +168,7 @@ h2:first-child{margin-top:4px}
 .rpill{border-radius:20px;padding:10px 12px;text-align:center;color:var(--deep)}
 .rpill small{display:block;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
 .rpill b{font-size:1.45rem;line-height:1.2}
-.rpill.bu{background:#7a4d00;color:#fff;grid-column:1/-1}.rpill.bu small,.rpill.bu b{color:#fff}
+.rpill.bu{background:#8a5200;color:#fff;grid-column:1/-1}.rpill.bu1{background:#1c5d99}.rpill.bu2{background:#8a5200}.rpill.bu3{background:#a3261e}.rpill.bu small,.rpill.bu b{color:#fff}
 .rpill.bu .butot{display:block;margin-top:4px;font-size:1.05rem;font-weight:700}
 .rpill.bu .busrc{display:block;margin-top:2px;font-size:.85rem;font-weight:700}
 .pers{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2px}
@@ -882,7 +882,7 @@ const persSel = {};
 function budgetPill(r, n) {
   const b = window.CookBudget && CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null;
   if (!b) return '';
-  return `<div class="rpill bu" title="${esc(CookBudget.AVERT)}"><small>Budget / personne</small><b>${b.niv.s} · ${b.niv.t}</b><span class="butot">Pour ${n} personne${n > 1 ? 's' : ''} : ${CookBudget.fourchette(b.pp * n)}</span><span class="busrc">Estimation indicative · prix moyens Open Prices (Open Food Facts)</span></div>`;
+  return `<div class="rpill bu bu${b.niv.n}" title="${esc(CookBudget.AVERT)}"><small>Budget / personne</small><b>${b.niv.s} · ${b.niv.t}</b><span class="butot">Pour ${n} personne${n > 1 ? 's' : ''} : ${CookBudget.fourchette(b.pp * n)}</span><span class="busrc">Estimation indicative · prix moyens Open Prices (Open Food Facts)</span></div>`;
 }
 if (window.CookBudget) CookBudget.charger().then(d => { if (d && location.hash.startsWith('#r-')) renderRecipe(location.hash.slice(3), true, true); });
 const persK = r => (persSel[r.id] || r.pers) / r.pers;
