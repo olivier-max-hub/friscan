@@ -168,6 +168,9 @@ h2:first-child{margin-top:4px}
 .rpill{border-radius:20px;padding:10px 12px;text-align:center;color:var(--deep)}
 .rpill small{display:block;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
 .rpill b{font-size:1.45rem;line-height:1.2}
+.rpill.bu{background:#7a4d00;color:#fff;grid-column:1/-1}.rpill.bu small,.rpill.bu b{color:#fff}
+.rpill.bu .butot{display:block;margin-top:4px;font-size:1.05rem;font-weight:700}
+.rpill.bu .busrc{display:block;margin-top:2px;font-size:.85rem;font-weight:700}
 .pers{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2px}
 .persbtn{width:34px;height:34px;border-radius:50%;border:2px solid var(--deep);background:#fff;color:var(--deep);font:700 1.3rem/1 Economica,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
 .persbtn:disabled{opacity:.35;cursor:default}
@@ -365,6 +368,7 @@ body.v-scan .chef-f{display:none}
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
 <script src="data.js?v=15"></script>
+<script src="../cookapli/budget.js?v=1"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -874,6 +878,13 @@ function scaleLine(t,k){if(!t||k===1)return t;t=String(t);
 function persBase(p){var m=String(p||"").match(/\d+/);return m?+m[0]:0}
 function qtyScale(q, k) { return k === 1 || !q ? q : String(q).split(' + ').map(x => scaleLine(x, k)).join(' + '); }
 const persSel = {};
+/* budget estimé (../cookapli/budget.js, prix moyens Open Prices) : niveau par personne et fourchette pour n personnes */
+function budgetPill(r, n) {
+  const b = window.CookBudget && CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null;
+  if (!b) return '';
+  return `<div class="rpill bu" title="${esc(CookBudget.AVERT)}"><small>Budget / personne</small><b>${b.niv.s} · ${b.niv.t}</b><span class="butot">Pour ${n} personne${n > 1 ? 's' : ''} : ${CookBudget.fourchette(b.pp * n)}</span><span class="busrc">Estimation indicative · prix moyens Open Prices (Open Food Facts)</span></div>`;
+}
+if (window.CookBudget) CookBudget.charger().then(d => { if (d && location.hash.startsWith('#r-')) renderRecipe(location.hash.slice(3), true, true); });
 const persK = r => (persSel[r.id] || r.pers) / r.pers;
 function renderRecipe(id, silent, keepScroll) {
   const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
@@ -889,6 +900,7 @@ function renderRecipe(id, silent, keepScroll) {
       <div class="rpill" style="background:#bfe8ee"><small>Temps</small><b>${r.min} min</b></div>
       <div class="rpill" style="background:#ffd9c7"><small>Personnes</small><div class="pers"><button type="button" class="persbtn" data-pers="-1" aria-label="Une personne de moins"${n <= 1 ? ' disabled' : ''}>−</button><b aria-live="polite">${n}</b><button type="button" class="persbtn" data-pers="1" aria-label="Une personne de plus"${n >= 30 ? ' disabled' : ''}>+</button></div></div>
       <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
+      ${budgetPill(r, n)}
       <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
     </div>
     <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt, lbl]) => {
