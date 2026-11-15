@@ -364,7 +364,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=14"></script>
+<script src="data.js?v=15"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -377,7 +377,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '35';
+const VERSION = '36';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -784,7 +784,7 @@ function lineIng(t) {
   return id ? { id } : { unk: 1 };
 }
 /* à changer quand le référentiel change : les recettes du Livre sont alors relues */
-const MINE_V = 35;
+const MINE_V = 36;
 async function loadMine(force) {
   const old = store.get('mine', null);
   if (!force && old && old.v === MINE_V && Date.now() - old.t < 6 * 3600e3) return;
