@@ -336,7 +336,7 @@ body.v-scan .chef-f{display:none}
 
   <!-- 30 MINUTES CHRONO -->
   <section id="v-chrono" hidden>
-    <p class="note chrono-intro">Des recettes rapides vérifiées une à une, prêtes en 30 minutes ou moins. D’autres arrivent bientôt.</p>
+    <p class="note chrono-intro">Des recettes prêtes en 30 minutes ou moins, préparation et cuisson comprises : les recettes rapides vérifiées de Friscan et celles du Livre de recettes 📖.</p>
     <div id="chronoList" class="cgrid"></div>
   </section>
 
@@ -377,7 +377,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '36';
+const VERSION = '37';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -681,13 +681,36 @@ function recCard(r, a) {
   const ill = r.img ? `<span class="thumb"><img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}</span>` : `<span class="ill">${r.e}</span>`;
   return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span>${isVeg(r) ? VEG_TAG : ''}<b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span>${ill}</a>${missBtn(a, 'r:' + r.id)}</div>`;
 }
-/* ---------- 30 minutes chrono : les recettes rapides validées ---------- */
+/* ---------- 30 minutes chrono : recettes rapides validées + recettes du Livre prêtes en 30 min (préparation + cuisson) ---------- */
+/* « 1 h 20 » → 80, « 20 à 25 min » → 25 (la plus longue), « 1 h 15 + 10 min » → 85, « 0 » ou « Sans cuisson » → 0, illisible → null */
+function dureeMin(v) {
+  const n = norm(v).trim();
+  if (!n || /^(sans cuisson|0( min| mn)?)$/.test(n)) return 0;
+  let tot = 0, ok = false;
+  String(v).split('+').forEach(p => {
+    p = norm(p).replace(/(\d+) (?:a|ou) (\d+)/g, '$2');
+    let m = p.match(/(\d+) h(?:eures?)?(?: (\d+))?/);
+    if (m) { tot += m[1] * 60 + (+m[2] || 0); ok = true; return; }
+    m = p.match(/(\d+)/); if (m) { tot += +m[1]; ok = true; }
+  });
+  return ok ? tot : null;
+}
+const mineChrono = m => m.tot != null && m.tot <= 30 && !/preparation/.test(norm(m.cat));
 const IA_TXT = 'Photo d’illustration créée par IA, en attendant une vraie photo du plat. La recette, elle, est bien réelle.';
 function renderChrono() {
   const qc = norm($('#qc').value).trim();
-  const list = RECETTES.filter(r => r.ok && r.min <= 30 && (!qc || norm(r.n).includes(qc))).sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
-  if (!list.length) { $('#chronoList').innerHTML = '<p class="note">Aucune recette rapide ne correspond à cette recherche.</p>'; return; }
-  $('#chronoList').innerHTML = list.map(r => {
+  const list = RECETTES.filter(r => r.ok && r.min <= 30 && (!qc || norm(r.n).includes(qc))).map(r => ({ r, min: r.min, n: r.n }))
+    .concat(mine.list.filter(m => mineChrono(m) && (!qc || norm(m.n).includes(qc))).map(m => ({ m, min: m.tot, n: m.n })))
+    .sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
+  if (!list.length) { $('#chronoList').innerHTML = '<p class="note">Aucune recette ne correspond à cette recherche.</p>'; return; }
+  $('#chronoList').innerHTML = list.map(({ r, m }) => {
+    if (m) {
+      const a = analyseMine(m), [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
+      const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
+      const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+      return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}<span class="cmin">⏱️ ${m.tot} min</span></span>
+      <span class="ctxt"><b>${esc(m.n)}</b><small>${m.pers ? esc(m.pers) + ' pers. · ' : ''}📖 Livre de recettes · ${esc(m.cat)}</small>${tag}</span></a>`;
+    }
     const a = analyse(r), [c1, c2] = CATS[r.cat];
     const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
     return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}<span class="cmin">⏱️ ${r.min} min</span></span>
@@ -784,7 +807,7 @@ function lineIng(t) {
   return id ? { id } : { unk: 1 };
 }
 /* à changer quand le référentiel change : les recettes du Livre sont alors relues */
-const MINE_V = 36;
+const MINE_V = 37;
 async function loadMine(force) {
   const old = store.get('mine', null);
   if (!force && old && old.v === MINE_V && Date.now() - old.t < 6 * 3600e3) return;
@@ -805,7 +828,8 @@ async function loadMine(force) {
       for (const l of fi.ing) { if (l.l) continue; const r = lineIng(l.t || ''); if (r.id) ings.add(r.id); else if (r.unk) unk++; }
       if (!ings.size) continue;
       const min = parseInt((fi.cuisson || '').replace(/h/, '*60+'), 10);
-      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, ings: [...ings], unk });
+      const fm = fi.m || {}, tp = /^[\s\-–—]*$/.test(fm.prep || '') ? null : dureeMin(fm.prep), tc = dureeMin(fm.cuisson);
+      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk });
     }
     if (!out.length) throw 0;
     mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now(), v: MINE_V });
@@ -813,6 +837,7 @@ async function loadMine(force) {
     mine.state = mine.list.length ? '📖 « Livre de recettes » : hors connexion, dernière version enregistrée.' : '📖 « Mes recettes » n’a pas pu être chargé (connexion ?).';
   }
   if (!$('#v-rec').hidden) renderRecipes();
+  if (!$('#v-chrono').hidden) renderChrono();
   updateSub();
 }
 $('#q').addEventListener('input', renderRecipes);
