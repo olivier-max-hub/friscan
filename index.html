@@ -154,6 +154,7 @@ h2:first-child{margin-top:4px}
 .vegrow{display:flex;justify-content:center;padding:6px 8px;background:#fff}
 .vegrow .vegtag{margin:0}
 .vegstamp{position:absolute;z-index:2;top:70px;right:12px;transform:rotate(28deg);background:#1f7a43;color:#fff;font-weight:700;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:6px 18px;border-radius:9px;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.ccard .cinfo{display:grid;grid-template-columns:1fr;gap:4px;margin-top:8px}.ccard .ci{border-radius:10px;padding:4px 8px;color:#0b4f59;display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}.ccard .ci .k{font-size:.66rem;text-transform:uppercase;line-height:1.1;color:#000;font-weight:700;flex:none;max-width:45%}.ccard .ci .v{font-weight:700;font-size:.92rem;line-height:1.15;text-align:right;min-width:0}.ccard .ci.kc{background:#1f7a43}.ccard .ci.bu1{background:#1c5d99}.ccard .ci.bu2{background:#8a5200}.ccard .ci.bu3{background:#a3261e}.ccard .ci.kc .k,.ccard .ci.kc .v,.ccard .ci[class*="bu"] .k,.ccard .ci[class*="bu"] .v{color:#fff}
 .cnut{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.cnut .cn{display:inline-block;padding:2px 10px;border-radius:99px;color:#fff;font-size:.9rem;font-weight:700}.cn.kc{background:#1f7a43}.cn.ch{background:#c9e1fb;color:#000}.rpill.chp{background:#c9e1fb;color:#000;grid-column:1/-1}.rpill.chp small,.rpill.chp b{color:#000}.cn.bu1{background:#1c5d99}.cn.bu2{background:#8a5200}.cn.bu3{background:#a3261e}
 .rpill.kcp{background:#1f7a43;color:#fff;grid-column:1/-1}.rpill.kcp small,.rpill.kcp b{color:#fff}
 .ccard{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;text-decoration:none;color:var(--deep);box-shadow:0 3px 10px rgba(0,0,0,.12)}
@@ -371,6 +372,7 @@ body.v-scan .chef-f{display:none}
 
 <script src="data.js?v=15"></script>
 <script src="../cookapli/budget.js?v=2"></script>
+<script src="../recettes/calories.js?v=1"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -715,12 +717,12 @@ function renderChrono() {
       const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
       const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
       return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}<span class="cmin">⏱️ ${m.tot} min</span></span>
-      <span class="ctxt"><b>${esc(m.n)}</b><small>${m.pers ? esc(m.pers) + ' pers. · ' : ''}📖 Livre de recettes · ${esc(m.cat)}</small>${tag}</span></a>`;
+      <span class="ctxt"><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}</small>${pastillesLivre(m)}${tag}</span></a>`;
     }
     const a = analyse(r), [c1, c2] = CATS[r.cat];
     const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
     return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}<span class="cmin">⏱️ ${r.min} min</span></span>
-      <span class="ctxt"><b>${esc(r.n)}</b><small>${r.pers} pers. · ${esc(r.cat)}</small>${nutri(r)}${tag}</span></a>`;
+      <span class="ctxt"><b>${esc(r.n)}</b>${pastillesRapide(r)}${tag}</span></a>`;
   }).join('');
 }
 let fromChrono = false;
@@ -813,7 +815,7 @@ function lineIng(t) {
   return id ? { id } : { unk: 1 };
 }
 /* à changer quand le référentiel change : les recettes du Livre sont alors relues */
-const MINE_V = 37;
+const MINE_V = 38; /* 38 : préparation, cuisson, difficulté et lignes d’ingrédients gardées pour les pastilles */
 async function loadMine(force) {
   const old = store.get('mine', null);
   if (!force && old && old.v === MINE_V && Date.now() - old.t < 6 * 3600e3) return;
@@ -835,7 +837,7 @@ async function loadMine(force) {
       if (!ings.size) continue;
       const min = parseInt((fi.cuisson || '').replace(/h/, '*60+'), 10);
       const fm = fi.m || {}, tp = /^[\s\-–—]*$/.test(fm.prep || '') ? null : dureeMin(fm.prep), tc = dureeMin(fm.cuisson);
-      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk });
+      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk, prep: fm.prep || '', cuis: fm.cuisson || '', diff: (fm.diff || '').trim(), f: { ing: fi.ing.map(x => ({ t: x.t, l: x.l })), m: { pers: fm.pers }, pers: fi.pers, r: fi.r } });
     }
     if (!out.length) throw 0;
     mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now(), v: MINE_V });
@@ -880,6 +882,29 @@ function scaleLine(t,k){if(!t||k===1)return t;t=String(t);
 function persBase(p){var m=String(p||"").match(/\d+/);return m?+m[0]:0}
 function qtyScale(q, k) { return k === 1 || !q ? q : String(q).split(' + ').map(x => scaleLine(x, k)).join(' + '); }
 const persSel = {};
+/* pastilles des cartes de 30 minutes chrono, comme dans le Livre de recettes */
+const vide = v => { v = String(v || '').trim(); return /^[-–—]*$/.test(v) ? '' : v; };
+const dureeTxt = v => { v = vide(v); if (/^\d+$/.test(v)) v += ' min'; return v.replace(/\bmn\b\.?/gi, 'min'); };
+const cuisTxt = v => { v = dureeTxt(v); return /^0(\s*min)?$/i.test(v) ? 'Sans cuisson' : v; };
+const DIFF_COUL = { Facile: '#1f7a43', Moyen: '#a85f00', Difficile: '#b3261e' };
+const ci = (k, v, bg, cls, title, vcol) => v ? `<span class="ci${cls ? ' ' + cls : ''}"${bg ? ` style="background:${bg}"` : ''}${title ? ` title="${esc(title)}"` : ''}><span class="k">${k}</span><span class="v"${vcol ? ` style="color:${vcol}"` : ''}>${esc(v)}</span></span>` : '';
+const KC_TXT = 'Estimation indicative, sans valeur médicale';
+function pastillesRapide(r) {
+  let h = ci('Durée', r.min + ' min', '#bfe8ee') + ci('Personnes', String(r.pers), '#cdeccb') + ci('Catégorie', r.cat, CATS[r.cat] ? CATS[r.cat][0] : '#d9d0f5') + ci('⏱️ Rapide', '30 minutes chrono', '#c9e1fb');
+  if (window.CookBudget && CookBudget.kcalFriscan) {
+    const k = CookBudget.kcalFriscan(r, ING); if (k) h += ci('Calories / pers.', '≈ ' + k + ' kcal', '', 'kc', KC_TXT);
+    const b = CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null; if (b) h += ci('Budget / pers.', b.niv.s + ' · ' + b.niv.t, '', 'bu' + b.niv.n, CookBudget.AVERT);
+  }
+  return `<span class="cinfo">${h}</span>`;
+}
+function pastillesLivre(m) {
+  let h = ci('Durée', dureeTxt(m.prep), '#bfe8ee') + ci('Cuisson', cuisTxt(m.cuis), '#ffd9c7') + ci('Personnes', vide(m.pers), '#cdeccb') + ci('Difficulté', vide(m.diff), '#fff1b8', '', '', DIFF_COUL[vide(m.diff)]);
+  if (m.f && window.CookCalc) {
+    const k = CookCalc.kcal(m.f); if (k) h += ci('Calories / pers.', '≈ ' + k + ' kcal', '', 'kc', KC_TXT);
+    const b = CookCalc.budget(m.f, t => guessIng(t)); if (b) h += ci('Budget / pers.', b.niv.s + ' · ' + b.niv.t, '', 'bu' + b.niv.n, CookBudget.AVERT);
+  }
+  return h ? `<span class="cinfo">${h}</span>` : '';
+}
 /* calories et budget sur les cartes de 30 minutes chrono (../cookapli/budget.js) */
 function nutri(r) {
   if (!window.CookBudget || !CookBudget.kcalFriscan) return '';
