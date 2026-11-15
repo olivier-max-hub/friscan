@@ -364,7 +364,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=13"></script>
+<script src="data.js?v=14"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -377,12 +377,15 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '34';
+const VERSION = '35';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
 fridge = fridge.filter(f => f && f.name).map(f => (f.ing && !ING[f.ing] ? { ...f, ing: null } : f));
 let placard = store.get('placard', PLACARD_DEFAUT);
+/* v35 : « Sel & poivre » devient deux ingrédients, Sel et Poivre */
+if (Array.isArray(placard) && placard.includes('sel_poivre')) { placard = [...new Set(placard.filter(x => x !== 'sel_poivre').concat(['sel', 'poivre']))]; store.set('placard', placard); }
+if (fridge.some(f => f.ing === 'sel_poivre')) { fridge = fridge.map(f => f.ing === 'sel_poivre' ? { ...f, ing: (/poivr/i.test(f.name) && !/\bsel\b/i.test(f.name)) ? 'poivre' : 'sel' } : f); store.set('fridge', fridge); }
 let filter = 'ok';
 const save = () => { store.set('fridge', fridge); store.set('placard', placard); syncDlc(); };
 /* ---------- rappels de péremption ---------- */
@@ -475,7 +478,7 @@ $('#toastUndo').onclick = () => { if (undoFn) undoFn(); undoFn = null; $('#toast
 function ingOptions(sel) {
   return '<option value="">— Choisir l’ingrédient —</option>' +
     Object.keys(GROUPS).filter(g => g !== 'inconnu' && g !== 'autre').map(g => `<optgroup label="${GROUPS[g].n}">` +
-      Object.entries(ING).filter(([, d]) => d.g === g).sort((a, b) => a[1].n.localeCompare(b[1].n, 'fr'))
+      Object.entries(ING).filter(([, d]) => d.g === g && !d.old).sort((a, b) => a[1].n.localeCompare(b[1].n, 'fr'))
         .map(([id, d]) => `<option value="${id}"${id === sel ? ' selected' : ''}>${d.e} ${esc(d.n)}</option>`).join('') + '</optgroup>').join('') +
     `<option value="_autre"${sel === '_autre' ? ' selected' : ''}>🛒 Autre produit (le garder tel quel)</option>`;
 }
@@ -603,7 +606,7 @@ addIn.addEventListener('input', () => {
      trouvé par un mot-clé (ex. « piment d'Espelette » -> Épices) : on garde le nom du produit, l'ingrédient s'affiche en petit */
   /* les ingrédients dont le nom commence par le texte tapé passent en premier (« tomate » -> Tomates avant Sauce tomate) */
   const rank = d => norm(d.n).trim().startsWith(v) ? 0 : d.k.some(k => norm(k).trim().startsWith(v)) ? 1 : 2;
-  const hits = Object.entries(ING).filter(([, d]) => norm(d.n).includes(v) || d.k.some(k => norm(k).trim().startsWith(v))).sort((a, b) => rank(a[1]) - rank(b[1])).slice(0, 5)
+  const hits = Object.entries(ING).filter(([, d]) => !d.old).filter(([, d]) => norm(d.n).includes(v) || d.k.some(k => norm(k).trim().startsWith(v))).sort((a, b) => rank(a[1]) - rank(b[1])).slice(0, 5)
     .map(([id, d]) => {
       if (norm(d.n).includes(v)) return { id, d, label: d.n, sub: '' };
       const k = d.k.find(x => norm(x).trim().startsWith(v)), kn = norm(k).trim();
@@ -780,9 +783,11 @@ function lineIng(t) {
   const id = guessIng(t.replace(/(cuill?[eè]res?|c\.)\s*(à|a|de)\s*(caf[eé]|th[eé]|c\b\.?)/gi, ' '), []);
   return id ? { id } : { unk: 1 };
 }
+/* à changer quand le référentiel change : les recettes du Livre sont alors relues */
+const MINE_V = 35;
 async function loadMine(force) {
   const old = store.get('mine', null);
-  if (!force && old && Date.now() - old.t < 6 * 3600e3) return;
+  if (!force && old && old.v === MINE_V && Date.now() - old.t < 6 * 3600e3) return;
   if (!MES_RECETTES.csv) return;
   mine.state = mine.list.length ? '' : '📖 Chargement du « Livre de recettes »…'; if (!$('#v-rec').hidden) renderRecipes();
   try {
@@ -803,7 +808,7 @@ async function loadMine(force) {
       out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, ings: [...ings], unk });
     }
     if (!out.length) throw 0;
-    mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now() });
+    mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now(), v: MINE_V });
   } catch (e) {
     mine.state = mine.list.length ? '📖 « Livre de recettes » : hors connexion, dernière version enregistrée.' : '📖 « Mes recettes » n’a pas pu être chargé (connexion ?).';
   }
