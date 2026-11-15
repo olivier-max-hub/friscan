@@ -900,8 +900,8 @@ function renderRecipe(id, silent, keepScroll) {
       <div class="rpill" style="background:#bfe8ee"><small>Temps</small><b>${r.min} min</b></div>
       <div class="rpill" style="background:#ffd9c7"><small>Personnes</small><div class="pers"><button type="button" class="persbtn" data-pers="-1" aria-label="Une personne de moins"${n <= 1 ? ' disabled' : ''}>−</button><b aria-live="polite">${n}</b><button type="button" class="persbtn" data-pers="1" aria-label="Une personne de plus"${n >= 30 ? ' disabled' : ''}>+</button></div></div>
       <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
-      ${budgetPill(r, n)}
       <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
+      ${budgetPill(r, n)}
     </div>
     <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt, lbl]) => {
       const h = have(i); const cls = h ? 'have' : (opt ? 'opt' : 'miss');
