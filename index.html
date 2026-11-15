@@ -154,6 +154,8 @@ h2:first-child{margin-top:4px}
 .vegrow{display:flex;justify-content:center;padding:6px 8px;background:#fff}
 .vegrow .vegtag{margin:0}
 .vegstamp{position:absolute;z-index:2;top:70px;right:12px;transform:rotate(28deg);background:#1f7a43;color:#fff;font-weight:700;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:6px 18px;border-radius:9px;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.cnut{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.cnut .cn{display:inline-block;padding:2px 10px;border-radius:99px;color:#fff;font-size:.9rem;font-weight:700}.cn.kc{background:#1f7a43}.cn.bu1{background:#1c5d99}.cn.bu2{background:#8a5200}.cn.bu3{background:#a3261e}
+.rpill.kcp{background:#1f7a43;color:#fff;grid-column:1/-1}.rpill.kcp small,.rpill.kcp b{color:#fff}
 .ccard{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;text-decoration:none;color:var(--deep);box-shadow:0 3px 10px rgba(0,0,0,.12)}
 .ccard .cimg{position:relative;aspect-ratio:1;display:grid;place-items:center;font-size:3.4rem;background:linear-gradient(135deg,var(--c1),var(--c2))}
 .ccard .cimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -368,7 +370,7 @@ body.v-scan .chef-f{display:none}
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
 <script src="data.js?v=15"></script>
-<script src="../cookapli/budget.js?v=1"></script>
+<script src="../cookapli/budget.js?v=2"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -718,7 +720,7 @@ function renderChrono() {
     const a = analyse(r), [c1, c2] = CATS[r.cat];
     const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
     return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}<span class="cmin">⏱️ ${r.min} min</span></span>
-      <span class="ctxt"><b>${esc(r.n)}</b><small>${r.pers} pers. · ${esc(r.cat)}</small>${tag}</span></a>`;
+      <span class="ctxt"><b>${esc(r.n)}</b><small>${r.pers} pers. · ${esc(r.cat)}</small>${nutri(r)}${tag}</span></a>`;
   }).join('');
 }
 let fromChrono = false;
@@ -878,13 +880,20 @@ function scaleLine(t,k){if(!t||k===1)return t;t=String(t);
 function persBase(p){var m=String(p||"").match(/\d+/);return m?+m[0]:0}
 function qtyScale(q, k) { return k === 1 || !q ? q : String(q).split(' + ').map(x => scaleLine(x, k)).join(' + '); }
 const persSel = {};
+/* calories et budget sur les cartes de 30 minutes chrono (../cookapli/budget.js) */
+function nutri(r) {
+  if (!window.CookBudget || !CookBudget.kcalFriscan) return '';
+  const k = CookBudget.kcalFriscan(r, ING), b = CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null;
+  if (!k && !b) return '';
+  return `<span class="cnut">${k ? `<span class="cn kc" title="Estimation indicative, sans valeur médicale">≈ ${k} kcal / pers.</span>` : ''}${b ? `<span class="cn bu${b.niv.n}" title="${esc(CookBudget.AVERT)}">${b.niv.s} · ${b.niv.t}</span>` : ''}</span>`;
+}
 /* budget estimé (../cookapli/budget.js, prix moyens Open Prices) : niveau par personne et fourchette pour n personnes */
 function budgetPill(r, n) {
   const b = window.CookBudget && CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null;
   if (!b) return '';
   return `<div class="rpill bu bu${b.niv.n}" title="${esc(CookBudget.AVERT)}"><small>Budget / personne</small><b>${b.niv.s} · ${b.niv.t}</b><span class="butot">Pour ${n} personne${n > 1 ? 's' : ''} : ${CookBudget.fourchette(b.pp * n)}</span><span class="busrc">Estimation indicative · prix moyens Open Prices (Open Food Facts)</span></div>`;
 }
-if (window.CookBudget) CookBudget.charger().then(d => { if (d && location.hash.startsWith('#r-')) renderRecipe(location.hash.slice(3), true, true); });
+if (window.CookBudget) CookBudget.charger().then(d => { if (!d) return; if (location.hash.startsWith('#r-')) renderRecipe(location.hash.slice(3), true, true); else if (location.hash === '#chrono') renderChrono(); });
 const persK = r => (persSel[r.id] || r.pers) / r.pers;
 function renderRecipe(id, silent, keepScroll) {
   const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
@@ -901,6 +910,7 @@ function renderRecipe(id, silent, keepScroll) {
       <div class="rpill" style="background:#ffd9c7"><small>Personnes</small><div class="pers"><button type="button" class="persbtn" data-pers="-1" aria-label="Une personne de moins"${n <= 1 ? ' disabled' : ''}>−</button><b aria-live="polite">${n}</b><button type="button" class="persbtn" data-pers="1" aria-label="Une personne de plus"${n >= 30 ? ' disabled' : ''}>+</button></div></div>
       <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
       <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
+      ${(() => { const k = window.CookBudget && CookBudget.kcalFriscan ? CookBudget.kcalFriscan(r, ING) : 0; return k ? `<div class="rpill kcp" title="Estimation indicative, sans valeur médicale"><small>Calories / personne</small><b>≈ ${k} kcal</b></div>` : ''; })()}
       ${budgetPill(r, n)}
     </div>
     <div class="rsec"><h3>Ingrédients</h3><div class="rbox"><ul>${r.ing.map(([i, qty, opt, lbl]) => {
