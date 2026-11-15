@@ -364,7 +364,7 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=12"></script>
+<script src="data.js?v=13"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -377,7 +377,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '33';
+const VERSION = '34';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -776,7 +776,8 @@ function lineIng(t) {
   if (w.length > 16 || VERBES.test(n)) return { skip: 1 };          /* phrase d'explication */
   if (/^moule (a|de|en) /.test(n) || /facultati|falcultati|optionnel|pour servir/.test(n) || /( |^)deco(ration)?( |$)/.test(n)) return { skip: 1 };
   if (w.includes('eau') && w.every(x => EAU.test(x))) return { skip: 1 };
-  const id = guessIng(t, []);
+  /* « 1 c. à café de cannelle » : la cuillère à café ne doit pas être prise pour du café */
+  const id = guessIng(t.replace(/(cuill?[eè]res?|c\.)\s*(à|a|de)\s*(caf[eé]|th[eé]|c\b\.?)/gi, ' '), []);
   return id ? { id } : { unk: 1 };
 }
 async function loadMine(force) {
