@@ -109,6 +109,12 @@ h2:first-child{margin-top:4px}
 .pills{display:flex;flex-wrap:wrap;gap:8px}
 .pill{border:1px solid var(--line);background:#fff;color:var(--deep);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:.95rem}
 .pill[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.bases{margin:14px 0 0;padding:16px;border-radius:24px;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.bases>b{display:block;font-size:1.35rem;color:var(--deep)}
+.bases>small{display:block;margin-top:4px;color:#000;font-weight:700;font-size:1rem;line-height:1.3}
+.bases-l{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
+#basesOk{width:100%}
+#basesOk:disabled{opacity:.55;cursor:default}
 .pill.add::before{content:"+ ";font-weight:700}
 
 /* Scanner */
@@ -527,10 +533,26 @@ const urgentItems = () => fridge.filter(f => { const n = daysLeft(f); return n !
   .sort((a, b) => daysLeft(a) - daysLeft(b));
 const dlcButtons = attr => `<button type="button" class="mini" ${attr}="2">+2 j</button><button type="button" class="mini" ${attr}="5">+5 j</button><button type="button" class="mini" ${attr}="7">+1 sem.</button><button type="button" class="mini" ${attr}="30">+1 mois</button>`;
 
+/* « Démarre en un geste » : produits de base cochés en un écran quand les réserves sont vides (16/11/2026) */
+const BASES = ['oeuf', 'pates', 'riz', 'pdt', 'beurre', 'lait', 'creme', 'fromage_rape', 'yaourt', 'jambon', 'lardons', 'thon', 'sauce_tomate', 'tomate', 'carotte', 'courgette', 'pain', 'poulet'];
+let basesSel = [];
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-base]');
+  if (b) { const id = b.dataset.base; basesSel = basesSel.includes(id) ? basesSel.filter(x => x !== id) : [...basesSel, id]; renderFridge(); const nb = document.querySelector(`[data-base="${id}"]`); if (nb) nb.focus(); return; }
+  if (e.target.closest('#basesOk') && basesSel.length) {
+    const n = basesSel.length;
+    basesSel.slice().reverse().forEach(id => fridge.unshift({ uid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: ING[id].n, ing: id, added: Date.now() }));
+    basesSel = []; save(); renderAll();
+    toast(n > 1 ? `${n} produits ajoutés à tes réserves` : '1 produit ajouté à tes réserves'); track('friscan-ajout', 'produits de base (' + n + ')');
+  }
+});
 function renderFridge() {
   const box = $('#fridgeList');
   if (!fridge.length) {
-    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Tes réserves sont vides</b><small>Scanne ton premier produit ou ajoute-le à la main, frigo ou placard.</small></span><img class="mzill" src="../cookapli/mascotte/frigo.webp" alt="" width="477" height="500"></a></div>`;
+    box.innerHTML = `<div class="cats"><a class="catb" href="#scan" style="--c1:#bfe8ee;--c2:#8fd3dd"><span><b>Tes réserves sont vides</b><small>Scanne ton premier produit ou ajoute-le à la main, frigo ou placard.</small></span><img class="mzill" src="../cookapli/mascotte/frigo.webp" alt="" width="477" height="500"></a></div>
+      <div class="bases"><b>Démarre en un geste</b><small>Coche les produits de base que tu as presque toujours. Tu pourras en ajouter d'autres ensuite.</small>
+      <div class="bases-l">${BASES.filter(id => ING[id]).map(id => `<button type="button" class="pill" data-base="${id}" aria-pressed="${basesSel.includes(id)}">${ING[id].e} ${esc(ING[id].n)}</button>`).join('')}</div>
+      <button type="button" class="btn" id="basesOk"${basesSel.length ? '' : ' disabled'}>${basesSel.length ? `Ajouter ${basesSel.length > 1 ? `ces ${basesSel.length} produits` : 'ce produit'} à mes réserves` : 'Coche au moins un produit'}</button></div>`;
     return;
   }
   const urg = urgentItems();
