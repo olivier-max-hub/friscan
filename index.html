@@ -116,6 +116,8 @@ h2:first-child{margin-top:4px}
 #basesOk{width:100%}
 #basesOk:disabled{opacity:.55;cursor:default}
 .pill.add::before{content:"+ ";font-weight:700}
+.pill.add.have{background:#e6f3f5;border-color:#bfe0e5;cursor:default}
+.pill.add.have::before{content:"✓ "}
 
 /* Scanner */
 .scan{display:grid;gap:14px}
@@ -620,13 +622,17 @@ $('#fridgeList').addEventListener('change', e => {
   if (f) { if (s.value === '_autre') { f.ing = null; f.other = true; } else { f.ing = s.value; f.other = false; } save(); renderAll(); }
 });
 function renderPills() {
-  $('#rapides').innerHTML = RAPIDES.map(id => `<button class="pill add" data-quick="${id}">${ING[id].e} ${esc(ING[id].n)}</button>`).join('');
+  /* réserves vides : les produits déjà proposés dans « Démarre en un geste » ne sont pas répétés ici ;
+     ensuite, un produit déjà dans les réserves est marqué ✓ et ne peut pas être ajouté deux fois */
+  const vide = !fridge.length;
+  $('#rapides').innerHTML = RAPIDES.filter(id => !(vide && BASES.includes(id))).map(id => { const a = fridge.some(f => f.ing === id);
+    return `<button class="pill add${a ? ' have' : ''}" data-quick="${id}"${a ? ' aria-disabled="true"' : ''}>${ING[id].e} ${esc(ING[id].n)}</button>`; }).join('');
   $('#placard').innerHTML = Object.entries(ING).filter(([, d]) => d.p)
     .map(([id, d]) => `<button class="pill" data-pl="${id}" aria-pressed="${placard.includes(id)}">${d.e} ${esc(d.n)}</button>`).join('');
 }
 $('#rapides').addEventListener('click', e => {
   const b = e.target.closest('[data-quick]'); if (!b) return;
-  const id = b.dataset.quick; addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté à tes réserves`); track('friscan-ajout', ING[id].n);
+  const id = b.dataset.quick; if (fridge.some(f => f.ing === id)) { toast(`${ING[id].e} ${ING[id].n} est déjà dans tes réserves`); return; } addItem({ name: ING[id].n, ing: id }); toast(`${ING[id].e} ${ING[id].n} ajouté à tes réserves`); track('friscan-ajout', ING[id].n);
 });
 $('#placard').addEventListener('click', e => {
   const b = e.target.closest('[data-pl]'); if (!b) return;
