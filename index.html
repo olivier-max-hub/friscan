@@ -408,7 +408,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '44';
+const VERSION = '45';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -751,7 +751,9 @@ const IA_TXT = 'Photo d’illustration créée par IA, en attendant une vraie ph
 /* préférences alimentaires choisies dans Cookapli (végétarien, sans gluten…) */
 const FA = window.CookFiltres ? CookFiltres.lire() : [];
 const okR = r => !FA.length || CookFiltres.ok(CookFiltres.texteFriscan(r, ING), FA);
-const okM = m => !FA.length || CookFiltres.okTexte(CookFiltres.texteFiche(m.n, m.f), FA);
+/* les « Préparations » du Livre (pâtes, sauces, crèmes de base) sont des techniques : jamais proposées comme recettes */
+const estPrep = m => /preparation/.test(norm(m.cat || ''));
+const okM = m => !estPrep(m) && (!FA.length || CookFiltres.okTexte(CookFiltres.texteFiche(m.n, m.f), FA));
 const noteFiltres = () => FA.length ? `<p class="note fnote">🥗 Recettes ${esc(CookFiltres.libelle(FA))} · <a href="../cookapli/perso.html">modifier</a></p>` : '';
 function renderChrono() {
   const qc = norm($('#qc').value).trim();
