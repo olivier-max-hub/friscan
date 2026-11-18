@@ -154,7 +154,7 @@ h2:first-child{margin-top:4px}
 .iaq{position:absolute;top:10px;right:10px;border:0;border-radius:99px;background:rgba(0,0,0,.62);color:#fff;font:inherit;font-weight:700;font-size:1rem;padding:4px 12px;cursor:pointer;line-height:1.2}
 .iabulle{position:absolute;top:46px;right:10px;width:min(320px,calc(100% - 20px));background:#fff;color:#000;font-weight:700;border-radius:14px;padding:10px 12px;box-shadow:0 6px 18px rgba(0,0,0,.3);font-size:1rem;line-height:1.3;text-align:left;z-index:2}
 .iamini{position:absolute;right:4px;bottom:4px;font-style:normal;font-weight:700;font-size:.7rem;line-height:1;background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:2px 6px}
-/* 30 minutes chrono */
+/* Max 30 min */
 .chrono-intro{color:#000;font-weight:700;margin:0 0 12px}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
 .vegtag{display:inline-block;justify-self:start;align-self:start;background:#1f7a43;color:#fff;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;line-height:1;padding:5px 12px;border-radius:7px;box-shadow:0 1px 4px rgba(0,0,0,.25);margin:0 0 4px}
@@ -403,7 +403,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '37';
+const VERSION = '38';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -727,7 +727,7 @@ function recCard(r, a) {
   const ill = r.img ? `<span class="thumb"><img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}</span>` : `<span class="ill">${r.e}</span>`;
   return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span>${isVeg(r) ? VEG_TAG : ''}<b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span>${ill}</a>${missBtn(a, 'r:' + r.id)}</div>`;
 }
-/* ---------- 30 minutes chrono : recettes rapides validées + recettes du Livre prêtes en 30 min (préparation + cuisson) ---------- */
+/* ---------- Max 30 min : recettes rapides validées + recettes du Livre prêtes en 30 min (préparation + cuisson) ---------- */
 /* « 1 h 20 » → 80, « 20 à 25 min » → 25 (la plus longue), « 1 h 15 + 10 min » → 85, « 0 » ou « Sans cuisson » → 0, illisible → null */
 function dureeMin(v) {
   const n = norm(v).trim();
@@ -920,7 +920,7 @@ function scaleLine(t,k){if(!t||k===1)return t;t=String(t);
 function persBase(p){var m=String(p||"").match(/\d+/);return m?+m[0]:0}
 function qtyScale(q, k) { return k === 1 || !q ? q : String(q).split(' + ').map(x => scaleLine(x, k)).join(' + '); }
 const persSel = {};
-/* pastilles des cartes de 30 minutes chrono, comme dans le Livre de recettes */
+/* pastilles des cartes de Max 30 min, comme dans le Livre de recettes */
 const vide = v => { v = String(v || '').trim(); return /^[-–—]*$/.test(v) ? '' : v; };
 const dureeTxt = v => { v = vide(v); if (/^\d+$/.test(v)) v += ' min'; return v.replace(/\bmn\b\.?/gi, 'min'); };
 const cuisTxt = v => { v = dureeTxt(v); return /^0(\s*min)?$/i.test(v) ? 'Sans cuisson' : v; };
@@ -928,7 +928,7 @@ const DIFF_COUL = { Facile: '#1f7a43', Moyen: '#a85f00', Difficile: '#b3261e' };
 const ci = (k, v, bg, cls, title, vcol) => v ? `<span class="ci${cls ? ' ' + cls : ''}"${bg ? ` style="background:${bg}"` : ''}${title ? ` title="${esc(title)}"` : ''}><span class="k">${k}</span><span class="v"${vcol ? ` style="color:${vcol}"` : ''}>${esc(v)}</span></span>` : '';
 const KC_TXT = 'Estimation indicative, sans valeur médicale';
 function pastillesRapide(r) {
-  let h = ci('Durée', r.min + ' min', '#bfe8ee') + ci('Personnes', String(r.pers), '#cdeccb') + ci('Catégorie', r.cat, CATS[r.cat] ? CATS[r.cat][0] : '#d9d0f5') + ci('⏱️ Rapide', '30 minutes chrono', '#c9e1fb');
+  let h = ci('Durée', r.min + ' min', '#bfe8ee') + ci('Personnes', String(r.pers), '#cdeccb') + ci('Catégorie', r.cat, CATS[r.cat] ? CATS[r.cat][0] : '#d9d0f5') + ci('⏱️ Rapide', 'Max 30 min', '#c9e1fb');
   if (window.CookBudget && CookBudget.kcalFriscan) {
     const k = CookBudget.kcalFriscan(r, ING); if (k) h += ci('Calories / pers.', '≈ ' + k + ' kcal', '', 'kc', KC_TXT);
     const b = CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null; if (b) h += ci('Budget / pers.', b.niv.s + ' · ' + b.niv.t, '', 'bu' + b.niv.n, CookBudget.AVERT);
@@ -943,12 +943,12 @@ function pastillesLivre(m) {
   }
   return h ? `<span class="cinfo">${h}</span>` : '';
 }
-/* calories et budget sur les cartes de 30 minutes chrono (../cookapli/budget.js) */
+/* calories et budget sur les cartes de Max 30 min (../cookapli/budget.js) */
 function nutri(r) {
   if (!window.CookBudget || !CookBudget.kcalFriscan) return '';
   const k = CookBudget.kcalFriscan(r, ING), b = CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null;
   if (!k && !b && r.min > 30) return '';
-  return `<span class="cnut">${r.min <= 30 ? '<span class="cn ch">⏱️ 30 minutes chrono</span>' : ''}${k ? `<span class="cn kc" title="Estimation indicative, sans valeur médicale">≈ ${k} kcal / pers.</span>` : ''}${b ? `<span class="cn bu${b.niv.n}" title="${esc(CookBudget.AVERT)}">${b.niv.s} · ${b.niv.t}</span>` : ''}</span>`;
+  return `<span class="cnut">${r.min <= 30 ? '<span class="cn ch">⏱️ Max 30 min</span>' : ''}${k ? `<span class="cn kc" title="Estimation indicative, sans valeur médicale">≈ ${k} kcal / pers.</span>` : ''}${b ? `<span class="cn bu${b.niv.n}" title="${esc(CookBudget.AVERT)}">${b.niv.s} · ${b.niv.t}</span>` : ''}</span>`;
 }
 /* budget estimé (../cookapli/budget.js, prix moyens Open Prices) : niveau par personne et fourchette pour n personnes */
 function budgetPill(r, n) {
@@ -965,7 +965,7 @@ function renderRecipe(id, silent, keepScroll) {
   const n = persSel[r.id] || r.pers, k = n / r.pers;
   const fromFridge = r.ing.filter(x => inFridge(x[0]));
   v.innerHTML = `
-    <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← 30 minutes chrono</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
+    <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← Max 30 min</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
     ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
       : `<div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2});position:relative;overflow:hidden">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}<span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>`}
     <div class="rpills">
@@ -973,7 +973,7 @@ function renderRecipe(id, silent, keepScroll) {
       <div class="rpill" style="background:#ffd9c7"><small>Personnes</small><div class="pers"><button type="button" class="persbtn" data-pers="-1" aria-label="Une personne de moins"${n <= 1 ? ' disabled' : ''}>−</button><b aria-live="polite">${n}</b><button type="button" class="persbtn" data-pers="1" aria-label="Une personne de plus"${n >= 30 ? ' disabled' : ''}>+</button></div></div>
       <div class="rpill" style="background:#d9d0f5"><small>Catégorie</small><b>${esc(r.cat)}</b></div>
       <div class="rpill" style="background:${a.missing.length ? '#ffe0b3' : '#cdeccb'}"><small>Ingrédients</small><b>${a.okCount} / ${a.total}</b></div>
-      ${r.min <= 30 ? '<div class="rpill chp"><small>Rapide</small><b>⏱️ 30 minutes chrono</b></div>' : ''}
+      ${r.min <= 30 ? '<div class="rpill chp"><small>Rapide</small><b>⏱️ Max 30 min</b></div>' : ''}
       ${(() => { const k = window.CookBudget && CookBudget.kcalFriscan ? CookBudget.kcalFriscan(r, ING) : 0; return k ? `<div class="rpill kcp" title="Estimation indicative, sans valeur médicale"><small>Calories / personne</small><b>≈ ${k} kcal</b></div>` : ''; })()}
       ${budgetPill(r, n)}
     </div>
@@ -1157,7 +1157,7 @@ function route() {
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec'; $('#hdrChrono').hidden = v !== 'chrono';
-  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette', chrono: '30 minutes chrono' }[v];
+  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette', chrono: 'Max 30 min' }[v];
   if (v !== 'scan') { stopCam(); resetScan(); }
   else if (autoCam) { autoCam = false; startCam(); }
   if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
@@ -1201,7 +1201,7 @@ function initStats_() {
 function commentContext() {
   if (currentView === 'recette') { const r = RECETTES.find(x => x.id === location.hash.slice(3)); if (r) return 'Friscan · ' + r.n; }
   if (currentView === 'frigo') return 'Friscan · Mes réserves';
-  if (currentView === 'chrono') return 'Friscan · 30 minutes chrono';
+  if (currentView === 'chrono') return 'Friscan · Max 30 min';
   return 'Friscan · Commentaire général';
 }
 function cmOpen(o) { const f = $('#commentaire'); if (!f) return; $('#cmBody').hidden = !o; f.classList.toggle('open', o); $('#cmTitle').setAttribute('aria-expanded', String(o)); }
