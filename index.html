@@ -287,6 +287,7 @@ body.v-scan .chef-f{display:none}
 .fnote{background:#e8f6ec;border:1px solid #9fd8b0;border-radius:12px;padding:6px 10px;color:#14532d!important}
 .fnote a{color:#14532d;font-weight:800}
 .fwarn{background:#fff1e6;border:1px solid #f0a868;border-radius:12px;padding:8px 12px;color:#7a2e00!important;font-weight:800}
+.fcrus{background:#fff6e0;border:1px solid #e9c44a;border-radius:12px;padding:8px 12px;color:#3a2a00!important;font-weight:800}
 </style>
 </head>
 <body>
@@ -391,9 +392,9 @@ body.v-scan .chef-f{display:none}
 </nav>
 <div id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button id="toastUndo" hidden>Annuler</button></div>
 
-<script src="data.js?v=19"></script>
+<script src="data.js?v=20"></script>
 <script src="../cookapli/budget.js?v=3"></script>
-<script src="../cookapli/filtres.js?v=2"></script>
+<script src="../cookapli/filtres.js?v=3"></script>
 <script src="../recettes/calories.js?v=2"></script>
 <script>
 'use strict';
@@ -407,7 +408,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '41';
+const VERSION = '42';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -974,6 +975,7 @@ function renderRecipe(id, silent, keepScroll) {
   const n = persSel[r.id] || r.pers, k = n / r.pers;
   const fromFridge = r.ing.filter(x => inFridge(x[0]));
   v.innerHTML = `
+    ${window.CookFiltres && CookFiltres.oeufsCrus(r.n, r.crus) ? `<p class="note fcrus">${esc(CookFiltres.AVERT_CRUS)}</p>` : ''}
     ${FA.length && !okR(r) ? `<p class="note fwarn">⚠️ Cette recette ne respecte pas tes préférences : ${esc(CookFiltres.libelle(CookFiltres.raisons(CookFiltres.texteFriscan(r, ING), FA)))}.</p>` : ''}
     <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← Max 30 min</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
     ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
