@@ -393,7 +393,7 @@ body.v-scan .chef-f{display:none}
 
 <script src="data.js?v=18"></script>
 <script src="../cookapli/budget.js?v=3"></script>
-<script src="../cookapli/filtres.js?v=1"></script>
+<script src="../cookapli/filtres.js?v=2"></script>
 <script src="../recettes/calories.js?v=1"></script>
 <script>
 'use strict';
@@ -407,7 +407,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '39';
+const VERSION = '40';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
