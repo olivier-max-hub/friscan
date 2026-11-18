@@ -395,6 +395,7 @@ body.v-scan .chef-f{display:none}
 <script src="data.js?v=20"></script>
 <script src="../cookapli/budget.js?v=3"></script>
 <script src="../cookapli/filtres.js?v=3"></script>
+<script src="../cookapli/batch.js?v=1"></script>
 <script src="../recettes/calories.js?v=2"></script>
 <script>
 'use strict';
@@ -408,7 +409,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '45';
+const VERSION = '46';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -997,7 +998,9 @@ function renderRecipe(id, silent, keepScroll) {
     }).join('')}</ul>${k !== 1 ? `<p class="persnote">Quantités calculées pour ${n} personne${n > 1 ? 's' : ''}. Les quantités écrites dans les étapes restent celles de la recette d’origine (${r.pers} personne${r.pers > 1 ? 's' : ''}).</p>` : ''}</div></div>
     ${a.missing.length ? `<div class="row" style="margin:10px 0 0;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="toCourses">🛒 Ajouter ${a.missing.length > 1 ? `les ${a.missing.length} ingrédients manquants` : 'l’ingrédient manquant'} à ma liste de courses</button><a class="btn alt" href="${COURSES_URL}">Voir ma liste</a></div>` : ''}
     <div class="rsec"><h3>Préparation</h3><div class="rsteps">${r.steps.map((s, n) => `<div class="rstep"><span class="rnum">${n + 1}</span><p>${esc(s)}</p></div>`).join('')}</div></div>
+    <div id="batchInfo"></div>
     ${fromFridge.length ? `<div class="card mzcard"><img class="mzgoute" src="${MZ}goute.webp" alt="" width="264" height="502"><h3>Bon appétit !</h3><p class="note">Une fois le plat préparé, retire de tes réserves les produits utilisés : ${esc(fromFridge.map(x => ING[x[0]].n.toLowerCase()).join(', '))}.</p><div><button class="btn" id="cooked">🍽️ J’ai cuisiné ça</button></div></div>` : ''}`;
+  if (window.CookBatch) CookBatch.monter($('#batchInfo'), r.n);
   const iq = $('#iaq');
   if (iq) iq.onclick = e => { e.stopPropagation(); const b = $('#iab'); b.hidden = !b.hidden; iq.setAttribute('aria-expanded', !b.hidden); };
   v.querySelectorAll('[data-pers]').forEach(bt => bt.onclick = () => { persSel[r.id] = Math.min(30, Math.max(1, n + +bt.dataset.pers)); renderRecipe(id, true, true); });
