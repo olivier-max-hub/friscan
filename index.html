@@ -409,7 +409,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '46';
+const VERSION = '47';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -803,7 +803,7 @@ function renderRecipes() {
   const box = $('#recList');
   const status = noteFiltres() + (mine.state ? `<p class="note src">${mine.state}</p>` : '');
   if (!list.length) {
-    const msg = !fridge.length ? ['Ajoute des produits', 'Scanne ce qu’il y a dans ton frigo et ton placard pour voir les recettes possibles.', '#scan', '📷']
+    const msg = !fridge.length ? ['Ajoute des produits', 'Renseigne ce qu’il y a dans ton frigo et ton placard pour voir les recettes possibles.', '#frigo', '📷']
       : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
       : ['Aucune recette trouvée', 'Essaie un autre mot ou un autre filtre.', null, '🔍'];
