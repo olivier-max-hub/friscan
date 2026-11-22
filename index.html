@@ -159,6 +159,7 @@ h2:first-child{margin-top:4px}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
 .vegtag{display:inline-block;justify-self:start;align-self:start;background:#1f7a43;color:#fff;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;line-height:1;padding:5px 12px;border-radius:7px;box-shadow:0 1px 4px rgba(0,0,0,.25);margin:0 0 4px}
 .catb .vegtag{display:table}
+.vegtag.vegan,.vegstamp.vegan{background:#4d7c0f}
 .vegrow{display:flex;justify-content:center;padding:6px 8px;background:#fff}
 .vegrow .vegtag{margin:0}
 .vegstamp{position:absolute;z-index:2;top:70px;right:12px;transform:rotate(28deg);background:#1f7a43;color:#fff;font-weight:700;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:6px 18px;border-radius:9px;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
@@ -419,7 +420,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '49';
+const VERSION = '50';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -736,11 +737,13 @@ function tags(a, mine) {
 }
 /* mention « Végétarien » (vert foncé, comme dans le Livre de recettes) */
 const VEG_TAG = '<span class="vegtag">Végétarien</span>';
+const VEGAN_TAG = '<span class="vegtag vegan">Vegan</span>';
+const tagMine = m => m.vegan ? VEGAN_TAG : VEG_TAG;
 function isVeg(r) { return /vegetarien/.test(slugify(r.cat || '')); }
 function mineVeg(m) { return m.veg || /vegetarien|vegan/.test(slugify((m.cat || '') + ' ' + (m.n || ''))); }
 function recCard(r, a) {
   const [c1, c2] = CATS[r.cat];
-  const ill = r.img ? `<span class="thumb"><img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}</span>` : `<span class="ill">${r.e}</span>`;
+  const ill = r.img ? `<span class="thumb"><img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">image IA?</i>' : ''}</span>` : `<span class="ill">${r.e}</span>`;
   return `<div class="rwrap"><a class="catb" href="#r-${r.id}" style="--c1:${c1};--c2:${c2}"><span>${isVeg(r) ? VEG_TAG : ''}<b>${esc(r.n)}</b><small>${r.min} min · ${r.pers} pers. · ${esc(r.cat)}</small>${tags(a)}</span>${ill}</a>${missBtn(a, 'r:' + r.id)}</div>`;
 }
 /* ---------- Max 30 min : recettes rapides validées + recettes du Livre prêtes en 30 min (préparation + cuisson) ---------- */
@@ -764,7 +767,7 @@ const FA = window.CookFiltres ? CookFiltres.lire() : [];
 const okR = r => !FA.length || CookFiltres.ok(CookFiltres.texteFriscan(r, ING), FA);
 /* les « Préparations » du Livre (pâtes, sauces, crèmes de base) sont des techniques : jamais proposées comme recettes */
 const estPrep = m => /preparation/.test(norm(m.cat || ''));
-const okM = m => !estPrep(m) && (!FA.length || CookFiltres.okTexte(CookFiltres.texteFiche(m.n, m.f), FA));
+const okM = m => !estPrep(m) && (!FA.length || CookFiltres.okTexte(CookFiltres.texteFiche(m.n, m.f, m.type), FA));
 const noteFiltres = () => FA.length ? `<p class="note fnote">🥗 Recettes ${esc(CookFiltres.libelle(FA))} · <a href="../cookapli/perso.html">modifier</a></p>` : '';
 function renderChrono() {
   const qc = norm($('#qc').value).trim();
@@ -779,7 +782,7 @@ function mineCard(m, a) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
   return `<a class="catb" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}" style="--c1:${c1};--c2:${c2}">
-    <span>${mineVeg(m) ? VEG_TAG : ''}<b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
+    <span>${mineVeg(m) ? tagMine(m) : ''}<b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}${m.cuisson ? ' · ' + esc(m.cuisson) : ''}</small>${tags(a, true)}
     ${a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''}</span>
     <span class="thumb">${img}<span>📖</span></span></a>`.replace(/^/, '<div class="rwrap">') + missBtn(a, 'm:' + m.slug) + '</div>';
 }
@@ -890,7 +893,7 @@ async function loadMine(force) {
       if (!ings.size) continue;
       const min = parseInt((fi.cuisson || '').replace(/h/, '*60+'), 10);
       const fm = fi.m || {}, tp = /^[\s\-–—]*$/.test(fm.prep || '') ? null : dureeMin(fm.prep), tc = dureeMin(fm.cuisson);
-      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: imgCol(row), ia: iaCol(row), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk, prep: fm.prep || '', cuis: fm.cuisson || '', diff: (fm.diff || '').trim(), f: { ing: fi.ing.map(x => ({ t: x.t, l: x.l })), m: { pers: fm.pers }, pers: fi.pers, r: fi.r } });
+      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), vegan: /(^|-)vegan(-|$)/.test(slugify((row[3] || '') + ' ' + name)), type: (row[3] || '').trim(), slug, img: imgCol(row), ia: iaCol(row), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk, prep: fm.prep || '', cuis: fm.cuisson || '', diff: (fm.diff || '').trim(), f: { ing: fi.ing.map(x => ({ t: x.t, l: x.l })), m: { pers: fm.pers }, pers: fi.pers, r: fi.r } });
     }
     if (!out.length) throw 0;
     mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now(), v: MINE_V });
@@ -979,13 +982,13 @@ const tagCompte = a => a.missing.length ? `<span class="tag ko">Il manque ${a.mi
 /* miniature d'une recette rapide ou d'une recette du Livre : même présentation partout (Max 30 min, Recettes) */
 function carteRapide(r, tag) {
   const [c1, c2] = CATS[r.cat];
-  return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}</span>
+  return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">image IA?</i>' : ''}` : r.e}</span>
       <span class="ctxt"><b>${esc(r.n)}</b>${liteRapide(r)}${tag}</span></a>`;
 }
 function carteLivre(m, tag) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
-  return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}${img && m.ia ? `<i class="iamini" title="${m.ia === 'rl' ? 'L’image du plat est réelle, l’environnement est créé par l’IA.' : IA_TXT}">IA</i>` : ''}</span>
+  return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}">${mineVeg(m) ? '<span class="vegrow">' + tagMine(m) + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}${img && m.ia ? `<i class="iamini" title="${m.ia === 'rl' ? 'L’image du plat est réelle, l’environnement est créé par l’IA.' : IA_TXT}">image IA?</i>` : ''}</span>
       <span class="ctxt"><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}</small>${liteLivre(m)}${tag}</span></a>`;
 }
 /* calories et budget sur les cartes de Max 30 min (../cookapli/budget.js) */
@@ -1013,7 +1016,7 @@ function renderRecipe(id, silent, keepScroll) {
     ${window.CookFiltres && CookFiltres.oeufsCrus(r.n, r.crus) ? `<p class="note fcrus">${esc(CookFiltres.AVERT_CRUS)}</p>` : ''}
     ${FA.length && !okR(r) ? `<p class="note fwarn">⚠️ Cette recette ne respecte pas tes préférences : ${esc(CookFiltres.libelle(CookFiltres.raisons(CookFiltres.texteFriscan(r, ING), FA)))}.</p>` : ''}
     <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← Max 30 min</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
-    ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
+    ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">image IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
       : `<div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2});position:relative;overflow:hidden">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}<span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>`}
     <div class="rpills">
       <div class="rpill" style="background:#bfe8ee"><small>Temps</small><b>${r.min} min</b></div>
