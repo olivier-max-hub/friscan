@@ -419,7 +419,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '48';
+const VERSION = '49';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -834,6 +834,10 @@ $('#filters').addEventListener('click', e => {
 });
 
 /* ---------- « Mes recettes » : liste Google Sheets + fiches ---------- */
+/* la photo est la cellule « images/… .jpg » (sa colonne peut bouger) ; la mention IA est « IA » ou « RL / IA » */
+const imgCol = r => (r.slice(5).find(x => /\.(jpe?g|png|webp|gif)\s*$/i.test(x || '')) || '').trim();
+const iaCol = r => { const x = r.slice(5).find(v => /^\s*(rl\s*\/\s*ia|ia)\s*$/i.test(v || '')); return x ? (/rl/i.test(x) ? 'rl' : 'ia') : ''; };
+
 let mine = { list: store.get('mine', { list: [] }).list || [], state: '' };
 function csvRows(t) {
   const rows = []; let r = [], f = '', q = false;
@@ -886,7 +890,7 @@ async function loadMine(force) {
       if (!ings.size) continue;
       const min = parseInt((fi.cuisson || '').replace(/h/, '*60+'), 10);
       const fm = fi.m || {}, tp = /^[\s\-–—]*$/.test(fm.prep || '') ? null : dureeMin(fm.prep), tc = dureeMin(fm.cuisson);
-      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: (row[6] || '').trim(), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk, prep: fm.prep || '', cuis: fm.cuisson || '', diff: (fm.diff || '').trim(), f: { ing: fi.ing.map(x => ({ t: x.t, l: x.l })), m: { pers: fm.pers }, pers: fi.pers, r: fi.r } });
+      out.push({ n: name, cat: cur, veg: /vegetarien|vegan/.test(slugify(cur + ' ' + (row[3] || '') + ' ' + name)), slug, img: imgCol(row), ia: iaCol(row), cuisson: fi.cuisson || '', min: isNaN(min) ? 0 : min, tot: tp == null || tc == null ? null : tp + tc, pers: (fm.pers || '').trim(), ings: [...ings], unk, prep: fm.prep || '', cuis: fm.cuisson || '', diff: (fm.diff || '').trim(), f: { ing: fi.ing.map(x => ({ t: x.t, l: x.l })), m: { pers: fm.pers }, pers: fi.pers, r: fi.r } });
     }
     if (!out.length) throw 0;
     mine = { list: out, state: '' }; store.set('mine', { list: out, t: Date.now(), v: MINE_V });
@@ -981,7 +985,7 @@ function carteRapide(r, tag) {
 function carteLivre(m, tag) {
   const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
   const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
-  return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}</span>
+  return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}${img && m.ia ? `<i class="iamini" title="${m.ia === 'rl' ? 'L’image du plat est réelle, l’environnement est créé par l’IA.' : IA_TXT}">IA</i>` : ''}</span>
       <span class="ctxt"><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}</small>${liteLivre(m)}${tag}</span></a>`;
 }
 /* calories et budget sur les cartes de Max 30 min (../cookapli/budget.js) */
