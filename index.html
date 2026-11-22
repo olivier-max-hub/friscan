@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Friscan</title>
+<title>Mes réserves · Cookapli</title>
 <meta name="description" content="Scanne tes réserves, frigo et placard, et prépare un bon repas">
 <meta name="theme-color" content="#0f6b78">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Friscan">
+<meta name="apple-mobile-web-app-title" content="Cookapli">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -174,6 +174,16 @@ h2:first-child{margin-top:4px}
 .ccard b{font-size:1.15rem;line-height:1.1}
 .ccard small{color:#000;font-weight:700;font-size:.85rem}
 .ccard .tag{justify-self:start;font-size:.8rem}
+/* pastilles des miniatures, comme sur le carrousel de l'accueil : temps, calories, budget, personnes */
+.ccard .cinfo.lite{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ccard .cinfo.lite span{display:inline-flex;align-items:center;gap:3px;font-weight:700;font-size:.78rem;line-height:1;padding:5px 8px;border-radius:99px;background:#e3f6f8;color:#0b4f59;white-space:nowrap}
+.ccard .cinfo.lite .kc{background:#1f7a43;color:#fff}
+.ccard .cinfo.lite .bu1{background:#1c5d99;color:#fff}.ccard .cinfo.lite .bu2{background:#8a5200;color:#fff}.ccard .cinfo.lite .bu3{background:#a3261e;color:#fff}
+.ccard .tag{background:#f1f7f8}
+.cgrid>.note,.cgrid>.catb,.cgrid>.fnote{grid-column:1/-1}
+.cwrap{display:grid;align-content:start}
+.cwrap .ccard{position:relative;z-index:1;height:100%}
+.cwrap .addmiss{justify-self:stretch;margin:-14px 0 0;padding:20px 8px 8px;border-radius:0 0 18px 18px;font-size:.9rem;line-height:1.15}
 @media (prefers-reduced-motion:no-preference){.ccard{transition:transform .15s}.ccard:active{transform:scale(.98)}}
 .rpills{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
 .rpill{border-radius:20px;padding:10px 12px;text-align:center;color:var(--deep)}
@@ -359,12 +369,12 @@ body.v-scan .chef-f{display:none}
 
   <!-- RECETTES -->
   <section id="v-rec" hidden>
-    <div id="recList" class="cats"></div>
+    <div id="recList" class="cgrid"></div>
   </section>
 
   <!-- 30 MINUTES CHRONO -->
   <section id="v-chrono" hidden>
-    <p class="note chrono-intro">Des recettes prêtes en 30 minutes ou moins, préparation et cuisson comprises : les recettes rapides vérifiées de Friscan et celles du Livre de recettes 📖.</p>
+    <p class="note chrono-intro">Des recettes prêtes en 30 minutes ou moins, préparation et cuisson comprises : les recettes rapides vérifiées de Cookapli et celles du Livre de recettes 📖.</p>
     <div id="chronoList" class="cgrid"></div>
   </section>
 
@@ -409,7 +419,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '47';
+const VERSION = '48';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -457,7 +467,7 @@ function icsFor(list) {
     const dt = `${v.getFullYear()}${pad(v.getMonth() + 1)}${pad(v.getDate())}T090000`;
     const txt = `${f.name} à consommer avant le ${new Date(y, m - 1, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`.replace(/[,;\\]/g, ' ');
     return ['BEGIN:VEVENT', `UID:${f.uid}-${f.dlc}@friscan`, `DTSTAMP:${stamp}`, `DTSTART:${dt}`, 'DURATION:PT15M', `SUMMARY:⏰ ${txt}`,
-      'DESCRIPTION:Rappel Friscan. Ouvre Friscan pour voir les recettes anti-gaspi.', 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${txt}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT'].join('\r\n');
+      'DESCRIPTION:Rappel Cookapli. Ouvre tes réserves dans Cookapli pour voir les recettes anti-gaspi.', 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${txt}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT'].join('\r\n');
   });
   const body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Friscan//FR', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n');
   const a = document.createElement('a');
@@ -719,7 +729,7 @@ function addToCourses(items, src) {
 const missBtn = (a, key) => a.missing.length ? `<button type="button" class="addmiss" data-miss="${esc(key)}">🛒 Ajouter ${a.missing.length > 1 ? `les ${a.missing.length} manquants` : 'le manquant'} à ma liste</button>` : '';
 function tags(a, mine) {
   let t = a.missing.length === 0
-    ? `<span class="tag ok">✓ ${mine && a.unk ? 'Tu as tout ce que Friscan reconnaît' : 'Tu as tout'}</span>`
+    ? `<span class="tag ok">✓ ${mine && a.unk ? 'Tu as tout ce que Cookapli reconnaît' : 'Tu as tout'}</span>`
     : `<span class="tag ko">Il manque : ${esc(a.missing.slice(0, 4).map(m => ING[m].n.toLowerCase()).join(', '))}${a.missing.length > 4 ? '…' : ''}</span>`;
   if (a.urgent.length) t += ` <span class="tag warn">⏰ ${esc(a.urgent.map(f => f.name.toLowerCase()).join(', '))}</span>`;
   return t;
@@ -762,19 +772,7 @@ function renderChrono() {
     .concat(mine.list.filter(m => mineChrono(m) && okM(m) && (!qc || norm(m.n).includes(qc))).map(m => ({ m, min: m.tot, n: m.n })))
     .sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
   if (!list.length) { $('#chronoList').innerHTML = noteFiltres() + '<p class="note">Aucune recette ne correspond à cette recherche.</p>'; return; }
-  $('#chronoList').innerHTML = noteFiltres() + list.map(({ r, m }) => {
-    if (m) {
-      const a = analyseMine(m), [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
-      const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
-      const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
-      return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}<span class="cmin">⏱️ ${m.tot} min</span></span>
-      <span class="ctxt"><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}</small>${pastillesLivre(m)}${tag}</span></a>`;
-    }
-    const a = analyse(r), [c1, c2] = CATS[r.cat];
-    const tag = a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
-    return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}<span class="cmin">⏱️ ${r.min} min</span></span>
-      <span class="ctxt"><b>${esc(r.n)}</b>${pastillesRapide(r)}${tag}</span></a>`;
-  }).join('');
+  $('#chronoList').innerHTML = noteFiltres() + list.map(({ r, m }) => m ? carteLivre(m, tagCompte(analyseMine(m))) : carteRapide(r, tagCompte(analyse(r)))).join('');
 }
 let fromChrono = false;
 function mineCard(m, a) {
@@ -789,8 +787,8 @@ let onlyMine = false;
 function renderRecipes() {
   const q = norm($('#q').value).trim();
   let list = [];
-  if (!onlyMine) list = RECETTES.filter(okR).map(r => ({ a: analyse(r), min: r.min, txt: r.n + ' ' + r.ing.map(i => ING[i[0]].n).join(' '), html: a => recCard(r, a) }));
-  list = list.concat(mine.list.filter(okM).map(m => ({ a: analyseMine(m), min: m.min || 45, txt: m.n + ' ' + m.cat + ' ' + m.ings.map(i => ING[i].n).join(' '), html: a => mineCard(m, a), mine: 1 })));
+  if (!onlyMine) list = RECETTES.filter(okR).map(r => ({ a: analyse(r), min: r.min, txt: r.n + ' ' + r.ing.map(i => ING[i[0]].n).join(' '), html: a => `<div class="cwrap">${carteRapide(r, tags(a))}${missBtn(a, 'r:' + r.id)}</div>` }));
+  list = list.concat(mine.list.filter(okM).map(m => ({ a: analyseMine(m), min: m.min || 45, txt: m.n + ' ' + m.cat + ' ' + m.ings.map(i => ING[i].n).join(' '), html: a => `<div class="cwrap">${carteLivre(m, tags(a, true) + (a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''))}${missBtn(a, 'm:' + m.slug)}</div>`, mine: 1 })));
   if (q) list = list.filter(x => norm(x.txt).includes(q));
   const gap = x => x.a.missing.length + x.a.unk;
   if (filter === 'ok') list = list.filter(x => gap(x) === 0 && x.a.used > 0);
@@ -955,6 +953,36 @@ function pastillesLivre(m) {
     const b = CookCalc.budget(m.f, t => guessIng(t)); if (b) h += ci('Budget / pers.', b.niv.s + ' · ' + b.niv.t, '', 'bu' + b.niv.n, CookBudget.AVERT);
   }
   return h ? `<span class="cinfo">${h}</span>` : '';
+}
+/* pastilles « légères » des miniatures (mêmes que le carrousel de l'accueil) */
+function lite(min, pers, kc, bu) {
+  let h = '';
+  if (min) h += `<span title="Préparation et cuisson">⏱️ ${min >= 60 ? Math.floor(min / 60) + ' h' + (min % 60 ? ' ' + String(min % 60).padStart(2, '0') : '') : min + ' min'}</span>`;
+  if (kc) h += `<span class="kc" title="Calories par personne, estimation indicative sans valeur médicale">≈ ${kc} kcal</span>`;
+  if (bu) h += `<span class="bu${bu.niv.n}" title="Budget par personne : ${esc(bu.niv.t)} (estimation à partir de prix moyens)">${bu.niv.s}</span>`;
+  if (pers) h += `<span title="Personnes">👤 ${esc(pers)}</span>`;
+  return h ? `<span class="cinfo lite">${h}</span>` : '';
+}
+function liteRapide(r) {
+  const ok = window.CookBudget && CookBudget.kcalFriscan;
+  return lite(r.min, String(r.pers), ok ? CookBudget.kcalFriscan(r, ING) : null, ok && CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null);
+}
+function liteLivre(m) {
+  const kc = m.f && window.CookCalc ? CookCalc.kcal(m.f) : null, bu = m.f && window.CookCalc ? CookCalc.budget(m.f, t => guessIng(t)) : null;
+  return lite(m.tot, vide(m.pers), kc, bu);
+}
+const tagCompte = a => a.missing.length ? `<span class="tag ko">Il manque ${a.missing.length} ingrédient${a.missing.length > 1 ? 's' : ''}</span>` : '<span class="tag ok">✓ Tu as tout</span>';
+/* miniature d'une recette rapide ou d'une recette du Livre : même présentation partout (Max 30 min, Recettes) */
+function carteRapide(r, tag) {
+  const [c1, c2] = CATS[r.cat];
+  return `<a class="ccard" href="#r-${r.id}">${isVeg(r) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy" width="720" height="720">${r.ia ? '<i class="iamini">IA</i>' : ''}` : r.e}</span>
+      <span class="ctxt"><b>${esc(r.n)}</b>${liteRapide(r)}${tag}</span></a>`;
+}
+function carteLivre(m, tag) {
+  const [c1, c2] = MINE_COLORS[m.cat] || ['#d6f0e6', '#8fd6bd'];
+  const img = m.img ? `<img src="${esc(MES_RECETTES.site + encodeURI(m.img))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+  return `<a class="ccard" href="${esc(MES_RECETTES.site + '#' + m.slug)}" target="_blank" rel="noopener" data-mine-name="${esc(m.n)}">${mineVeg(m) ? '<span class="vegrow">' + VEG_TAG + '</span>' : ''}<span class="cimg" style="--c1:${c1};--c2:${c2}">${img || '📖'}</span>
+      <span class="ctxt"><b>${esc(m.n)}</b><small>📖 Livre de recettes · ${esc(m.cat)}</small>${liteLivre(m)}${tag}</span></a>`;
 }
 /* calories et budget sur les cartes de Max 30 min (../cookapli/budget.js) */
 function nutri(r) {
@@ -1265,7 +1293,7 @@ function setupFab(t) {
 })();
 renderAll(); route(); loadMine(); initStats_(); syncDlc(); notifyDue();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) notifyDue(); });
-$('#version').textContent = `Friscan · version ${VERSION}`;
+$('#version').textContent = `Cookapli · Mes réserves · version ${VERSION}`;
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* quand une nouvelle version est installée, on recharge une fois pour l'utiliser tout de suite */
   const hadSW = !!navigator.serviceWorker.controller; let reloaded = false;

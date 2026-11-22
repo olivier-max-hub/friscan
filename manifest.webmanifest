@@ -1,8 +1,8 @@
 {
   "id": "/friscan/",
-  "name": "Friscan – scanne ton frigo",
-  "short_name": "Friscan",
-  "description": "Scanne les codes-barres de ton frigo et trouve des recettes simples et rapides.",
+  "name": "Cookapli – Mes réserves",
+  "short_name": "Mes réserves",
+  "description": "Tes réserves (frigo et placard) et des recettes simples et rapides avec ce que tu as.",
   "lang": "fr",
   "start_url": "/friscan/",
   "scope": "/friscan/",
