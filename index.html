@@ -422,7 +422,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '51';
+const VERSION = '52';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -770,14 +770,20 @@ const okR = r => !FA.length || CookFiltres.ok(CookFiltres.texteFriscan(r, ING), 
 /* les « Préparations » du Livre (pâtes, sauces, crèmes de base) sont des techniques : jamais proposées comme recettes */
 const estPrep = m => /preparation/.test(norm(m.cat || ''));
 const okM = m => !estPrep(m) && (!FA.length || CookFiltres.okTexte(CookFiltres.texteFiche(m.n, m.f, m.type), FA));
+/* profil « Petit budget » (id antigaspi) : les recettes les moins chères d'abord */
+const PETIT_BUDGET = (() => { try { const a = JSON.parse(localStorage.getItem('cookapli.accueil') || 'null'); return !!(a && a.profil === 'antigaspi'); } catch (e) { return false; } })();
+const ppR = r => { const b = window.CookBudget && CookBudget.pret() ? CookBudget.recetteFriscan(r, ING) : null; return b && b.pp ? b.pp : Infinity; };
+const ppM = m => { const b = m.f && window.CookCalc && window.CookBudget && CookBudget.pret() ? CookCalc.budget(m.f, t => guessIng(t)) : null; return b && b.pp ? b.pp : Infinity; };
+const noteBudget = () => PETIT_BUDGET ? '<p class="note">💶 Petit budget : de la moins chère à la plus chère</p>' : '';
 const noteFiltres = () => FA.length ? `<p class="note fnote">🥗 Recettes ${esc(CookFiltres.libelle(FA))} · <a href="../cookapli/perso.html">modifier</a></p>` : '';
 function renderChrono() {
   const qc = norm($('#qc').value).trim();
   const list = RECETTES.filter(r => r.ok && r.min <= 30 && okR(r) && (!qc || norm(r.n).includes(qc))).map(r => ({ r, min: r.min, n: r.n }))
     .concat(mine.list.filter(m => mineChrono(m) && okM(m) && (!qc || norm(m.n).includes(qc))).map(m => ({ m, min: m.tot, n: m.n })))
     .sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
+  if (PETIT_BUDGET) { list.forEach(x => { x.pp = x.m ? ppM(x.m) : ppR(x.r); }); list.sort((x, y) => x.pp - y.pp || x.min - y.min); }
   if (!list.length) { $('#chronoList').innerHTML = noteFiltres() + '<p class="note">Aucune recette ne correspond à cette recherche.</p>'; return; }
-  $('#chronoList').innerHTML = noteFiltres() + list.map(({ r, m }) => m ? carteLivre(m, tagCompte(analyseMine(m))) : carteRapide(r, tagCompte(analyse(r)))).join('');
+  $('#chronoList').innerHTML = noteFiltres() + noteBudget() + list.map(({ r, m }) => m ? carteLivre(m, tagCompte(analyseMine(m))) : carteRapide(r, tagCompte(analyse(r)))).join('');
 }
 let fromChrono = false;
 function mineCard(m, a) {
@@ -792,8 +798,8 @@ let onlyMine = false;
 function renderRecipes() {
   const q = norm($('#q').value).trim();
   let list = [];
-  if (!onlyMine) list = RECETTES.filter(okR).map(r => ({ a: analyse(r), min: r.min, txt: r.n + ' ' + r.ing.map(i => ING[i[0]].n).join(' '), html: a => `<div class="cwrap">${carteRapide(r, tags(a))}${missBtn(a, 'r:' + r.id)}</div>` }));
-  list = list.concat(mine.list.filter(okM).map(m => ({ a: analyseMine(m), min: m.min || 45, txt: m.n + ' ' + m.cat + ' ' + m.ings.map(i => ING[i].n).join(' '), html: a => `<div class="cwrap">${carteLivre(m, tags(a, true) + (a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''))}${missBtn(a, 'm:' + m.slug)}</div>`, mine: 1 })));
+  if (!onlyMine) list = RECETTES.filter(okR).map(r => ({ a: analyse(r), min: r.min, pp: PETIT_BUDGET ? ppR(r) : 0, txt: r.n + ' ' + r.ing.map(i => ING[i[0]].n).join(' '), html: a => `<div class="cwrap">${carteRapide(r, tags(a))}${missBtn(a, 'r:' + r.id)}</div>` }));
+  list = list.concat(mine.list.filter(okM).map(m => ({ a: analyseMine(m), min: m.min || 45, pp: PETIT_BUDGET ? ppM(m) : 0, txt: m.n + ' ' + m.cat + ' ' + m.ings.map(i => ING[i].n).join(' '), html: a => `<div class="cwrap">${carteLivre(m, tags(a, true) + (a.unk ? `<small class="unk">${a.unk} ingrédient${a.unk > 1 ? 's' : ''} non reconnu${a.unk > 1 ? 's' : ''} : vérifie la fiche</small>` : ''))}${missBtn(a, 'm:' + m.slug)}</div>`, mine: 1 })));
   if (q) list = list.filter(x => norm(x.txt).includes(q));
   const gap = x => x.a.missing.length + x.a.unk;
   if (filter === 'ok') list = list.filter(x => gap(x) === 0 && x.a.used > 0);
@@ -802,6 +808,7 @@ function renderRecipes() {
   const urg = x => x.a.urgent.length;
   list.sort(filter === 'gaspi'
     ? (x, y) => urg(y) - urg(x) || gap(x) - gap(y) || x.min - y.min
+    : PETIT_BUDGET ? (x, y) => x.pp - y.pp || gap(x) - gap(y) || x.min - y.min
     : (x, y) => gap(x) - gap(y) || urg(y) - urg(x) || y.a.used - x.a.used || x.min - y.min);
   const box = $('#recList');
   const status = noteFiltres() + (mine.state ? `<p class="note src">${mine.state}</p>` : '');
@@ -816,7 +823,7 @@ function renderRecipes() {
     box.innerHTML = status + `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span>${ill}</${msg[2] ? 'a' : 'button'}>`;
     return;
   }
-  box.innerHTML = status + list.slice(0, 80).map(x => x.html(x.a)).join('');
+  box.innerHTML = status + noteBudget() + list.slice(0, 80).map(x => x.html(x.a)).join('');
 }
 function missingOf(key) {
   if (key.startsWith('r:')) { const r = RECETTES.find(x => x.id === key.slice(2)); if (!r) return null; const a = analyse(r);
