@@ -58,7 +58,7 @@ small,.hint,.note,.sub,.meta{font-weight:700}
 .chip[aria-pressed=true]{background:#e3f6f8;color:var(--deep);border-color:#e3f6f8;font-weight:700}
 
 main{padding:16px}
-section[hidden]{display:none!important}
+section[hidden],#filters[hidden]{display:none!important}
 h2{font:700 1.15rem Economica,"Arial Narrow",Arial,sans-serif;margin:22px 0 10px;display:inline-block;padding:4px 14px;border-left:6px solid var(--cat,var(--acc));border-radius:6px;background:var(--card)}
 h2:first-child{margin-top:4px}
 .btn{border:1px solid var(--acc);background:var(--acc);color:var(--on);padding:9px 22px;border-radius:99px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700}
@@ -315,7 +315,7 @@ body.v-scan .chef-f{display:none}
     <div id="hdrChrono" class="field" hidden><input id="qc" type="search" placeholder="Rechercher par nom" autocomplete="off" aria-label="Rechercher une recette rapide par son nom"></div>
     <div id="hdrRec" hidden>
       <div class="field"><input id="q" type="search" placeholder="Rechercher une recette" autocomplete="off" aria-label="Rechercher une recette"></div>
-      <div class="chips" id="filters">
+      <div class="chips" id="filters" hidden>
         <button class="chip" data-f="ok" aria-pressed="true">✓ Possibles</button>
         <button class="chip" data-f="presque" aria-pressed="false" title="Il manque 1 ou 2 ingrédients">Presque prêtes</button>
         <button class="chip" data-f="gaspi" aria-pressed="false">⏰ Anti-gaspi</button>
@@ -337,7 +337,7 @@ body.v-scan .chef-f{display:none}
       <p class="note">Ce que tu as presque toujours chez toi. Ces ingrédients comptent comme disponibles pour les recettes.</p>
       <div class="pills" id="placard"></div>
     </div>
-    <div class="cats" style="margin-top:14px"><a class="catb" href="#recettes" style="--c1:#d9d0f5;--c2:#b9a8ee"><span><b>Que cuisiner avec mes réserves&nbsp;?</b><small>Les recettes que tu peux faire avec ce que tu as, et celles où il ne manque qu'un ou deux ingrédients</small></span><span class="ill" aria-hidden="true">🍳</span></a></div>
+    <div class="cats" style="margin-top:14px"><a class="catb" href="../recettes/" style="--c1:#d9d0f5;--c2:#b9a8ee"><span><b>Que cuisiner avec mes réserves&nbsp;?</b><small>Les recettes que tu peux faire avec ce que tu as, et celles où il ne manque qu'un ou deux ingrédients</small></span><span class="ill" aria-hidden="true">🍳</span></a></div>
     <p class="note" style="text-align:center;margin-top:16px" id="version"></p>
   </section>
 
@@ -370,6 +370,8 @@ body.v-scan .chef-f{display:none}
 
   <!-- RECETTES -->
   <section id="v-rec" hidden>
+    <div class="backbar"><a class="btn alt" href="../recettes/">← Livre de recettes</a></div>
+    <p class="note" id="recIntro"></p>
     <div id="recList" class="cgrid"></div>
   </section>
 
@@ -420,7 +422,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '50';
+const VERSION = '51';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -807,7 +809,9 @@ function renderRecipes() {
     const msg = !fridge.length ? ['Ajoute des produits', 'Renseigne ce qu’il y a dans ton frigo et ton placard pour voir les recettes possibles.', '#frigo', '📷']
       : filter === 'gaspi' ? ['Rien d’urgent', 'Aucun produit à consommer dans les 3 jours. Ajoute des dates en touchant tes produits.', '#frigo', '⏰']
       : filter === 'ok' ? ['Pas encore de recette complète', 'Regarde celles où il ne manque qu’un ou deux ingrédients.', null, '🤏']
-      : ['Aucune recette trouvée', 'Essaie un autre mot ou un autre filtre.', null, '🔍'];
+      : q ? ['Aucune recette trouvée', 'Essaie un autre mot.', null, '🔍']
+      : filter === 'presque' ? ['Aucune recette presque prête', 'Ajoute d’autres produits à tes réserves pour voir plus de recettes.', '#frigo', '🔍']
+      : ['Aucune recette trouvée', 'Ajoute d’autres produits à tes réserves.', '#frigo', '🔍'];
     const ill = (!fridge.length || filter === 'ok') ? `<img class="mzill" src="${MZ}frigo.webp" alt="" width="477" height="500">` : `<span class="ill">${msg[3]}</span>`;
     box.innerHTML = status + `<${msg[2] ? `a href="${msg[2]}"` : `button data-goto="presque"`} class="catb" style="--c1:#ffe0b3;--c2:#fbc16b"><span><b>${msg[0]}</b><small>${msg[1]}</small></span>${ill}</${msg[2] ? 'a' : 'button'}>`;
     return;
@@ -824,11 +828,12 @@ $('#recList').addEventListener('click', e => {
   const mb = e.target.closest('[data-miss]');
   if (mb) { const x = missingOf(mb.dataset.miss); if (x && x.items.length) { addToCourses(x.items, x.src); mb.disabled = true; mb.textContent = '✓ Ajouté à ta liste de courses'; } return; }
   const m = e.target.closest('[data-mine-name]'); if (m) track('friscan-mes-recettes', m.dataset.mineName);
-  const b = e.target.closest('[data-goto]'); if (b) setFilter(filter === 'ok' ? 'presque' : 'tout'); });
+  const b = e.target.closest('[data-goto]'); if (b) { if (filter === 'ok') location.hash = '#presque'; else setFilter('tout'); } });
 function setFilter(f, go) {
   if (f !== filter) track('friscan-filtre', { ok: 'possibles', presque: 'presque', tout: 'toutes', gaspi: 'anti-gaspi' }[f] || f);
   filter = f; document.querySelectorAll('#filters .chip[data-f]').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === f));
-  if (go && location.hash !== '#recettes') location.hash = '#recettes'; else renderRecipes();
+  const hf = f === 'ok' ? '#possibles' : f === 'presque' ? '#presque' : '#recettes';
+  if (go && location.hash !== hf) location.hash = hf; else renderRecipes();
 }
 $('#filters').addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
@@ -1008,14 +1013,14 @@ if (window.CookBudget) CookBudget.charger().then(d => { if (!d) return; if (loca
 const persK = r => (persSel[r.id] || r.pers) / r.pers;
 function renderRecipe(id, silent, keepScroll) {
   const r = RECETTES.find(x => x.id === id); const v = $('#v-recette');
-  if (!r) { location.hash = '#recettes'; return; }
+  if (!r) { location.hash = lastRec; return; }
   const a = analyse(r); const [c1, c2] = CATS[r.cat];
   const n = persSel[r.id] || r.pers, k = n / r.pers;
   const fromFridge = r.ing.filter(x => inFridge(x[0]));
   v.innerHTML = `
     ${window.CookFiltres && CookFiltres.oeufsCrus(r.n, r.crus) ? `<p class="note fcrus">${esc(CookFiltres.AVERT_CRUS)}</p>` : ''}
     ${FA.length && !okR(r) ? `<p class="note fwarn">⚠️ Cette recette ne respecte pas tes préférences : ${esc(CookFiltres.libelle(CookFiltres.raisons(CookFiltres.texteFriscan(r, ING), FA)))}.</p>` : ''}
-    <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← Max 30 min</a>' : '<a class="btn alt" href="#recettes">← Recettes</a>'}</div>
+    <div class="backbar">${fromChrono ? '<a class="btn alt" href="#chrono">← Max 30 min</a>' : `<a class="btn alt" href="${lastRec}">← ${{ '#presque': 'Presque prêtes', '#recettes': 'Recettes' }[lastRec] || 'Recettes possibles'}</a>`}</div>
     ${r.img ? `<div class="rhero photo"><img class="rphoto" src="${esc(r.img)}" alt="${esc(r.n)}" width="720" height="720">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}${r.ia ? `<button type="button" class="iaq" id="iaq" aria-expanded="false" aria-controls="iab">image IA?</button><p class="iabulle" id="iab" hidden>${IA_TXT}</p>` : ''}<h2>${esc(r.n)}</h2></div>`
       : `<div class="rhero" style="--pale:linear-gradient(135deg,${c1},${c2});position:relative;overflow:hidden">${isVeg(r) ? '<span class="vegstamp">Végétarien</span>' : ''}<span class="ill">${r.e}</span><h2>${esc(r.n)}</h2></div>`}
     <div class="rpills">
@@ -1050,7 +1055,7 @@ function renderRecipe(id, silent, keepScroll) {
         .sort((p, q) => (daysLeft(p[0]) ?? 1e6) - (daysLeft(q[0]) ?? 1e6))[0];
       if (c) fridge.splice(c[1], 1);
     }
-    save(); renderAll(); location.hash = '#recettes';
+    save(); renderAll(); location.hash = lastRec;
     toast('Réserves mises à jour', () => { fridge = before; save(); renderAll(); }); track('friscan-cuisine', r.n);
   };
   if (!keepScroll) window.scrollTo(0, 0);
@@ -1202,14 +1207,18 @@ function cocherCourses(name, ing) {
 function route() {
   if (location.hash === '#commentaire') return;
   const h = location.hash || '#frigo';
-  const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : h === '#recettes' ? 'rec' : h === '#chrono' ? 'chrono' : 'frigo';
+  const v = h.startsWith('#r-') ? 'recette' : h === '#scan' ? 'scan' : (h === '#recettes' || h === '#possibles' || h === '#presque') ? 'rec' : h === '#chrono' ? 'chrono' : 'frigo';
+  if (h === '#possibles' || h === '#presque') { filter = h === '#presque' ? 'presque' : 'ok'; document.querySelectorAll('#filters .chip[data-f]').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === filter)); }
+  if (v === 'rec') lastRec = h;
   if (v === 'chrono') fromChrono = true; else if (v === 'rec' || v === 'frigo') fromChrono = false;
   ['frigo', 'scan', 'rec', 'recette', 'chrono'].forEach(x => $('#v-' + x).hidden = x !== v);
   document.body.classList.toggle('v-scan', v === 'scan'); document.body.classList.toggle('nonav', v !== 'frigo'); currentView = v;
   document.querySelectorAll('nav a').forEach(a => a.toggleAttribute('aria-current', a.dataset.v === v || (v === 'recette' && a.dataset.v === 'rec')));
   document.querySelectorAll('nav a[aria-current]').forEach(a => a.setAttribute('aria-current', 'page'));
   $('#hdrFrigo').hidden = v !== 'frigo'; $('#hdrRec').hidden = v !== 'rec'; $('#hdrChrono').hidden = v !== 'chrono';
-  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: 'Recettes', recette: 'Recette', chrono: 'Max 30 min' }[v];
+  const recT = { ok: 'Recettes possibles', presque: 'Presque prêtes', gaspi: 'Anti-gaspi' }[filter] || 'Recettes';
+  $('#title').textContent = { frigo: 'Mes réserves', scan: 'Scanner', rec: recT, recette: 'Recette', chrono: 'Max 30 min' }[v];
+  $('#recIntro').textContent = { ok: 'Les recettes que tu peux faire avec ce que tu as dans tes réserves.', presque: 'Les recettes où il ne te manque qu’un ou deux ingrédients.', gaspi: 'Les recettes qui utilisent d’abord ce qui doit être consommé vite.' }[filter] || '';
   if (v !== 'scan') { stopCam(); resetScan(); }
   else if (autoCam) { autoCam = false; startCam(); }
   if (v === 'recette') { renderRecipe(h.slice(3)); const r = RECETTES.find(x => x.id === h.slice(3)); if (r) track('friscan-recette', r.n); }
@@ -1228,7 +1237,7 @@ window.addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopCam(); });
 
 /* ---------- Commentaire (même fonctionnement que « Mes recettes ») ---------- */
-let currentView = 'frigo';
+let currentView = 'frigo', lastRec = '#possibles';
 /* mêmes réglages que « Mes recettes » : appareil Mobile / PC */
 function deviceType() { const ua = navigator.userAgent || ''; return (/Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) || matchMedia('(max-width:699px)').matches) ? 'Mobile' : 'PC'; }
 
