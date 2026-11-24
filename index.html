@@ -410,6 +410,7 @@ body.v-scan .chef-f{display:none}
 <script src="../cookapli/filtres.js?v=3"></script>
 <script src="../cookapli/batch.js?v=1"></script>
 <script src="../recettes/calories.js?v=4"></script>
+<script src="../cookapli/saison.js?v=1"></script>
 <script>
 'use strict';
 /* ---------- utilitaires ---------- */
@@ -422,7 +423,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '53';
+const VERSION = '54';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -782,8 +783,10 @@ function renderChrono() {
     .concat(mine.list.filter(m => mineChrono(m) && okM(m) && (!qc || norm(m.n).includes(qc))).map(m => ({ m, min: m.tot, n: m.n })))
     .sort((x, y) => x.min - y.min || x.n.localeCompare(y.n, 'fr'));
   if (PETIT_BUDGET) { list.forEach(x => { x.pp = x.m ? ppM(x.m) : ppR(x.r); }); list.sort((x, y) => x.pp - y.pp || x.min - y.min); }
+  /* recettes de saison d'abord */
+  if (window.CookSaison) { list.forEach(x => { x.s = CookSaison.ok(x.r ? CookSaison.texteRapide(x.r, ING) : x.m.n + ' ' + (x.m.ings || []).map(i => i + ' ' + (ING[i] ? ING[i].n : '')).join(' ')); }); list.splice(0, list.length, ...list.filter(x => x.s), ...list.filter(x => !x.s)); }
   if (!list.length) { $('#chronoList').innerHTML = noteFiltres() + '<p class="note">Aucune recette ne correspond à cette recherche.</p>'; return; }
-  $('#chronoList').innerHTML = noteFiltres() + noteBudget() + list.map(({ r, m }) => m ? carteLivre(m, tagCompte(analyseMine(m))) : carteRapide(r, tagCompte(analyse(r)))).join('');
+  $('#chronoList').innerHTML = noteFiltres() + noteBudget() + list.map(({ r, m, s: sa }) => { const b = sa ? ' ' + CookSaison.BADGE : ''; return m ? carteLivre(m, tagCompte(analyseMine(m)) + b) : carteRapide(r, tagCompte(analyse(r)) + b); }).join('');
 }
 let fromChrono = false;
 function mineCard(m, a) {
