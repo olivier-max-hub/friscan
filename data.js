@@ -202,6 +202,7 @@ const ING = {
   vinaigre:      { n: 'Vinaigre',           e: '🍶', g: 'epicerie', k: ['vinaigre'], t: ['en:vinegars'], p: 1, u: 'ml', r: 'epis', kc: 20 },
   bouillon:      { n: 'Bouillon',           e: '🍲', g: 'epicerie', k: ['bouillon'], t: ['en:broths', 'en:stock-cubes'], p: 1, u: 'p', pu: 10, r: 'epis', kc: 250 },
   sauce_soja:    { n: 'Sauce soja',         e: '🥢', g: 'epicerie', k: ['soja', 'soy', 'nuoc mam', 'sauce poisson', 'sauce huitre', 'sauce teriyaki', 'sauce de poisson', 'sauce d huitre', 'sauce de soja'], t: ['en:soy-sauces'], p: 1, u: 'ml', r: 'epis', kc: 60, d: 1.1 },
+  levure_maltee: { n: 'Levure maltée (flocons)', e: '🌾', g: 'epicerie', k: ['levure maltee', 'flocons de levure', 'levure nutritionnelle', 'levure en paillettes'], t: ['en:nutritional-yeasts'], u: 'g', r: 'epsu', kc: 340 },
   levure:        { n: 'Levure chimique',    e: '🧁', g: 'epicerie', k: ['levure', 'levure chimique', 'poudre a lever'], t: ['en:baking-powders'], p: 1, u: 'g', pu: 11, r: 'epsu', kc: 100 },
   levure_boulangere: { n: 'Levure boulangère', e: '🍞', g: 'epicerie', k: ['levure boulangere', 'levure de boulanger', 'levure du boulanger', 'levure deshydratee', 'levure seche', 'levure fraiche', 'levure de biere'], t: ['en:bakers-yeasts'], p: 1, u: 'g', pu: 8, r: 'epsu', kc: 330 },
   chapelure:     { n: 'Chapelure',          e: '🍞', g: 'epicerie', k: ['chapelure', 'panure'], t: ['en:breadcrumbs'], p: 1, u: 'g', r: 'epis', kc: 380 },
