@@ -91,7 +91,7 @@ const ING = {
   tortilla:      { n: 'Tortillas / wraps',  e: '🌯', g: 'feculent', k: ['tortilla', 'wrap', 'fajita'], t: ['en:tortillas', 'en:wraps'], u: 'p', pu: 40, r: 'boul', kc: 300 },
   pain_mie:      { n: 'Pain de mie',        e: '🍞', g: 'feculent', k: ['pain de mie', 'harrys', 'toast'], t: ['en:sandwich-breads', 'en:sliced-breads'], u: 'p', pu: 25, r: 'boul', kc: 260 },
   pain:          { n: 'Pain',               e: '🥖', g: 'feculent', k: ['pain', 'baguette', 'brioche', 'ciabatta', 'focaccia', 'bun', 'pita', 'naan'], t: ['en:breads'], u: 'g', pu: 40, r: 'boul', kc: 270 },
-  patate_douce:  { n: 'Patate douce',       e: '🍠', g: 'legume',   k: ['patate douce'], t: ['en:sweet-potatoes'], u: 'g', pu: 250, r: 'fl', kc: 86 },
+  patate_douce:  { n: 'Patate douce',       e: '🍠', g: 'legume',   k: ['patate douce', 'patates douces'], t: ['en:sweet-potatoes'], u: 'g', pu: 250, r: 'fl', kc: 86 },
   biscottes:     { n: 'Biscottes / crackers', e: '🍘', g: 'feculent', k: ['biscotte', 'cracker', 'pain grille', 'galette de riz souffle', 'wasa', 'pain suedois', 'pain grille'], t: ['en:rusks', 'en:crackers'], u: 'p', pu: 10, r: 'epsu', kc: 400 },
   pdt:           { n: 'Pommes de terre',    e: '🥔', g: 'feculent', k: ['pomme de terre', 'pommes de terre', 'patate'], t: ['en:potatoes'], u: 'g', pu: 150, r: 'fl', kc: 80 },
 
