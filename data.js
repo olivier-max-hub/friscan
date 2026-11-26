@@ -62,7 +62,7 @@ const ING = {
   chorizo:       { n: 'Chorizo',            e: '🌶️', g: 'viande',   k: ['chorizo'], t: ['en:chorizo'], u: 'g', r: 'cha', kc: 450 },
   saucisse:      { n: 'Saucisses',          e: '🌭', g: 'viande',   k: ['saucisse', 'knack', 'chipolata', 'merguez', 'chair a saucisse', 'saucisse'], t: ['en:sausages'], u: 'p', pu: 80, r: 'bou', kc: 280 },
   boudin:        { n: 'Boudin',             e: '🌭', g: 'viande',   k: ['boudin'], t: ['en:black-puddings'], u: 'p', pu: 125, r: 'cha', kc: 300 },
-  steak_hache:   { n: 'Viande hachée',      e: '🥩', g: 'viande',   k: ['hache', 'steak hache', 'boulette'], t: ['en:ground-beef', 'en:minced-meats'], u: 'g', pu: 100, r: 'bou', kc: 200 },
+  steak_hache:   { n: 'Viande hachée',      e: '🥩', g: 'viande',   k: ['hache', 'steak hache', 'boulette', 'boeuf hache', 'boeuf ou de veau hache', 'veau hache'], t: ['en:ground-beef', 'en:minced-meats'], u: 'g', pu: 100, r: 'bou', kc: 200 },
   dinde:         { n: 'Dinde',              e: '🦃', g: 'viande',   k: ['dinde', 'escalope de dinde'], t: ['en:turkeys'], u: 'g', pu: 150, r: 'bou', kc: 110 },
   canard:        { n: 'Canard',             e: '🦆', g: 'viande',   k: ['canard', 'magret', 'confit de canard', 'cuisse de canard'], t: ['en:ducks'], u: 'g', pu: 350, r: 'bou', kc: 200 },
   porc:          { n: 'Porc',               e: '🐖', g: 'viande',   k: ['porc', 'echine', 'filet mignon', 'cote de porc', 'roti de porc', 'travers', 'palette', 'cochon', 'tete de porc'], t: ['en:pork'], u: 'g', r: 'bou', kc: 200 },
