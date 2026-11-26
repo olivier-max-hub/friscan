@@ -147,7 +147,7 @@ h2:first-child{margin-top:4px}
 .rhero{display:grid;gap:6px;justify-items:center;background:var(--pale,#eef8fb);border-radius:26px;padding:18px;box-shadow:0 3px 10px rgba(0,0,0,.08);text-align:center}
 .rhero .ill{font-size:4rem;line-height:1}
 .rhero h2{display:block;background:none;border:0;padding:0;margin:0;font-size:2.2rem;line-height:1.1;color:var(--acc)}
-/* photo de la recette + pastille « IA? » (photo créée par IA) */
+/* photo de la recette + pastille « IA? » (photo créée avec l’aide de l’IA) */
 .rhero.photo{padding:0 0 14px;overflow:hidden;position:relative;background:#fff}
 .rhero.photo .rphoto{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center 72%;display:block}
 .rhero.photo h2{padding:0 14px}
@@ -423,7 +423,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '57';
+const VERSION = '58';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -764,7 +764,7 @@ function dureeMin(v) {
   return ok ? tot : null;
 }
 const mineChrono = m => m.tot != null && m.tot <= 30 && !/preparation/.test(norm(m.cat));
-const IA_TXT = 'Photo d’illustration créée par IA, en attendant une vraie photo du plat. La recette, elle, est bien réelle.';
+const IA_TXT = 'Photo d’illustration créée avec l’aide de l’IA, en attendant une vraie photo du plat. La recette, elle, est bien réelle.';
 /* préférences alimentaires choisies dans Cookapli (végétarien, sans gluten…) */
 const FA = window.CookFiltres ? CookFiltres.lire() : [];
 const okR = r => !FA.length || CookFiltres.ok(CookFiltres.texteFriscan(r, ING), FA);
