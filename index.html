@@ -409,7 +409,7 @@ body.v-scan .chef-f{display:none}
 <script src="../cookapli/budget.js?v=3"></script>
 <script src="../cookapli/filtres.js?v=3"></script>
 <script src="../cookapli/batch.js?v=1"></script>
-<script src="../recettes/calories.js?v=9"></script>
+<script src="../recettes/calories.js?v=10"></script>
 <script src="../cookapli/saison.js?v=2"></script>
 <script>
 'use strict';
@@ -423,7 +423,7 @@ const store = {
 };
 const pale = g => GROUPS[g] ? GROUPS[g].c + '55' : '#eef8fb';
 
-const VERSION = '60';
+const VERSION = '61';
 let fridge = store.get('fridge', []);
 /* nettoyage : produits reliés à un ingrédient qui n'existe plus */
 if (!Array.isArray(fridge)) fridge = [];
@@ -881,12 +881,14 @@ function lineIng(t) {
   if (w.length > 16 || VERBES.test(n)) return { skip: 1 };          /* phrase d'explication */
   if (/^moule (a|de|en) /.test(n) || /facultati|falcultati|optionnel|pour servir/.test(n) || /( |^)deco(ration)?( |$)/.test(n)) return { skip: 1 };
   if (w.includes('eau') && w.every(x => EAU.test(x))) return { skip: 1 };
+  /* bouquet garni et eau : ni poids ni calories, jamais comptés comme ingrédients manquants */
+  if (/bouquet garni/.test(n) || (/(^| )eau( |$)/.test(n) && !/eau de (vie|fleur|rose)|gazeuse/.test(n))) return { skip: 1 };
   /* « 1 c. à café de cannelle » : la cuillère à café ne doit pas être prise pour du café */
   const id = guessIng(t.replace(/(cuill?[eè]res?|c\.)\s*(à|a|de)\s*(caf[eé]|th[eé]|c\b\.?)/gi, ' '), []);
   return id ? { id } : { unk: 1 };
 }
 /* à changer quand le référentiel change : les recettes du Livre sont alors relues */
-const MINE_V = 42; /* 38 : préparation, cuisson, difficulté et lignes d’ingrédients gardées pour les pastilles */
+const MINE_V = 43; /* 38 : préparation, cuisson, difficulté et lignes d’ingrédients gardées pour les pastilles */
 async function loadMine(force) {
   const old = store.get('mine', null);
   if (!force && old && old.v === MINE_V && Date.now() - old.t < 6 * 3600e3) return;
